@@ -77,7 +77,7 @@ h1 {
 .center {
   padding: 20px;
   text-align: center;
-  font-size: 1.4em;
+  font-size: 1.8em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -131,7 +131,7 @@ a:focus {
   text-align: left;
   font-family: monospace;
   font-weight: 700;
-  color: #EDEAFF/*#99ff99;*/
+  color: #EDEAFF;/*#99ff99;*/
 }
 
 .terminal_emulator__field,
@@ -168,7 +168,7 @@ a:focus {
   content:"";
   width: 1em;
   height: 1.5em;
-  background: #EDEAFF/*#99ff99;*/
+  background: #EDEAFF;/*#99ff99;*/
   animation: caretBlink 1s infinite;
 }
 
