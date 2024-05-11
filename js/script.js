@@ -254,7 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(TE.wait.bind(TE, 1200))
     .then(TE.enterResponse.bind(TE, 'Error: wrong venv selected. Typical!'))
     .then(TE.wait.bind(TE, 800))
-    .then(TE.enterResponse.bind(TE, 'Applying machine learning to find the ultimate question of life, the universe, and everything...'))
+    .then(TE.enterInput.bind(TE, 'Applying machine learning to find the ultimate question of life, the universe, and everything...'))
+    .then(TE.enterCommand.bind(TE))
     .then(TE.wait.bind(TE, 1800))
     .then(TE.enterResponse.bind(TE, 'Prediction complete: 42. What was the question again?'))
     .then(TE.wait.bind(TE, 1200))
@@ -262,6 +263,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //.then(TE.wait.bind(TE, 900))
     .then(TE.enterResponse.bind(TE, 'Arthur Dent mode activated: Where is my towel?'))
     .then(TE.wait.bind(TE, 1500))
+    .then(TE.enterInput.bind(TE, 'bun --watch run activate-simon'))
+    .then(TE.enterCommand.bind(TE))
     .then(TE.enterResponse.bind(TE, 'Data Architect and Researcher at your service.'))
     .then(TE.reset.bind(TE));
 });
