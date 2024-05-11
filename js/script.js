@@ -265,6 +265,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(TE.wait.bind(TE, 1500))
     .then(TE.enterInput.bind(TE, 'bun --watch run activate-simon'))
     .then(TE.enterCommand.bind(TE))
+    .then(TE.wait.bind(TE, 2000))
     .then(TE.enterResponse.bind(TE, 'Data Architect and Researcher at your service.'))
     .then(TE.reset.bind(TE));
 });
