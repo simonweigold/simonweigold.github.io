@@ -93,18 +93,31 @@ h1 {
   /*height: 35vh;*/
 }
 
-.about h2 {
-  font-size: 2.5em;
+.about b {
   color: #A99CFF;
+}
+
+.about h2 {
+  font-size: 2em;
+  color: #EDEAFF;
+  font-family: 'Roboto Condensed', sans-serif;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.about h3 {
+  font-size: 1.5em;
+  color: #F4F4FF;
   font-family: 'Roboto Condensed', sans-serif;
   letter-spacing: 1px;
 }
 
-.about h3 {
-  font-size: 2em;
+.about h3 b {
+  font-size: 1.5 em;
   color: #A99CFF;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: 'Roboto', sans-serif;
   letter-spacing: 1px;
+  font-weight: 700;
 }
 
 ul {
