@@ -85,6 +85,56 @@ h1 {
   height: 35vh;
 }
 
+.about {
+  padding: 20px;
+  text-align: left;
+  justify-content: center;
+  align-items: center;
+  /*height: 35vh;*/
+}
+
+.about b {
+  color: #A99CFF;
+}
+
+.about h2 {
+  font-size: 2em;
+  color: #EDEAFF;
+  font-family: 'Roboto Condensed', sans-serif;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.about h3 {
+  font-size: 1.4em;
+  color: #F4F4FF;
+  font-family: 'Roboto Condensed', sans-serif;
+  letter-spacing: 1px;
+}
+
+.about h3 b {
+  color: #A99CFF;
+  font-family: 'Roboto', sans-serif;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+ul {
+  list-style-type: none; /* Removes the bullet points from the list */
+  padding: 0; /* Removes padding */
+  display: flex; /* Displays the list items inline */
+  gap: 24px; /* Adds a gap between the icons */
+}
+
+li {
+  display: inline; /* Further ensures the items are in a line */
+}
+
+img {
+  width: 48px; /* Sets a uniform size for the icons */
+  height: 48px;
+  vertical-align: middle; /* Aligns the icons vertically */
+}
 
 /* Base style for all links */
 a {
