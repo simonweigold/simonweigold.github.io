@@ -85,6 +85,30 @@ h1 {
   height: 35vh;
 }
 
+.about {
+  padding: 20px;
+  text-align: left;
+  justify-content: center;
+  align-items: center;
+  /*height: 35vh;*/
+}
+
+ul {
+  list-style-type: none; /* Removes the bullet points from the list */
+  padding: 0; /* Removes padding */
+  display: flex; /* Displays the list items inline */
+  gap: 10px; /* Adds a gap between the icons */
+}
+
+li {
+  display: inline; /* Further ensures the items are in a line */
+}
+
+img {
+  width: 24px; /* Sets a uniform size for the icons */
+  height: 24px;
+  vertical-align: middle; /* Aligns the icons vertically */
+}
 
 /* Base style for all links */
 a {
