@@ -106,14 +106,13 @@ h1 {
 }
 
 .about h3 {
-  font-size: 1.5em;
+  font-size: 1.4em;
   color: #F4F4FF;
   font-family: 'Roboto Condensed', sans-serif;
   letter-spacing: 1px;
 }
 
 .about h3 b {
-  font-size: 1.5 em;
   color: #A99CFF;
   font-family: 'Roboto', sans-serif;
   letter-spacing: 1px;
