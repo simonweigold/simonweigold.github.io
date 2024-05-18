@@ -55,7 +55,7 @@ h1{
   text-shadow: 0.8px 1.6px #EDEAFF;
   margin: 0; /* Remove default margin */
   padding: 20px; /* Add padding to maintain size */
-  min-height: 80px; /* Ensure the h1 has a minimum height */
+  min-height: 15vh; /* Ensure the h1 has a minimum height */
   width: 100%; /* Full width of its container */
   box-sizing: border-box; /* Include padding in width calculation */
   overflow: hidden; /* Prevents text from overflowing */
