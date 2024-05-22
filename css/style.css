@@ -12,6 +12,11 @@ Neutral2
 Off-Black
 #2A2A2A
 
+Neutral3
+Monochromatic darker black
+#1A1A1A
+#141414 - A more pronounced dark shade
+
 Secondary Color
 Soft Lavender
 #A99CFF
@@ -28,9 +33,8 @@ Background or Body Text
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
 
-
 body {
-  background-color: #2A2A2A;
+  background-color: #1A1A1A;
   color: #F4F4FF;
   font-family: 'Roboto', sans-serif;
 }
@@ -74,6 +78,14 @@ h1 {
   border-right: 2px solid #EDEAFF; /* Visible cursor */
 }
 
+/* Define the styles for the highlight box */
+.highlight-box {
+  background-color: #141414; /* Example unique color */
+  border-radius: 100px; /* Rounded corners */
+  padding: 20px; /* Padding inside the box */
+  position: relative; /* Position relative for z-index */
+  z-index: -1; /* Ensure it stays behind the content */
+}
 
 .center {
   padding: 20px;
