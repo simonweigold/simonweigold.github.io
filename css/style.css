@@ -288,3 +288,33 @@ a:focus {
     line-height: 20px;
   }
 }
+
+
+/* PROJECTS SUBPAGE */
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+.project-box {
+  background-color: #141414;
+  border: 1px solid #7A67E0;
+  border-radius: 10px;
+  width: 100vh;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+.project-box:hover {
+  transform: translateY(-10px);
+}
+.project-title {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+}
+.project-description {
+  font-size: 1em;
+}
