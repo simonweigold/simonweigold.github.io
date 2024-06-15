@@ -269,3 +269,13 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(TE.enterResponse.bind(TE, 'Data Architect and Researcher at your service.'))
     .then(TE.reset.bind(TE));
 });
+
+
+// BLOCK RIGHT CLICKS ON IMAGES
+document.addEventListener('DOMContentLoaded', (event) => {
+  const img = document.querySelector('.profile-pic');
+  img.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      //alert('Right-click is disabled on this image.');
+  });
+});

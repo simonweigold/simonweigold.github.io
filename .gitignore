@@ -1,2 +1,14 @@
 # testing folder
 testing/*
+
+# bun dependencies
+node_modules/*
+bun.lockb
+index.ts
+package.json
+tsconfig.json
+
+# visuals
+imgs/3d-nlp-vis.mp4
+imgs/3d-nlp-vis.gif
+imgs/3d-nlp-vis-reverse.gif
