@@ -303,6 +303,28 @@ a:focus {
   transform: translateY(-10px);
 }
 
+.profile-pic {
+  width: 150px;
+  height: auto;
+}
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  /*padding: 20px;
+  margin: 20px;*/
+}
+
+.speech-bubble {
+  position: absolute;
+  top: 20px; /* Adjust vertical position */
+  left: 180px; /* Adjust horizontal position based on your layout */
+  padding: 10px;
+  width: 80vh;
+  font-size: 14px;
+}
+
+
 /* PROJECTS SUBPAGE */
 
 .container {
