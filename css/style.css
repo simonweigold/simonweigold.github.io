@@ -289,6 +289,19 @@ a:focus {
   }
 }
 
+/* ABOUT SUBPAGE */
+
+.about-box{
+  background-color: #141414;
+  border: 1px solid #7A67E0;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+.about-box:hover {
+  transform: translateY(-10px);
+}
 
 /* PROJECTS SUBPAGE */
 
