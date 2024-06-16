@@ -375,9 +375,9 @@ a:focus {
   }
 }
 
-/* Media Queries for Large Screens */
+/* Media Queries for Large Screens 
 @media (min-width: 3200px) {
   #typing-container {
     min-height: 15vh;
   }
-}
+}*/
