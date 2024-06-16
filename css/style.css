@@ -152,7 +152,7 @@ img {
 a {
   color: #A99CFF;
   /*background-color: #EDEAFF;*/
-  border-radius: 10px;
+  /*border-radius: 10px;*/
   display: inline-block;
   margin: 20px 0;
   text-decoration: none;
@@ -245,50 +245,6 @@ a:focus {
 }
 
 
-/* Media Queries for Mobile Optimization */
-@media (max-width: 768px) {
-  #typing-container {
-    min-height: 10vh;
-  }
-
-  h1 {
-    font-size: 2.6em;
-    text-align: center;
-    padding: 10px;
-  }
-
-  .center {
-    font-size: 1.4em;
-    height: auto;
-    padding: 10px;
-  }
-
-  .about h2 {
-    font-size: 1.5em;
-  }
-
-  .about h3 {
-    font-size: 1.2em;
-  }
-
-  ul {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  img {
-    width: 36px;
-    height: 36px;
-  }
-
-  .terminal_emulator {
-    padding: 20px;
-    font-size: 12px;
-    line-height: 20px;
-  }
-}
-
 /* ABOUT SUBPAGE */
 
 .about-box{
@@ -352,4 +308,76 @@ a:focus {
 }
 .project-description {
   font-size: 1em;
+}
+
+/* Media Queries for Mobile Optimization */
+@media (max-width: 768px) {
+  #typing-container {
+    min-height: 10vh;
+  }
+
+  h1 {
+    font-size: 2.6em;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .center {
+    font-size: 1.4em;
+    height: auto;
+    padding: 10px;
+  }
+
+  .about h2 {
+    font-size: 1.5em;
+  }
+
+  .about h3 {
+    font-size: 1.2em;
+  }
+
+  ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .terminal_emulator {
+    padding: 20px;
+    font-size: 12px;
+    line-height: 20px;
+  }
+
+  .profile-pic {
+    width: 75px;
+    height: auto;
+  }
+  
+  .avatar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .speech-bubble {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+}
+
+/* Media Queries for Large Screens */
+@media (min-width: 1200px) {
+  #typing-container {
+    min-height: 15vh;
+  }
 }
