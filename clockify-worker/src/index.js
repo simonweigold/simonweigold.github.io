@@ -2,6 +2,16 @@ import { Hono } from 'hono';
 
 const app = new Hono();
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*', // Allow any origin to access
+  'Access-Control-Allow-Methods': 'GET,HEAD,POST,OPTIONS', // Allowed methods
+  'Access-Control-Allow-Headers': 'Content-Type', // Allowed headers
+};
+
+// Function to handle CORS preflight requests
+app.options('*', (c) => {
+  return c.json({}, 200, corsHeaders);
+});
 
 // BITCOIN FROM COINGECKO
 
