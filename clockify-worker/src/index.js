@@ -3,7 +3,7 @@ import { Hono } from 'hono';
 const app = new Hono();
 
 
-// BITCOIN FROM COINBASE
+// BITCOIN FROM COINGECKO
 
 app.get('/bitcoin-price', async (c) => {
     try {
