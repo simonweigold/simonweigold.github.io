@@ -40,7 +40,7 @@ class ClockifyAPI {
     this.apiKey = env.CLOCKIFY_API_KEY;
     this.workspaceId = env.CLOCKIFY_WORKSPACE_ID;
     this.userId = env.CLOCKIFY_USER_ID;
-    this.headers = { 'x-api-key': this.apiKey };
+    this.headers = { 'X-Api-Key': this.apiKey };
   }
 
   async fetchTimeEntries() {
@@ -151,12 +151,11 @@ app.get('/time-difference', async (c) => {
     const timeEntries = await clockifyAPI.fetchTimeEntries();
     const parsedTimeEntries = clockifyAPI.parseTimeEntries(timeEntries);
 
-    const tc = new TimeCalculator();
     const startDate = new Date(new Date().getFullYear(), 0, 1);
-    const { mondays, tuesdays, wednesdays, thursdays } = tc.countWeekdaysSince(startDate);
+    const weekdaysCount = TimeCalculator.countWeekdaysSince(startDate);
 
-    const socioResult = tc.calculateTimeDiff(parsedTimeEntries, "65d5f9f3100e865c113fd585", 6.3, wednesdays + thursdays - 14);
-    const lawResult = tc.calculateTimeDiff(parsedTimeEntries, "64e7801cebeee150228ea1db", 8.4, mondays + tuesdays);
+    const socioResult = TimeCalculator.calculateTimeDiff(parsedTimeEntries, "65d5f9f3100e865c113fd585", 6.3, weekdaysCount.wednesdays + weekdaysCount.thursdays - 14);
+    const lawResult = TimeCalculator.calculateTimeDiff(parsedTimeEntries, "64e7801cebeee150228ea1db", 8.4, weekdaysCount.mondays + weekdaysCount.tuesdays);
 
     return c.json({
       sociology: {
