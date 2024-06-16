@@ -55,6 +55,13 @@ h1{
   border-color: #EDEAFF; /* Visible cursor */
 }
 
+h2{
+    font-size: 1.8em;
+}
+p {
+    font-size: 1.8em;
+}
+
 .time-tracking {
     padding: 20px;
     text-align: left;
@@ -63,7 +70,7 @@ h1{
     /*height: 35vh;*/
   }
 
-.container {
+.results{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -75,9 +82,11 @@ h1{
     background-color: #141414;
     border: 1px solid #7A67E0;
     border-radius: 10px;
+    width: auto;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s;
+    gap: 20px;
 }
 .result-box:hover {
     transform: translateY(-10px);
