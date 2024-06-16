@@ -10,8 +10,15 @@ const corsHeaders = {
 
 // Function to handle CORS preflight requests
 app.options('*', (c) => {
-  console.log('Handling preflight request');
   return c.json({}, 200, corsHeaders);
+});
+
+// Middleware to add CORS headers to all responses
+app.use('*', (c, next) => {
+  c.header('Access-Control-Allow-Origin', '*');
+  c.header('Access-Control-Allow-Methods', 'GET,HEAD,POST,OPTIONS');
+  c.header('Access-Control-Allow-Headers', 'Content-Type');
+  return next();
 });
 
 // BITCOIN FROM COINGECKO
