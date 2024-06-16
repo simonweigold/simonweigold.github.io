@@ -376,7 +376,7 @@ a:focus {
 }
 
 /* Media Queries for Large Screens */
-@media (min-width: 1200px) {
+@media (min-width: 2200px) {
   #typing-container {
     min-height: 15vh;
   }
