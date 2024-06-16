@@ -10,6 +10,7 @@ const corsHeaders = {
 
 // Function to handle CORS preflight requests
 app.options('*', (c) => {
+  console.log('Handling preflight request');
   return c.json({}, 200, corsHeaders);
 });
 
