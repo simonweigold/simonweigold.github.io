@@ -21,8 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
         div.className = 'attribute-item';
         div.innerHTML = `
             <span>${attr} (Cost: ${attributes[attr]})</span>
-            <button onclick="selectAttribute('${attr}')">Select</button>
+            <button>Select</button>
         `;
+        div.querySelector('button').addEventListener('click', () => selectAttribute(attr));
         attributesList.appendChild(div);
     }
 
@@ -61,8 +62,9 @@ function updateSelectedAttributes() {
         div.className = 'selected-attribute-item';
         div.innerHTML = `
             <span>${attr}</span>
-            <button onclick="removeAttribute('${attr}')">Remove</button>
+            <button>Remove</button>
         `;
+        div.querySelector('button').addEventListener('click', () => removeAttribute(attr));
         selectedAttributesDiv.appendChild(div);
     });
 }
