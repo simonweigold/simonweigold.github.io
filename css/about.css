@@ -1,0 +1,129 @@
+body {
+    background-color: #1A1A1A;
+    color: #F4F4FF;
+    font-family: 'Roboto', sans-serif;
+  }
+  
+  .about-box {
+    padding: 0px 180px 0px 180px;
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.4em;
+  }
+  
+  .about-box b {
+    color: #A99CFF;
+  }
+  
+  .about-box h2 {
+    font-size: 2.6em;
+    color: #EDEAFF;
+    font-family: 'Roboto Condensed', sans-serif;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  
+  .about-box h3 {
+    font-size: 1.8em;
+    color: #F4F4FF;
+    font-family: 'Roboto Condensed', sans-serif;
+    letter-spacing: 1px;
+  }
+  
+  .about h3 b {
+    color: #A99CFF;
+    font-family: 'Roboto', sans-serif;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  
+  ul {
+    list-style-type: none; /* Removes the bullet points from the list */
+    padding: 0; /* Removes padding */
+    display: flex; /* Displays the list items inline */
+    gap: 24px; /* Adds a gap between the icons */
+  }
+  
+  li {
+    display: inline; /* Further ensures the items are in a line */
+  }
+  
+  img {
+    max-width: 720px;
+    vertical-align: middle; /* Aligns the icons vertically */
+  }
+  
+  /* Base style for all links */
+  a {
+    color: #A99CFF;
+    /*background-color: #EDEAFF;*/
+    /*border-radius: 10px;*/
+    display: inline-block;
+    margin: 20px 0;
+    text-decoration: none;
+    /*font-size: 2em;*/
+  }
+  a:hover {
+    color: #7A67E0;
+    /*text-decoration: underline;*/
+    font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  a:active {
+    color: #A99CFF;
+  }
+  a:focus {
+    outline: 1px dotted #000;
+    outline-offset: -4px;
+  }
+  
+  .planets {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 150px 5px 5px 5px;
+  }
+
+  .about-box #get-in-touch img {
+    width: 48px; /* Sets a uniform size for the icons */
+    height: 48px;
+    vertical-align: middle; /* Aligns the icons vertically */
+  }
+
+/* Media Queries for Mobile Optimization */
+@media (max-width: 768px) {
+  .about-box {
+    padding: 0px 10px 0px 10px;
+    text-align: left;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+  }
+
+  .about-box h2 {
+    font-size: 1.3em;
+  }
+
+  .about-box h3 {
+    font-size: 1.1em;
+  }
+
+  ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .planets {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 5px 5px 5px;
+  }
+}
