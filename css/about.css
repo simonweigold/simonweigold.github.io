@@ -124,6 +124,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px 5px 5px 5px;
+    padding: 25px 5px 5px 5px;
+  }
+
+  .planets img {
+    width: 72px;
+    height: 72px;
   }
 }
