@@ -81,6 +81,7 @@ body {
     overflow: hidden;
     position: relative;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
   }
 
   .project-back {
@@ -90,8 +91,11 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0px;
+    padding: 30px 40px 10px 40px;
     text-align: center;
+    box-sizing: border-box; /* Include padding in width calculation */
+    word-wrap: break-word; /* Handle long words properly */
+    overflow: hidden; /* Prevent overflow */
   }
 
   .project-box:hover .project-back {
@@ -107,6 +111,7 @@ body {
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    box-sizing: border-box;
   }
   
   .project-front img {
