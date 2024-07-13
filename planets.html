@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Spinning Icosahedrons with Central Light</title>
+    <style>
+        body { margin: 0; background-color: #1A1A1A; }
+        canvas { display: block; }
+        h1 { font-family: sans-serif; color: white; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>3D Spinning Icosahedrons with Central Light</h1>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Adding ambient light
+        const ambientLight = new THREE.AmbientLight(0x404040); // Ambient light
+        scene.add(ambientLight);
+
+        // Central point light coming from the first icosahedron
+        const pointLight = new THREE.PointLight(0xffffff, 1, 10); // Point light
+        scene.add(pointLight);
+
+        // Icosahedron creation with higher subdivision for roundness
+        const geometry = new THREE.SphereGeometry(1, 32, 32);//new THREE.IcosahedronGeometry(1, 5); // Increase the second parameter for more subdivisions
+        const geometry1 = new THREE.IcosahedronGeometry(1, 9);
+        const geometry4 = new THREE.IcosahedronGeometry(1, 4);
+        const material = new THREE.MeshPhongMaterial({ color: 0xA99CFF, shininess: 25 }); // Material with shading // 7A67E0 // A99CFF // EDEAFF
+        const material1 = new THREE.MeshBasicMaterial({ color: 0xEDEAFF }); // Material without shading
+
+        // First icosahedron
+        const icosahedron1 = new THREE.Mesh(geometry1, material1);
+        scene.add(icosahedron1);
+
+        const edges1 = new THREE.EdgesGeometry(geometry1);
+        const lineMaterial1 = new THREE.LineBasicMaterial({ color: 0xA99CFF }); // Color for the edges // 141414 // A99CFF // EDEAFF
+        const lineSegments1 = new THREE.LineSegments(edges1, lineMaterial1);
+        icosahedron1.add(lineSegments1);
+
+        // Position the point light at the center of the first icosahedron
+        pointLight.position.set(0, 0, 0);
+
+        // Second icosahedron
+        const icosahedron2 = new THREE.Mesh(geometry, material);
+        icosahedron2.scale.set(0.3, 0.3, 0.3); // Smaller size
+        scene.add(icosahedron2);
+
+        const edges2 = new THREE.EdgesGeometry(geometry);
+        const lineMaterial2 = new THREE.LineBasicMaterial({ color: 0x141414 }); // Color for the edges
+        const lineSegments2 = new THREE.LineSegments(edges2, lineMaterial2);
+        icosahedron2.add(lineSegments2);
+
+        // Third icosahedron
+        const icosahedron3 = new THREE.Mesh(geometry, material);
+        icosahedron3.scale.set(0.6, 0.6, 0.6); // Smaller size
+        scene.add(icosahedron3);
+
+        //const edges3 = new THREE.EdgesGeometry(geometry);
+        //const lineMaterial3 = new THREE.LineBasicMaterial({ color: 0xA99CFF }); // Color for the edges
+        //const lineSegments3 = new THREE.LineSegments(edges3, lineMaterial3);
+        //icosahedron3.add(lineSegments3);
+
+        // Fourth icosahedron
+        const icosahedron4 = new THREE.Mesh(geometry4, material);
+        icosahedron4.scale.set(0.7, 0.7, 0.7); // Smaller size
+        scene.add(icosahedron4);
+
+        const edges4 = new THREE.EdgesGeometry(geometry4);
+        const lineMaterial4 = new THREE.LineBasicMaterial({ color: 0x7A67E0 }); // Color for the edges
+        const lineSegments4 = new THREE.LineSegments(edges4, lineMaterial4);
+        icosahedron4.add(lineSegments4);
+
+
+        // Position the camera
+        camera.position.z = 15;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate the first icosahedron
+            //icosahedron1.rotation.x += 0.01;
+            icosahedron1.rotation.y += 0.01;
+
+            // Orbit the second icosahedron around the first one
+            const time = Date.now() * 0.0005;
+            const radiusX2 = 5;
+            const radiusY2 = 3;
+            const radiusZ2 = 4;
+            icosahedron2.position.x = Math.cos(time) * radiusX2;
+            icosahedron2.position.y = Math.sin(time) * radiusY2;
+            icosahedron2.position.z = Math.sin(time) * radiusZ2;
+
+            // Rotate the second icosahedron
+            //icosahedron2.rotation.x += 0.02;
+            icosahedron2.rotation.y += 0.01;
+
+            // Orbit the third icosahedron around the first one in a unique ellipsis
+            const radiusX3 = 6.5;
+            const radiusY3 = 4.5;
+            const radiusZ3 = 5.5;
+            icosahedron3.position.x = Math.sin(time) * radiusX3 * 1.5;
+            icosahedron3.position.y = Math.cos(time) * radiusY3 * 1.5;
+            icosahedron3.position.z = Math.cos(time) * radiusZ3 * 1.5;
+
+            // Rotate the third icosahedron
+            //icosahedron3.rotation.x += 0.01;
+            icosahedron3.rotation.y += 0.02;
+
+            // Orbit the fourth icosahedron around the first one in a unique ellipsis
+            const radiusX4 = 10;
+            const radiusY4 = 4;
+            const radiusZ4 = 10;
+            icosahedron4.position.x = Math.sin(time) * radiusX4 * 0.75;
+            icosahedron4.position.y = Math.cos(time) * radiusY4 * 0.75;
+            icosahedron4.position.z = Math.cos(time) * radiusZ4 * 0.75;
+
+            // Rotate the fourth icosahedron
+            //icosahedron4.rotation.x += 0.005;
+            icosahedron4.rotation.y += 0.005;
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resizing
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>
