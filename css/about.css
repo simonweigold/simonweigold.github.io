@@ -1,7 +1,29 @@
+header {
+  background-color: #1A1A1A;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center; /* Align items in the center */
+  align-items: center; /* Vertically center items */
+}
+
+header a {
+  color: #F4F4FF;
+  text-decoration: none;
+  font-size: 1.5em;
+  font-weight: 700;
+  font-family: 'Roboto Condensed', sans-serif;
+  letter-spacing: 1px;
+}
+
 body {
     background-color: #1A1A1A;
     color: #F4F4FF;
     font-family: 'Roboto', sans-serif;
+    padding: 150px 0px 0px 0px;
   }
   
   .about-box {
@@ -9,7 +31,7 @@ body {
     text-align: left;
     justify-content: center;
     align-items: center;
-    font-size: 1.4em;
+    font-size: 1.2em;
   }
   
   .about-box b {
@@ -17,7 +39,7 @@ body {
   }
   
   .about-box h2 {
-    font-size: 2.6em;
+    font-size: 2em;
     color: #EDEAFF;
     font-family: 'Roboto Condensed', sans-serif;
     letter-spacing: 1px;
@@ -25,7 +47,7 @@ body {
   }
   
   .about-box h3 {
-    font-size: 1.8em;
+    font-size: 1.6em;
     color: #F4F4FF;
     font-family: 'Roboto Condensed', sans-serif;
     letter-spacing: 1px;
@@ -82,7 +104,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 150px 5px 5px 5px;
+    padding: 100px 5px 25px 5px;
   }
 
   .about-box #get-in-touch img {
