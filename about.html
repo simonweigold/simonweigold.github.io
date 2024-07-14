@@ -1,88 +1,233 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/about.css">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="../css/about.css">
     <link rel="icon" href="imgs/favicon.png">
     <title>Simon Weigold</title>
-</head>
-<body>
-    <div class="planets">
-        <img src="imgs/planets/constellation1.png" alt="Planets" width="10%">
-    </div>
-            <div class="about-box">
-                <h2>Who Am I?</h2>
-                <p>Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has fueled my innate curiosity and love for exploration, enriching my interactions and broadening my perspectives. My initial interest in media's role within society quickly evolved into a fascination with the dynamic <b>interplay between technology and human behavior</b>—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the <b>humanities</b> and robust <b>technical skills</b>, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.</p>
-                <p>Away from the computer screen, I unwind by running, recently taking on the challenge of half marathons. These runs help clear my mind, complementing my quieter enjoyment of brilliantly written books (currently hyping the Game of Thrones books).</p>
-            </div>
-            <br>
-            <div class="planets">
-                <img src="imgs/planets/constellation2.png" alt="Planets" width="10%">
-            </div>
-            <br>
-            <div class="about-box">
-                <div id="what-do-i-know">
-                <h2>What Do I Know?</h2>
-                <h3><b>Technical Skills</b></h3>
-                <p>Python, R, SPSS, SQL, HTML, CSS, JavaScript, Git, Linux, Docker, Microsoft Azure, Adobe Creative Suite, Microsoft Office</p>
-                <h3><b>Languages</b></h3>
-                <p>German (native), English (fluent), Spanish (basic)</p>
-                <h3><b>Fields of Interest</b></h3>
-                <p>Natural Language Processing, Automated Content Analysis, Cloud Computing, Machine Learning, Data-Driven Development</p>
-                </div>
-            </div>
-            <br>
-            <div class="planets">
-                <img src="imgs/planets/constellation3.png" alt="Planets" width="10%">
-            </div>
-            <br>
-            <div class="about-box">
-                <div id="what-do-i-do">
-                <h2>What Do I Do?</h2>
-                <h3><b>Data Architect</b> @ Faculty of Law, University of Lucerne, September 23 - now</h3>
-                <p>Building an online platform for legal data. <i>Skills used:</i> Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.</p>
-                <h3><b>NLP Researcher</b> @ Faculty of Humanities and Social Sciences, University of Lucerne, February 24 - now</h3>
-                <p>Applying BERT to research digital payments from a sociological perspective. <i>Skills used:</i> NLP, BERT, Postgres (pgvector), Azure, WhisperAI.</p>
-                <h3><b>Junior Data Scientist</b> @ aserto, October 2020 - May 2023</h3>
-                <p>Starting as Intern, working myself up to Junior Data Scientist, using SPSS and R to analyze business problems and offer solutions based on evidence.</p>
-                <h3><b>Market Research Intern</b> @ Ipsos, September 2021 - November 2021</h3>
-                <p>Delivering insights to the FMCG and innovation industry through quantitative market research.</p>
-                </div>
-            </div>
-            <br>
-            <div class="planets">
-                <img src="imgs/planets/constellation4.png" alt="Planets" width="10%">
-            </div>
-            <br>
-            <div class="about-box">
-                <div id="what-qualifies-me">
-                <h2>What Qualifies Me?</h2>
-                <h3><b>Master of Arts in Computational Social Sciences</b> @ University of Lucerne</h3>
-                <p>Quantitative empirical social research; statistics; machine learning; computer science.</p>
-                <h3><b>Bachelor of Arts in Media Management</b> @ Hochschule für Musik, Theater und Medien Hannover</h3>
-                <p>Empirical research methodology; statistics; communication; management.</p>
-                <h3><b>European Baccaluareate</b> @ European School Frankfurt</h3>
-                <p>Advanced courses in Physics, Music, Spanish.</p>
-                </div>
-            </div>
-            <br>
-            <div class="planets">
-                <img src="imgs/planets/constellation5.png" alt="Planets" width="10%">
-            </div>
-            <br>
-            <div class="about-box">
-                <div id="get-in-touch">
-                <h2>Want To Get In Touch?</h2>
-                <ul>
-                    <li><a href="https://www.linkedin.com/in/simonweigold" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn"></a></li>
-                    <li><a href="https://www.github.com/simonweigold" target="_blank"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg" alt="GitHub"></a></li>
-                </ul>
-                </div>
-            </div>
-            <br>
-            <br>
 
-    <script src="js/script.js"></script>
-</body>
+    <style>
+
+      :root {
+        --dark-color: #7A67E0;
+        --medium-color: #A99CFF;
+        --light-color: #EDEAFF;
+      }
+
+      svg {
+        cursor: pointer;
+      }
+
+      .large-plnt {
+        fill: var(--dark-color);
+      }
+
+      .middle-plnt {
+        fill: var(--light-color);
+      }
+
+      .small-plnt {
+        fill: var(--medium-color);
+      }
+
+      .large-plnt,
+      .middle-plnt,
+      .small-plnt {
+        transition: all 0s ease;
+      }
+    </style>
+  </head>
+  <header>
+    <!--
+    <div class="page-nav">
+        <nav>
+            <ul>
+            <li><a href="#who-am-i">Who Am I?</a></li>
+            <li><a href="#what-do-i-know">What Do I Know?</a></li>
+            <li><a href="#what-do-i-do">What Do I Do?</a></li>
+            <li><a href="#what-qualifies-me">What Qualifies Me?</a></li>
+            <li><a href="#get-in-touch">Want To Get In Touch?</a></li>
+            </ul>
+        </nav>
+    </div>
+    -->
+    <div class="macro-nav">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Project</a></li>
+            </ul>
+        </nav>
+    </div>
+  </header>
+  <body>
+    <div class="about-box">
+      <h2>Who Am I?</h2>
+      <p>
+        Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has fueled my innate curiosity and love for exploration, enriching my interactions and broadening my perspectives. My initial interest in media's role within society quickly evolved into a fascination with the dynamic
+        <b>interplay between technology and human behavior</b>—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the <b>humanities</b> and robust <b>technical skills</b>, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.
+      </p>
+      <p>
+        Away from the computer screen, I unwind by running, recently taking on the challenge of half marathons. These runs help clear my mind, complementing my quieter enjoyment of brilliantly written books (currently hyping the Game of Thrones books).
+      </p>
+    </div>
+    <br />
+    <div class="planets">
+        <svg
+        width="100%"
+        height="120"
+        viewBox="0 0 334 310"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="animated-svg"
+        >
+        <circle class="large-plnt" cx="130" cy="142" r="130" />
+        <circle class="middle-plnt" cx="-132" cy="102" r="102" />
+        <circle class="small-plnt" cx="300" cy="240.5" r="69.5" />
+        </svg>
+    </div>  
+    <div class="about-box">
+      <div id="what-do-i-know">
+        <h2>What Do I Know?</h2>
+        <h3><b>Technical Skills</b></h3>
+        <p>Python, R, SPSS, SQL, HTML, CSS, JavaScript, Git, Linux, Docker, Microsoft Azure, Adobe Creative Suite, Microsoft Office</p>
+        <h3><b>Languages</b></h3>
+        <p>German (native), English (fluent), Spanish (basic)</p>
+        <h3><b>Fields of Interest</b></h3>
+        <p>Natural Language Processing, Automated Content Analysis, Cloud Computing, Machine Learning, Data-Driven Development</p>
+      </div>
+    </div>
+    <br />
+    <div class="planets">
+        <svg
+        width="100%"
+        height="120"
+        viewBox="0 0 334 310"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="animated-svg"
+        >
+        <circle class="large-plnt" cx="70" cy="142" r="130" />
+        <circle class="middle-plnt" cx="-232" cy="142" r="102" />
+        <circle class="small-plnt" cx="400" cy="140.5" r="69.5" />
+        </svg>
+    </div>
+    <div class="about-box">
+      <div id="what-do-i-do">
+        <h2>What Do I Do?</h2>
+        <h3><b>Data Architect</b> @ Faculty of Law, University of Lucerne, September 23 - now</h3>
+        <p>
+          Building an online platform for legal data.
+          <i>Skills used:</i>
+          Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.
+        </p>
+        <h3><b>NLP Researcher</b> @ Faculty of Humanities and Social Sciences, University of Lucerne, February 24 - now</h3>
+        <p>
+          Applying BERT to research digital payments from a sociological perspective.
+          <i>Skills used:</i>
+          NLP, BERT, Postgres (pgvector), Azure, WhisperAI.
+        </p>
+        <h3><b>Junior Data Scientist</b> @ aserto, October 2020 - May 2023</h3>
+        <p>
+          Starting as Intern, working myself up to Junior Data Scientist, using SPSS and R to analyze business problems and offer solutions based on evidence.
+        </p>
+        <h3><b>Market Research Intern</b> @ Ipsos, September 2021 - November 2021</h3>
+        <p>Delivering insights to the FMCG and innovation industry through quantitative market research.</p>
+      </div>
+    </div>
+    <br />
+    <div class="planets">
+        <svg
+        width="100%"
+        height="120"
+        viewBox="0 0 334 310"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="animated-svg"
+        >
+        <circle class="large-plnt" cx="-70" cy="142" r="130" />
+        <circle class="middle-plnt" cx="-700" cy="202" r="102" />
+        <circle class="small-plnt" cx="700" cy="100.5" r="69.5" />
+        </svg>
+    </div>
+    <br />
+    <div class="about-box">
+      <div id="what-qualifies-me">
+        <h2>What Qualifies Me?</h2>
+        <h3><b>Master of Arts in Computational Social Sciences</b> @ University of Lucerne</h3>
+        <p>Quantitative empirical social research; statistics; machine learning; computer science.</p>
+        <h3><b>Bachelor of Arts in Media Management</b> @ Hochschule für Musik, Theater und Medien Hannover</h3>
+        <p>Empirical research methodology; statistics; communication; management.</p>
+        <h3><b>European Baccaluareate</b> @ European School Frankfurt</h3>
+        <p>Advanced courses in Physics, Music, Spanish.</p>
+      </div>
+    </div>
+    <div class="planets">
+        <svg
+        width="100%"
+        height="120"
+        viewBox="0 0 334 310"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="animated-svg"
+        >
+        <circle class="large-plnt" cx="-100" cy="142" r="130" />
+        <circle class="middle-plnt" cx="-1000" cy="202" r="102" />
+        <circle class="small-plnt" cx="999" cy="80.5" r="69.5" />
+        </svg>
+    </div>
+    <div class="about-box">
+      <div id="get-in-touch">
+        <h2>Want To Get In Touch?</h2>
+        <ul>
+          <li>
+            <a href="https://www.linkedin.com/in/simonweigold" target="_blank"
+              ><img
+                src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
+                alt="LinkedIn"
+            /></a>
+          </li>
+          <li>
+            <a href="https://www.github.com/simonweigold" target="_blank"
+              ><img
+                src="https://upload.wikimedia.org/wikipedia/commons/c/c2/GitHub_Invertocat_Logo.svg"
+                alt="GitHub"
+            /></a>
+          </li>
+        </ul>
+      </div>
+      <br />
+      <br />
+      <br />
+    </div>
+
+    <script>
+      window.addEventListener('scroll', function () {
+        const svgs = document.querySelectorAll('.animated-svg');
+
+        // Calculate scroll percentage
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = scrollTop / docHeight;
+
+        svgs.forEach(svg => {
+          const largePlnts = svg.querySelectorAll('.large-plnt');
+          const middlePlnts = svg.querySelectorAll('.middle-plnt');
+          const smallPlnts = svg.querySelectorAll('.small-plnt');
+
+          largePlnts.forEach(largePlnt => {
+            largePlnt.style.transform = `translateX(${scrollPercent * 100}%)`;
+          });
+
+          middlePlnts.forEach(middlePlnt => {
+            middlePlnt.style.transform = `translateX(${scrollPercent * 400}%)`;
+          });
+
+          smallPlnts.forEach(smallPlnt => {
+            smallPlnt.style.transform = `translateX(${scrollPercent * -300}%)`;
+          });
+        });
+      });
+    </script>
+  </body>
 </html>
