@@ -1,7 +1,29 @@
+header {
+  background-color: #1A1A1A;
+  text-align: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center; /* Align items in the center */
+  align-items: center; /* Vertically center items */
+}
+
+header a {
+  color: #F4F4FF;
+  text-decoration: none;
+  font-size: 1.5em;
+  font-weight: 700;
+  font-family: 'Roboto Condensed', sans-serif;
+  letter-spacing: 1px;
+}
+
 body {
     background-color: #1A1A1A;
     color: #F4F4FF;
     font-family: 'Roboto', sans-serif;
+    padding: 150px 0px 0px 0px;
   }
   
   h1{
