@@ -132,9 +132,7 @@ def main():
     tc = TimeCalculator()
     # Calculate weekday counts since January 1st
     start_date_pt = datetime.date(datetime.date.today().year, 1, 1)
-    print(start_date_pt)
-    print(tc.count_weekdays_since(start_date_pt))
-    mondays_pt, tuesdays_pt = tc.count_weekdays_since(start_date_pt)
+    mondays_pt, tuesdays_pt, wednesdays_pt, thursdays_pt, fridays_pt = tc.count_weekdays_since(start_date_pt)
     # Calculate weekday counts since August 1st
     start_date_ft = datetime.date(datetime.date.today().year, 8, 1)
     mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date_ft)
