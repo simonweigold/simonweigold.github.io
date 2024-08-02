@@ -19,7 +19,7 @@ class ClockifyAPI:
             endpoint = f"https://api.clockify.me/api/v1/workspaces/{self.workspace_id}/user/{self.user_id}/time-entries?page={page}&page-size=200"
             response = requests.request("GET", endpoint, headers=self.params)
             time_entries = response.json()
-            
+
             # Filter entries at the individual level
             filtered_entries = [entry for entry in time_entries if entry['timeInterval']['start'].startswith('2024')]
             all_entries.extend(filtered_entries)
@@ -83,7 +83,7 @@ class TimeCalculator:
     @staticmethod
     def count_weekdays_since(start_date):
         today = datetime.date.today()
-        mondays, tuesdays, wednesdays, thursdays = 0, 0, 0, 0
+        mondays, tuesdays, wednesdays, thursdays, fridays = 0, 0, 0, 0, 0
 
         current_date = start_date
         while current_date <= today:
@@ -95,9 +95,11 @@ class TimeCalculator:
                 wednesdays += 1
             elif current_date.weekday() == 3:
                 thursdays += 1
+            elif current_date.weekday() == 4:
+                fridays += 1
             current_date += datetime.timedelta(days=1)
         
-        return mondays, tuesdays, wednesdays, thursdays
+        return mondays, tuesdays, wednesdays, thursdays, fridays
     
     @staticmethod
     def format_time(hours):
@@ -129,18 +131,17 @@ def main():
 
     tc = TimeCalculator()
     # Calculate weekday counts since January 1st
-    start_date = datetime.date(datetime.date.today().year, 1, 1)
-    mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date)
-
+    start_date_pt = datetime.date(datetime.date.today().year, 1, 1)
+    print(start_date_pt)
+    print(tc.count_weekdays_since(start_date_pt))
+    mondays_pt, tuesdays_pt = tc.count_weekdays_since(start_date_pt)
     # Calculate weekday counts since August 1st
-    start_date = datetime.date(datetime.date.today().year, 1, 1)
-    mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date)
+    start_date_ft = datetime.date(datetime.date.today().year, 8, 1)
+    mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date_ft)
 
-    # Calculate time differences for sociology and CoLD projects
-    socio_diff, socio_time_string = tc.calculate_time_diff(time_entries, "65d5f9f3100e865c113fd585", 6.3, wednesdays + thursdays - 14)
-    law_diff, law_time_string = tc.calculate_time_diff(time_entries, "64e7801cebeee150228ea1db", 8.4, mondays + tuesdays)
-    
-    print(f"Total time spent on sociology: {sum(entry['duration'] for entry in time_entries if entry['projectId'] == '65d5f9f3100e865c113fd585')/3600} hrs. Your difference is: {socio_diff} hrs, formatted: {socio_time_string}")
+    # Include only CoLD time entries
+    law_diff, law_time_string = tc.calculate_time_diff(time_entries, "64e7801cebeee150228ea1db", 8.4, mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays)
+
     print(f"Total time spent on CoLD: {sum(entry['duration'] for entry in time_entries if entry['projectId'] == '64e7801cebeee150228ea1db')/3600} hrs. Your difference is: {law_diff} hrs, formatted: {law_time_string}")
 
 if __name__ == "__main__":
