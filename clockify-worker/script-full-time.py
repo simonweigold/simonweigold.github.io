@@ -128,6 +128,7 @@ def main():
     time_entries = capi.fetch_time_entries()
     time_entries = capi.parse_time_entries(time_entries)
     print(time_entries[0])
+    print(min(time_entries, key=lambda x: x['start']))
 
     tc = TimeCalculator()
     # Calculate weekday counts since January 1st
@@ -135,8 +136,11 @@ def main():
     mondays_pt, tuesdays_pt, wednesdays_pt, thursdays_pt, fridays_pt = tc.count_weekdays_since(start_date_pt)
     # Calculate weekday counts since August 1st
     start_date_ft = datetime.date(datetime.date.today().year, 8, 1)
+    print(start_date_ft)
     mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date_ft)
 
+    print("total number of days relevant for calculation: ", mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays)
+    print("total time necessary for full-time: ", 8.4 * (mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays))
     # Include only CoLD time entries
     law_diff, law_time_string = tc.calculate_time_diff(time_entries, "64e7801cebeee150228ea1db", 8.4, mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays)
 
