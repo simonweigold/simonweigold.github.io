@@ -81,12 +81,12 @@ class ClockifyAPI:
 
 class TimeCalculator:
     @staticmethod
-    def count_weekdays_since(start_date):
+    def count_weekdays_since(start_date, end_date=None):
         today = datetime.date.today()
         mondays, tuesdays, wednesdays, thursdays, fridays = 0, 0, 0, 0, 0
 
         current_date = start_date
-        while current_date <= today:
+        while current_date <= (end_date or today):
             if current_date.weekday() == 0:
                 mondays += 1
             elif current_date.weekday() == 1:
@@ -133,7 +133,8 @@ def main():
     tc = TimeCalculator()
     # Calculate weekday counts since January 1st
     start_date_pt = datetime.date(datetime.date.today().year, 1, 1)
-    mondays_pt, tuesdays_pt, wednesdays_pt, thursdays_pt, fridays_pt = tc.count_weekdays_since(start_date_pt)
+    end_date_pt = datetime.date(datetime.date.today().year, 7, 31)
+    mondays_pt, tuesdays_pt, wednesdays_pt, thursdays_pt, fridays_pt = tc.count_weekdays_since(start_date_pt, end_date_pt)
     # Calculate weekday counts since August 1st
     start_date_ft = datetime.date(datetime.date.today().year, 8, 1)
     print(start_date_ft)
