@@ -37788,6 +37788,7 @@ var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
 function Dashboard() {
   const [cryptoData, setCryptoData] = import_react.useState([]);
   const [historicalData, setHistoricalData] = import_react.useState(null);
+  const [advice, setAdvice] = import_react.useState("");
   import_react.useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1").then((response) => response.json()).then((data) => {
       setCryptoData(data);
@@ -37804,6 +37805,9 @@ function Dashboard() {
       createLineChart(historicalData);
     }
   }, [historicalData]);
+  import_react.useEffect(() => {
+    fetch("https://api.adviceslip.com/advice").then((response) => response.json()).then((data) => setAdvice(data.slip.advice)).catch((error) => console.error("Error fetching advice:", error));
+  }, []);
   const createBarChart = (data) => {
     const ctx = document.getElementById("cryptoBarChart").getContext("2d");
     new Chart(ctx, {
@@ -37875,6 +37879,13 @@ function Dashboard() {
     children: [
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("h1", {
         children: "Dashboard"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+        className: "advice-container",
+        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+          className: "advice-text",
+          children: advice || "Loading advice..."
+        }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
         className: "dashboard-graphs-container",

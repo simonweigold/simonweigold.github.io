@@ -7,6 +7,7 @@ Chart.register(...registerables);
 function Dashboard() {
   const [cryptoData, setCryptoData] = useState([]);
   const [historicalData, setHistoricalData] = useState(null);
+  const [advice, setAdvice] = useState('');
 
   useEffect(() => {
     // Fetch the top 5 cryptocurrencies by market cap
@@ -30,6 +31,14 @@ function Dashboard() {
       createLineChart(historicalData);
     }
   }, [historicalData]);
+
+  useEffect(() => {
+    // Fetch advice from the Advice Slip API
+    fetch('https://api.adviceslip.com/advice')
+      .then(response => response.json())
+      .then(data => setAdvice(data.slip.advice))
+      .catch(error => console.error('Error fetching advice:', error));
+  }, []);
 
   const createBarChart = (data) => {
     const ctx = document.getElementById('cryptoBarChart').getContext('2d');
@@ -103,16 +112,22 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-    <h1>Dashboard</h1>
-    <div className="dashboard-graphs-container">
-      <div className="bar-chart-container">
-        <canvas id="cryptoBarChart"></canvas>
-      </div>
+      <h1>Dashboard</h1>
 
-      <div className="line-chart-container">
-        <canvas id="cryptoLineChart"></canvas>
+      <div className="dashboard-graphs-container">
+
+        <div className="advice-container">
+          <p className="advice-text">{advice || "Loading advice..."}</p>
+        </div>
+
+        <div className="bar-chart-container">
+          <canvas id="cryptoBarChart"></canvas>
+        </div>
+
+        <div className="line-chart-container">
+          <canvas id="cryptoLineChart"></canvas>
+        </div>
       </div>
-    </div>
     </div>
   );
 }

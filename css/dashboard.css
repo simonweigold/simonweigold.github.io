@@ -78,6 +78,20 @@ body {
     max-width: 1200px;
     margin: 0 auto;
   }
+
+  .advice-container {
+    grid-column: span 12;
+    padding: 20px;
+    background-color: #141414;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .advice-text {
+    font-size: 18px;
+    font-style: italic;
+  }  
   
   /* Bar chart styling */
   .bar-chart-container {
