@@ -37787,13 +37787,23 @@ var registerables = [
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
 function Dashboard() {
   const [cryptoData, setCryptoData] = import_react.useState([]);
+  const [historicalData, setHistoricalData] = import_react.useState(null);
   import_react.useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1").then((response) => response.json()).then((data) => {
       setCryptoData(data);
       createBarChart(data);
-      createLineChart(data);
+      setHistoricalData({
+        "Crypto A": [120, 125, 130, 135, 128, 132, 140, 145, 150, 155, 158, 160],
+        "Crypto B": [80, 85, 82, 88, 90, 95, 92, 97, 100, 105, 108, 110],
+        "Crypto C": [200, 195, 190, 185, 180, 175, 170, 165, 160, 155, 150, 145]
+      });
     }).catch((error) => console.error("Error fetching data:", error));
   }, []);
+  import_react.useEffect(() => {
+    if (historicalData) {
+      createLineChart(historicalData);
+    }
+  }, [historicalData]);
   const createBarChart = (data) => {
     const ctx = document.getElementById("cryptoBarChart").getContext("2d");
     new Chart(ctx, {
@@ -37817,41 +37827,20 @@ function Dashboard() {
       }
     });
   };
-  const createLineChart = () => {
+  const createLineChart = (data) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const stockData = {
-      "Crypto A": [120, 125, 130, 135, 128, 132, 140, 145, 150, 155, 158, 160],
-      "Crypto B": [80, 85, 82, 88, 90, 95, 92, 97, 100, 105, 108, 110],
-      "Crypto C": [200, 195, 190, 185, 180, 175, 170, 165, 160, 155, 150, 145]
-    };
     const ctx = document.getElementById("cryptoLineChart").getContext("2d");
     new Chart(ctx, {
       type: "line",
       data: {
         labels: months,
-        datasets: [
-          {
-            label: "Crypto A",
-            data: stockData["Crypto A"],
-            borderColor: "rgba(75, 192, 192, 1)",
-            fill: false,
-            tension: 0.1
-          },
-          {
-            label: "Crypto B",
-            data: stockData["Crypto B"],
-            borderColor: "rgba(255, 99, 132, 1)",
-            fill: false,
-            tension: 0.1
-          },
-          {
-            label: "Crypto C",
-            data: stockData["Crypto C"],
-            borderColor: "rgba(54, 162, 235, 1)",
-            fill: false,
-            tension: 0.1
-          }
-        ]
+        datasets: Object.keys(data).map((key) => ({
+          label: key,
+          data: data[key],
+          borderColor: getRandomColor(),
+          fill: false,
+          tension: 0.1
+        }))
       },
       options: {
         scales: {
@@ -37872,6 +37861,14 @@ function Dashboard() {
         }
       }
     });
+  };
+  const getRandomColor = () => {
+    const letters = "0123456789ABCDEF";
+    let color3 = "#";
+    for (let i = 0;i < 6; i++) {
+      color3 += letters[Math.floor(Math.random() * 16)];
+    }
+    return color3;
   };
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
     className: "dashboard-container",
