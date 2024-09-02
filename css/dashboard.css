@@ -66,6 +66,10 @@ body {
   
   /* Dashboard container */
   .dashboard-container {
+    padding: 50px;
+  }
+
+  .dashboard-graphs-container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: auto;
@@ -78,32 +82,16 @@ body {
   /* Bar chart styling */
   .bar-chart-container {
     background-color: #141414;
-    grid-column: span 12;
+    grid-column: span 6;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
   }
   
-  /* Selector styling */
-  .selector-container {
-    grid-column: span 12;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    border-radius: 8px;
-  }
-  
-  .selector-container select {
-    margin-left: 10px;
-    padding: 5px;
-    font-size: 1rem;
-  }
-  
   /* Line chart styling */
   .line-chart-container {
     background-color: #141414;
-    grid-column: span 12;
+    grid-column: span 6;
     padding: 20px;
     border-radius: 8px;
   }

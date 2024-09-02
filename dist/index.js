@@ -37877,17 +37877,22 @@ function Dashboard() {
         children: "Dashboard"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-        className: "bar-chart-container",
-        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
-          id: "cryptoBarChart"
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-        className: "line-chart-container",
-        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
-          id: "cryptoLineChart"
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this)
+        className: "dashboard-graphs-container",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+            className: "bar-chart-container",
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
+              id: "cryptoBarChart"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+            className: "line-chart-container",
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
+              id: "cryptoLineChart"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }

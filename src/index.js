@@ -103,8 +103,8 @@ function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      <h1>Dashboard</h1>
-      
+    <h1>Dashboard</h1>
+    <div className="dashboard-graphs-container">
       <div className="bar-chart-container">
         <canvas id="cryptoBarChart"></canvas>
       </div>
@@ -112,6 +112,7 @@ function Dashboard() {
       <div className="line-chart-container">
         <canvas id="cryptoLineChart"></canvas>
       </div>
+    </div>
     </div>
   );
 }
