@@ -37787,22 +37787,13 @@ var registerables = [
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
 function Dashboard() {
   const [cryptoData, setCryptoData] = import_react.useState([]);
-  const [selectedCrypto, setSelectedCrypto] = import_react.useState("");
-  const [historicalData, setHistoricalData] = import_react.useState(null);
   import_react.useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1").then((response) => response.json()).then((data) => {
       setCryptoData(data);
-      setSelectedCrypto(data[0].id);
-      fetchHistoricalData(data[0].id);
       createBarChart(data);
+      createLineChart(data);
     }).catch((error) => console.error("Error fetching data:", error));
   }, []);
-  const fetchHistoricalData = (cryptoId) => {
-    fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=365&interval=daily`).then((response) => response.json()).then((data) => {
-      setHistoricalData(data.prices);
-      createLineChart(data.prices);
-    }).catch((error) => console.error("Error fetching historical data:", error));
-  };
   const createBarChart = (data) => {
     const ctx = document.getElementById("cryptoBarChart").getContext("2d");
     new Chart(ctx, {
@@ -37826,43 +37817,67 @@ function Dashboard() {
       }
     });
   };
-  const createLineChart = (prices) => {
-    const ctx = document.getElementById("cryptoLineChart").getContext("2d");
-    const chartData = {
-      labels: prices.map((price) => new Date(price[0]).toLocaleDateString()),
-      datasets: [{
-        label: `Price over the past year`,
-        data: prices.map((price) => price[1]),
-        fill: false,
-        borderColor: "rgba(75, 192, 192, 1)",
-        tension: 0.1
-      }]
+  const createLineChart = () => {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const stockData = {
+      "Crypto A": [120, 125, 130, 135, 128, 132, 140, 145, 150, 155, 158, 160],
+      "Crypto B": [80, 85, 82, 88, 90, 95, 92, 97, 100, 105, 108, 110],
+      "Crypto C": [200, 195, 190, 185, 180, 175, 170, 165, 160, 155, 150, 145]
     };
+    const ctx = document.getElementById("cryptoLineChart").getContext("2d");
     new Chart(ctx, {
       type: "line",
-      data: chartData,
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: "Crypto A",
+            data: stockData["Crypto A"],
+            borderColor: "rgba(75, 192, 192, 1)",
+            fill: false,
+            tension: 0.1
+          },
+          {
+            label: "Crypto B",
+            data: stockData["Crypto B"],
+            borderColor: "rgba(255, 99, 132, 1)",
+            fill: false,
+            tension: 0.1
+          },
+          {
+            label: "Crypto C",
+            data: stockData["Crypto C"],
+            borderColor: "rgba(54, 162, 235, 1)",
+            fill: false,
+            tension: 0.1
+          }
+        ]
+      },
       options: {
         scales: {
           x: {
-            type: "time",
-            time: {
-              unit: "month"
+            type: "category",
+            title: {
+              display: true,
+              text: "Month"
+            }
+          },
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Crypto Price (USD)"
             }
           }
         }
       }
     });
   };
-  const handleCryptoChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedCrypto(selectedId);
-    fetchHistoricalData(selectedId);
-  };
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
     className: "dashboard-container",
     children: [
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("h1", {
-        children: "Cryptocurrency Dashboard"
+        children: "Dashboard"
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
         className: "bar-chart-container",
@@ -37870,24 +37885,6 @@ function Dashboard() {
           id: "cryptoBarChart"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-        className: "selector-container",
-        children: [
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-            htmlFor: "crypto-select",
-            children: "Select a cryptocurrency: "
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("select", {
-            id: "crypto-select",
-            value: selectedCrypto,
-            onChange: handleCryptoChange,
-            children: cryptoData.map((coin) => /* @__PURE__ */ jsx_dev_runtime.jsxDEV("option", {
-              value: coin.id,
-              children: coin.name
-            }, coin.id, false, undefined, this))
-          }, undefined, false, undefined, this)
-        ]
-      }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
         className: "line-chart-container",
         children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {

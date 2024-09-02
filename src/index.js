@@ -6,8 +6,6 @@ Chart.register(...registerables);
 
 function Dashboard() {
   const [cryptoData, setCryptoData] = useState([]);
-  const [selectedCrypto, setSelectedCrypto] = useState('');
-  const [historicalData, setHistoricalData] = useState(null);
 
   useEffect(() => {
     // Fetch the top 5 cryptocurrencies by market cap
@@ -15,23 +13,11 @@ function Dashboard() {
       .then(response => response.json())
       .then(data => {
         setCryptoData(data);
-        setSelectedCrypto(data[0].id); // Set the first crypto as the default selection
-        fetchHistoricalData(data[0].id); // Fetch historical data for the default selection
         createBarChart(data);
+        createLineChart(data);
       })
       .catch(error => console.error('Error fetching data:', error));
   }, []);
-
-  const fetchHistoricalData = (cryptoId) => {
-    // Fetch historical data for the selected cryptocurrency
-    fetch(`https://api.coingecko.com/api/v3/coins/${cryptoId}/market_chart?vs_currency=usd&days=365&interval=daily`)
-      .then(response => response.json())
-      .then(data => {
-        setHistoricalData(data.prices);
-        createLineChart(data.prices);
-      })
-      .catch(error => console.error('Error fetching historical data:', error));
-  };
 
   const createBarChart = (data) => {
     const ctx = document.getElementById('cryptoBarChart').getContext('2d');
@@ -57,28 +43,58 @@ function Dashboard() {
     });
   };
 
-  const createLineChart = (prices) => {
-    const ctx = document.getElementById('cryptoLineChart').getContext('2d');
-    const chartData = {
-      labels: prices.map(price => new Date(price[0]).toLocaleDateString()),
-      datasets: [{
-        label: `Price over the past year`,
-        data: prices.map(price => price[1]),
-        fill: false,
-        borderColor: 'rgba(75, 192, 192, 1)',
-        tension: 0.1
-      }]
+  const createLineChart = () => {
+    // Mock data for 12 months
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const stockData = {
+      "Crypto A": [120, 125, 130, 135, 128, 132, 140, 145, 150, 155, 158, 160],
+      "Crypto B": [80, 85, 82, 88, 90, 95, 92, 97, 100, 105, 108, 110],
+      "Crypto C": [200, 195, 190, 185, 180, 175, 170, 165, 160, 155, 150, 145]
     };
 
+    const ctx = document.getElementById('cryptoLineChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
-      data: chartData,
+      data: {
+        labels: months,
+        datasets: [
+          {
+            label: 'Crypto A',
+            data: stockData["Crypto A"],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false,
+            tension: 0.1,
+          },
+          {
+            label: 'Crypto B',
+            data: stockData["Crypto B"],
+            borderColor: 'rgba(255, 99, 132, 1)',
+            fill: false,
+            tension: 0.1,
+          },
+          {
+            label: 'Crypto C',
+            data: stockData["Crypto C"],
+            borderColor: 'rgba(54, 162, 235, 1)',
+            fill: false,
+            tension: 0.1,
+          }
+        ]
+      },
       options: {
         scales: {
           x: {
-            type: 'time',
-            time: {
-              unit: 'month'
+            type: 'category',
+            title: {
+              display: true,
+              text: 'Month'
+            }
+          },
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: 'Crypto Price (USD)'
             }
           }
         }
@@ -86,27 +102,12 @@ function Dashboard() {
     });
   };
 
-  const handleCryptoChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedCrypto(selectedId);
-    fetchHistoricalData(selectedId);
-  };
-
   return (
     <div className="dashboard-container">
-      <h1>Cryptocurrency Dashboard</h1>
+      <h1>Dashboard</h1>
       
       <div className="bar-chart-container">
         <canvas id="cryptoBarChart"></canvas>
-      </div>
-
-      <div className="selector-container">
-        <label htmlFor="crypto-select">Select a cryptocurrency: </label>
-        <select id="crypto-select" value={selectedCrypto} onChange={handleCryptoChange}>
-          {cryptoData.map(coin => (
-            <option key={coin.id} value={coin.id}>{coin.name}</option>
-          ))}
-        </select>
       </div>
 
       <div className="line-chart-container">

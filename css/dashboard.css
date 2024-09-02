@@ -20,6 +20,41 @@ header a {
     letter-spacing: 1px;
 }
 
+ul {
+    list-style-type: none; /* Removes the bullet points from the list */
+    padding: 0; /* Removes padding */
+    display: flex; /* Displays the list items inline */
+    gap: 24px; /* Adds a gap between the icons */
+  }
+  
+  li {
+    display: inline; /* Further ensures the items are in a line */
+  }
+
+    /* Base style for all links */
+    a {
+        color: #A99CFF;
+        /*background-color: #EDEAFF;*/
+        /*border-radius: 10px;*/
+        display: inline-block;
+        margin: 20px 0;
+        text-decoration: none;
+        /*font-size: 2em;*/
+      }
+      a:hover {
+        color: #7A67E0;
+        /*text-decoration: underline;*/
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+      a:active {
+        color: #A99CFF;
+      }
+      a:focus {
+        outline: 1px dotted #000;
+        outline-offset: -4px;
+      }    
+
 /* General body styling */
 body {
     background-color: #1A1A1A;
@@ -42,7 +77,8 @@ body {
   
   /* Bar chart styling */
   .bar-chart-container {
-    grid-column: span 6;
+    background-color: #141414;
+    grid-column: span 12;
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -55,7 +91,6 @@ body {
     justify-content: center;
     align-items: center;
     padding: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
   }
   
@@ -67,9 +102,9 @@ body {
   
   /* Line chart styling */
   .line-chart-container {
+    background-color: #141414;
     grid-column: span 12;
     padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
   }
   
