@@ -71,7 +71,7 @@ body {
   .dashboard-graphs-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
     gap: 20px;
   }
 
@@ -105,5 +105,16 @@ body {
     grid-row: 2;
     background-color: #141414;
     border-radius: 8px;
+  }
+  
+  /* Heatmap container styling */
+  .heatmap-container {
+    grid-column: 1 / -1; /* Span across all 12 columns */
+    grid-row: span 12;
+    height: auto; /* Set the height of the map */
+    background-color: #141414;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* Ensures the map doesn't overflow its container */
   }
   

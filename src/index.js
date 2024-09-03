@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Chart, registerables } from 'chart.js';
+import HeatMap from './HeatMap';
 
 Chart.register(...registerables);
 
 function Dashboard() {
   const [cryptoData, setCryptoData] = useState([]);
   const [historicalData, setHistoricalData] = useState(null);
-  const [advice, setAdvice] = useState('');
+  const [advice, setAdvice] = useState(null); // Advice state
 
   useEffect(() => {
     // Fetch the top 5 cryptocurrencies by market cap
@@ -24,6 +25,12 @@ function Dashboard() {
         });
       })
       .catch(error => console.error('Error fetching data:', error));
+
+    // Fetch advice from the advice slip API
+    fetch('https://api.adviceslip.com/advice')
+      .then(response => response.json())
+      .then(data => setAdvice(data.slip.advice))
+      .catch(error => console.error('Error fetching advice:', error));
   }, []);
 
   useEffect(() => {
@@ -31,14 +38,6 @@ function Dashboard() {
       createLineChart(historicalData);
     }
   }, [historicalData]);
-
-  useEffect(() => {
-    // Fetch advice from the Advice Slip API
-    fetch('https://api.adviceslip.com/advice')
-      .then(response => response.json())
-      .then(data => setAdvice(data.slip.advice))
-      .catch(error => console.error('Error fetching advice:', error));
-  }, []);
 
   const createBarChart = (data) => {
     const ctx = document.getElementById('cryptoBarChart').getContext('2d');
@@ -49,8 +48,8 @@ function Dashboard() {
         datasets: [{
           label: 'Price in USD',
           data: data.map(coin => coin.current_price),
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(122, 103, 224, 0.2)',
+          borderColor: 'rgba(122, 103, 224, 1)',
           borderWidth: 1
         }]
       },
@@ -127,6 +126,7 @@ function Dashboard() {
         <div className="line-chart-container">
           <canvas id="cryptoLineChart"></canvas>
         </div>
+
       </div>
     </div>
   );

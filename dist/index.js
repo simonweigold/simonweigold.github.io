@@ -23499,7 +23499,7 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
 });
 
 // src/index.js
-var import_react = __toESM(require_react(), 1);
+var import_react2 = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 
 // node_modules/@kurkle/color/dist/color.esm.js
@@ -37783,13 +37783,240 @@ var registerables = [
   scales
 ];
 
-// src/index.js
+// src/HeatMap.js
+var import_react = __toESM(require_react(), 1);
+// node_modules/chart.js/dist/helpers.js
+/*!
+ * Chart.js v4.4.4
+ * https://www.chartjs.org
+ * (c) 2024 Chart.js Contributors
+ * Released under the MIT License
+ */
+// node_modules/chartjs-chart-matrix/dist/chartjs-chart-matrix.esm.js
+function resolveX(anchorX, x, width) {
+  if (anchorX === "left" || anchorX === "start") {
+    return x;
+  }
+  if (anchorX === "right" || anchorX === "end") {
+    return x - width;
+  }
+  return x - width / 2;
+}
+function resolveY(anchorY, y, height) {
+  if (anchorY === "top" || anchorY === "start") {
+    return y;
+  }
+  if (anchorY === "bottom" || anchorY === "end") {
+    return y - height;
+  }
+  return y - height / 2;
+}
+function getBounds(rect, useFinalPosition) {
+  const { x, y, width, height } = rect.getProps(["x", "y", "width", "height"], useFinalPosition);
+  return { left: x, top: y, right: x + width, bottom: y + height };
+}
+function limit(value, min, max) {
+  return Math.max(Math.min(value, max), min);
+}
+function parseBorderWidth2(rect, maxW, maxH) {
+  const value = rect.options.borderWidth;
+  let t, r, b, l;
+  if (isObject(value)) {
+    t = +value.top || 0;
+    r = +value.right || 0;
+    b = +value.bottom || 0;
+    l = +value.left || 0;
+  } else {
+    t = r = b = l = +value || 0;
+  }
+  return {
+    t: limit(t, 0, maxH),
+    r: limit(r, 0, maxW),
+    b: limit(b, 0, maxH),
+    l: limit(l, 0, maxW)
+  };
+}
+function boundingRects2(rect) {
+  const bounds = getBounds(rect);
+  const width = bounds.right - bounds.left;
+  const height = bounds.bottom - bounds.top;
+  const border = parseBorderWidth2(rect, width / 2, height / 2);
+  return {
+    outer: {
+      x: bounds.left,
+      y: bounds.top,
+      w: width,
+      h: height
+    },
+    inner: {
+      x: bounds.left + border.l,
+      y: bounds.top + border.t,
+      w: width - border.l - border.r,
+      h: height - border.t - border.b
+    }
+  };
+}
+function inRange2(rect, x, y, useFinalPosition) {
+  const skipX = x === null;
+  const skipY = y === null;
+  const bounds = !rect || skipX && skipY ? false : getBounds(rect, useFinalPosition);
+  return bounds && (skipX || x >= bounds.left && x <= bounds.right) && (skipY || y >= bounds.top && y <= bounds.bottom);
+}
+/*!
+ * chartjs-chart-matrix v2.0.1
+ * https://chartjs-chart-matrix.pages.dev/
+ * (c) 2023 Jukka Kurkela
+ * Released under the MIT license
+ */
+var version2 = "2.0.1";
+
+class MatrixController extends DatasetController {
+  static id = "matrix";
+  static version = version2;
+  static defaults = {
+    dataElementType: "matrix",
+    animations: {
+      numbers: {
+        type: "number",
+        properties: ["x", "y", "width", "height"]
+      }
+    }
+  };
+  static overrides = {
+    interaction: {
+      mode: "nearest",
+      intersect: true
+    },
+    scales: {
+      x: {
+        type: "linear",
+        offset: true
+      },
+      y: {
+        type: "linear",
+        reverse: true
+      }
+    }
+  };
+  initialize() {
+    this.enableOptionSharing = true;
+    super.initialize();
+  }
+  update(mode) {
+    const me = this;
+    const meta = me._cachedMeta;
+    me.updateElements(meta.data, 0, meta.data.length, mode);
+  }
+  updateElements(rects, start, count, mode) {
+    const me = this;
+    const reset = mode === "reset";
+    const { xScale, yScale } = me._cachedMeta;
+    const firstOpts = me.resolveDataElementOptions(start, mode);
+    const sharedOptions = me.getSharedOptions(mode, rects[start], firstOpts);
+    for (let i = start;i < start + count; i++) {
+      const parsed = !reset && me.getParsed(i);
+      const x = reset ? xScale.getBasePixel() : xScale.getPixelForValue(parsed.x);
+      const y = reset ? yScale.getBasePixel() : yScale.getPixelForValue(parsed.y);
+      const options = me.resolveDataElementOptions(i, mode);
+      const { width, height, anchorX, anchorY } = options;
+      const properties = {
+        x: resolveX(anchorX, x, width),
+        y: resolveY(anchorY, y, height),
+        width,
+        height,
+        options
+      };
+      me.updateElement(rects[i], i, properties, mode);
+    }
+    me.updateSharedOptions(sharedOptions, mode);
+  }
+  draw() {
+    const me = this;
+    const data = me.getMeta().data || [];
+    let i, ilen;
+    for (i = 0, ilen = data.length;i < ilen; ++i) {
+      data[i].draw(me._ctx);
+    }
+  }
+}
+
+class MatrixElement extends Element {
+  static id = "matrix";
+  static defaults = {
+    backgroundColor: undefined,
+    borderColor: undefined,
+    borderWidth: undefined,
+    borderRadius: 0,
+    anchorX: "center",
+    anchorY: "center",
+    width: 20,
+    height: 20
+  };
+  constructor(cfg) {
+    super();
+    this.options = undefined;
+    this.width = undefined;
+    this.height = undefined;
+    if (cfg) {
+      Object.assign(this, cfg);
+    }
+  }
+  draw(ctx) {
+    const options = this.options;
+    const { inner, outer } = boundingRects2(this);
+    const radius = toTRBLCorners(options.borderRadius);
+    ctx.save();
+    if (outer.w !== inner.w || outer.h !== inner.h) {
+      ctx.beginPath();
+      addRoundedRectPath(ctx, { x: outer.x, y: outer.y, w: outer.w, h: outer.h, radius });
+      addRoundedRectPath(ctx, { x: inner.x, y: inner.y, w: inner.w, h: inner.h, radius });
+      ctx.fillStyle = options.backgroundColor;
+      ctx.fill();
+      ctx.fillStyle = options.borderColor;
+      ctx.fill("evenodd");
+    } else {
+      ctx.beginPath();
+      addRoundedRectPath(ctx, { x: inner.x, y: inner.y, w: inner.w, h: inner.h, radius });
+      ctx.fillStyle = options.backgroundColor;
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+  inRange(mouseX, mouseY, useFinalPosition) {
+    return inRange2(this, mouseX, mouseY, useFinalPosition);
+  }
+  inXRange(mouseX, useFinalPosition) {
+    return inRange2(this, mouseX, null, useFinalPosition);
+  }
+  inYRange(mouseY, useFinalPosition) {
+    return inRange2(this, null, mouseY, useFinalPosition);
+  }
+  getCenterPoint(useFinalPosition) {
+    const { x, y, width, height } = this.getProps(["x", "y", "width", "height"], useFinalPosition);
+    return {
+      x: x + width / 2,
+      y: y + height / 2
+    };
+  }
+  tooltipPosition() {
+    return this.getCenterPoint();
+  }
+  getRange(axis) {
+    return axis === "x" ? this.width / 2 : this.height / 2;
+  }
+}
+
+// src/HeatMap.js
 var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
+Chart.register(...registerables, MatrixController, MatrixElement);
+
+// src/index.js
+var jsx_dev_runtime2 = __toESM(require_jsx_dev_runtime(), 1);
 function Dashboard() {
-  const [cryptoData, setCryptoData] = import_react.useState([]);
-  const [historicalData, setHistoricalData] = import_react.useState(null);
-  const [advice, setAdvice] = import_react.useState("");
-  import_react.useEffect(() => {
+  const [cryptoData, setCryptoData] = import_react2.useState([]);
+  const [historicalData, setHistoricalData] = import_react2.useState(null);
+  const [advice, setAdvice] = import_react2.useState(null);
+  import_react2.useEffect(() => {
     fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1").then((response) => response.json()).then((data) => {
       setCryptoData(data);
       createBarChart(data);
@@ -37799,15 +38026,13 @@ function Dashboard() {
         "Crypto C": [200, 195, 190, 185, 180, 175, 170, 165, 160, 155, 150, 145]
       });
     }).catch((error) => console.error("Error fetching data:", error));
+    fetch("https://api.adviceslip.com/advice").then((response) => response.json()).then((data) => setAdvice(data.slip.advice)).catch((error) => console.error("Error fetching advice:", error));
   }, []);
-  import_react.useEffect(() => {
+  import_react2.useEffect(() => {
     if (historicalData) {
       createLineChart(historicalData);
     }
   }, [historicalData]);
-  import_react.useEffect(() => {
-    fetch("https://api.adviceslip.com/advice").then((response) => response.json()).then((data) => setAdvice(data.slip.advice)).catch((error) => console.error("Error fetching advice:", error));
-  }, []);
   const createBarChart = (data) => {
     const ctx = document.getElementById("cryptoBarChart").getContext("2d");
     new Chart(ctx, {
@@ -37817,8 +38042,8 @@ function Dashboard() {
         datasets: [{
           label: "Price in USD",
           data: data.map((coin) => coin.current_price),
-          backgroundColor: "rgba(75, 192, 192, 0.2)",
-          borderColor: "rgba(75, 192, 192, 1)",
+          backgroundColor: "rgba(122, 103, 224, 0.2)",
+          borderColor: "rgba(122, 103, 224, 1)",
           borderWidth: 1
         }]
       },
@@ -37874,31 +38099,31 @@ function Dashboard() {
     }
     return color3;
   };
-  return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
     className: "dashboard-container",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("h1", {
+      /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("h1", {
         children: "Dashboard"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-        className: "advice-container",
-        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
-          className: "advice-text",
-          children: advice || "Loading advice..."
-        }, undefined, false, undefined, this)
-      }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
         className: "dashboard-graphs-container",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
+            className: "advice-container",
+            children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("p", {
+              className: "advice-text",
+              children: advice || "Loading advice..."
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
             className: "bar-chart-container",
-            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
+            children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("canvas", {
               id: "cryptoBarChart"
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("div", {
             className: "line-chart-container",
-            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("canvas", {
+            children: /* @__PURE__ */ jsx_dev_runtime2.jsxDEV("canvas", {
               id: "cryptoLineChart"
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this)
@@ -37908,4 +38133,4 @@ function Dashboard() {
   }, undefined, true, undefined, this);
 }
 Chart.register(...registerables);
-import_react_dom.default.render(/* @__PURE__ */ jsx_dev_runtime.jsxDEV(Dashboard, {}, undefined, false, undefined, this), document.getElementById("root"));
+import_react_dom.default.render(/* @__PURE__ */ jsx_dev_runtime2.jsxDEV(Dashboard, {}, undefined, false, undefined, this), document.getElementById("root"));
