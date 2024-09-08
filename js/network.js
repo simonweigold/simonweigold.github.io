@@ -16,7 +16,7 @@ scene.add(directionalLight);
 // Create nodes and store them in an array
 const nodes = [];
 const edges = [];
-const nodeCount = 100;  // Adjust this number for more nodes
+const nodeCount = 500;  // Adjust this number for more nodes
 
 const createNode = (x, y, z, size = 1, color = 0x00ff00) => {
     const geometry = new THREE.SphereGeometry(size, 32, 32);
@@ -28,17 +28,17 @@ const createNode = (x, y, z, size = 1, color = 0x00ff00) => {
 };
 
 // Main nodes
-nodes.push(createNode(0, 0, 0, 3, 0x7A67E0)); // Home
-nodes.push(createNode(10, 15, 0, 2.5, 0x7A67E0)); // About
-nodes.push(createNode(-20, -5, 0, 3.25, 0x7A67E0)); // Projects
+nodes.push(createNode(0, 0, 50, 3, 0x7A67E0)); // Home
+nodes.push(createNode(10, 15, 60, 2.5, 0x7A67E0)); // About
+nodes.push(createNode(-20, -5, 70, 3.25, 0x7A67E0)); // Projects
 
 // Background nodes (randomly generated)
 for (let i = 0; i < nodeCount; i++) {
     const randomNode = createNode(
-        (Math.random() - 0.5) * 100,
-        (Math.random() - 0.5) * 100,
-        (Math.random() - 0.5) * 100,
-        0.5,
+        (Math.random() - 0.5) * 250,
+        (Math.random() - 0.5) * 150,
+        (Math.random() - 0.5) * 150,
+        0.75,
         0xEDEAFF
     );
     nodes.push(randomNode);
