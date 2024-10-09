@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D Dragon Model Viewer</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+    /* Popup styling */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      padding: 20px;
+      border: 1px solid #000;
+      z-index: 1000;
+    }
+    .popup a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .popup a:hover {
+      text-decoration: underline;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Add Three.js and OrbitControls -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+<script>
+  // Set up the scene, camera, and renderer
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  document.body.appendChild(renderer.domElement);
+
+  // Add lighting
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(5, 5, 5).normalize();
+  scene.add(light);
+
+  // Load the dragon model using GLTFLoader
+  const loader = new THREE.GLTFLoader();
+  loader.load('3d/241009_test-robot.glb', function(gltf) {
+    const dragon = gltf.scene;
+    scene.add(dragon);
+    camera.position.z = 50;
+    camera.position.y = 25;
+
+    // Animation loop
+    const animate = function() {
+      requestAnimationFrame(animate);
+      dragon.rotation.y += 0.005;  // Rotate the model slightly
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    animate();
+  }, undefined, function(error) {
+    console.error(error);
+  });
+
+  // Add OrbitControls to allow mouse rotation
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;  // Smooth camera movement
+
+  // Raycaster for detecting clicks
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  // Function to open a pop-up
+  function openPopup(clickedPart) {
+    // Create overlay to prevent interacting with the scene while the popup is open
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    document.body.appendChild(overlay);
+
+    // Create the pop-up
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.innerHTML = `
+      <p>You clicked on ${clickedPart}. <a href="/subpage">Go to subpage</a></p>
+      <button onclick="closePopup()">Close</button>
+    `;
+    document.body.appendChild(popup);
+  }
+
+  // Function to close the pop-up
+  function closePopup() {
+    const popup = document.querySelector('.popup');
+    const overlay = document.querySelector('.overlay');
+    if (popup) document.body.removeChild(popup);
+    if (overlay) document.body.removeChild(overlay);
+  }
+
+  // Handle click events on the model
+  window.addEventListener('click', function(event) {
+    // Convert mouse position to normalized device coordinates (-1 to +1)
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    // Raycast to detect objects under the mouse
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(scene.children, true);
+    if (intersects.length > 0) {
+      const intersectedObject = intersects[0].object;
+      openPopup(intersectedObject.name || 'a part of the dragon');  // Default if no name is set
+    }
+  });
+
+  // Make the canvas responsive
+  window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+</script>
+
+</body>
+</html>
