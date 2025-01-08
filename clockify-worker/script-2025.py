@@ -24,8 +24,8 @@ class ClockifyAPI:
             filtered_entries = [entry for entry in time_entries if entry['timeInterval']['start'].startswith('2024')]
             all_entries.extend(filtered_entries)
             
-            # Check if there are any entries from 2023 to stop further fetching
-            if any(entry['timeInterval']['start'].startswith('2023') for entry in time_entries):
+            # Check if there are any entries from 2023 or 2024 to stop further fetching
+            if any(entry['timeInterval']['start'].startswith(('2023', '2024')) for entry in time_entries):
                 break
 
             # If the response has fewer entries than the page size, we have reached the last page
@@ -131,20 +131,15 @@ def main():
     print(min(time_entries, key=lambda x: x['start']))
 
     tc = TimeCalculator()
-    # Calculate weekday counts since January 1st
-    start_date_pt = datetime.date(2024, 1, 1)
-    end_date_pt = datetime.date(2024, 7, 31)
-    mondays_pt, tuesdays_pt, wednesdays_pt, thursdays_pt, fridays_pt = tc.count_weekdays_since(start_date_pt, end_date_pt)
-    # Calculate weekday counts since August 1st
-    start_date_ft = datetime.date(2024, 8, 1)
-    end_date_ft = datetime.date(2024, 12, 31)
-    print(start_date_ft)
-    mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date_ft, end_date_ft)
+    start_date = datetime.date(2025, 1, 1)
+    end_date = datetime.date(2025, 12, 31)
+    print(start_date, end_date)
+    mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date, end_date)
 
-    print("total number of days relevant for calculation: ", mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays)
-    print("total time necessary for full-time: ", 8.4 * (mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays))
+    print("total number of days relevant for calculation: ", mondays + tuesdays + wednesdays + thursdays + fridays)
+    print("total time necessary for full-time: ", 8.4 * (mondays + tuesdays + wednesdays + thursdays + fridays))
     # Include only CoLD time entries
-    law_diff, law_time_string = tc.calculate_time_diff(time_entries, "64e7801cebeee150228ea1db", 8.4, mondays_pt + tuesdays_pt + mondays + tuesdays + wednesdays + thursdays + fridays)
+    law_diff, law_time_string = tc.calculate_time_diff(time_entries, "64e7801cebeee150228ea1db", 8.4, mondays + tuesdays + wednesdays + thursdays + fridays)
 
     print(f"Total time spent on CoLD: {sum(entry['duration'] for entry in time_entries if entry['projectId'] == '64e7801cebeee150228ea1db')/3600} hrs. Your difference is: {law_diff} hrs, formatted: {law_time_string}")
 
