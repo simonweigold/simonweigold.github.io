@@ -21,11 +21,11 @@ class ClockifyAPI:
             time_entries = response.json()
 
             # Filter entries at the individual level
-            filtered_entries = [entry for entry in time_entries if entry['timeInterval']['start'].startswith('2024')]
+            filtered_entries = [entry for entry in time_entries if entry['timeInterval']['start'].startswith('2025')]
             all_entries.extend(filtered_entries)
             
             # Check if there are any entries from 2023 or 2024 to stop further fetching
-            if any(entry['timeInterval']['start'].startswith(('2023', '2024')) for entry in time_entries):
+            if any(entry['timeInterval']['start'].startswith(('2024', '2023')) for entry in time_entries):
                 break
 
             # If the response has fewer entries than the page size, we have reached the last page
@@ -132,7 +132,7 @@ def main():
 
     tc = TimeCalculator()
     start_date = datetime.date(2025, 1, 1)
-    end_date = datetime.date(2025, 12, 31)
+    end_date = datetime.date.today()
     print(start_date, end_date)
     mondays, tuesdays, wednesdays, thursdays, fridays = tc.count_weekdays_since(start_date, end_date)
 
