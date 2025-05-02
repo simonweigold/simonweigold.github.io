@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react'; // Import useState, useMemo, useEffect
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -22,34 +22,12 @@ import WorkIcon from '@mui/icons-material/Work';
 import LanguageIcon from '@mui/icons-material/Language';
 import FolderIcon from '@mui/icons-material/Folder';
 import Chip from '@mui/material/Chip'; // Add this import
+import Switch from '@mui/material/Switch'; // Import Switch
+import Brightness4Icon from '@mui/icons-material/Brightness4'; // Icon for dark mode
+import Brightness7Icon from '@mui/icons-material/Brightness7'; // Icon for light mode
 
 // Import from within the src directory
 import portrait from './portrait.jpeg';
-
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#7A67E0',
-    },
-    secondary: {
-      main: '#A99CFF',
-    },
-    background: {
-      default: '#121212',
-      paper: '#1e1e1e',
-    },
-  },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontWeight: 700,
-    },
-    h2: {
-      fontWeight: 600,
-    },
-  },
-});
 
 const sections = [
   {
@@ -126,7 +104,68 @@ const projects = [
 ];
 
 function App() {
-  const paperCutShadow = '4px 4px 0px rgba(0, 0, 0, 0.3)';
+  const [mode, setMode] = useState<'light' | 'dark'>(() => {
+    // Initialize state from localStorage or default to dark
+    const savedMode = localStorage.getItem('themeMode') as 'light' | 'dark';
+    return savedMode || 'dark';
+  });
+
+  // Update localStorage when mode changes
+  useEffect(() => {
+    localStorage.setItem('themeMode', mode);
+  }, [mode]);
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          ...(mode === 'light'
+            ? {
+                // Light mode palette
+                primary: {
+                  main: '#673ab7', // Example light primary
+                },
+                secondary: {
+                  main: '#ff4081', // Example light secondary
+                },
+                background: {
+                  default: '#fafafa',
+                  paper: '#ffffff',
+                },
+              }
+            : {
+                // Dark mode palette (existing)
+                primary: {
+                  main: '#7A67E0',
+                },
+                secondary: {
+                  main: '#A99CFF',
+                },
+                background: {
+                  default: '#121212',
+                  paper: '#1e1e1e',
+                },
+              }),
+        },
+        typography: {
+          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          h1: {
+            fontWeight: 700,
+          },
+          h2: {
+            fontWeight: 600,
+          },
+        },
+      }),
+    [mode],
+  );
+
+  const paperCutShadow = mode === 'dark' ? '4px 4px 0px rgba(0, 0, 0, 0.3)' : '4px 4px 0px rgba(0, 0, 0, 0.1)';
+
+  const handleThemeChange = () => {
+    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -137,17 +176,31 @@ function App() {
           display: 'flex',
           flexDirection: 'column',
           backgroundColor: 'background.default',
+          color: 'text.primary', // Ensure text color contrasts with background
         }}
       >
         <Container maxWidth="lg" sx={{ py: 8 }}>
+          {/* Top Section with Theme Toggle */}
           <Box
             sx={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
+              position: 'relative', // Needed for absolute positioning of the switch
               mb: 8,
             }}
           >
+            {/* Theme Toggle Switch - Positioned Top Right */}
+            <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', alignItems: 'center' }}>
+              <Brightness7Icon sx={{ color: mode === 'light' ? 'primary.main' : 'text.secondary' }} />
+              <Switch
+                checked={mode === 'dark'}
+                onChange={handleThemeChange}
+                color="secondary"
+              />
+              <Brightness4Icon sx={{ color: mode === 'dark' ? 'secondary.main' : 'text.secondary' }} />
+            </Box>
+
             {/* Portrait Avatar */}
             <Avatar
               alt="Simon Weigold"
@@ -226,7 +279,7 @@ function App() {
                   alignItems: 'center',
                   textAlign: 'center',
                   backgroundColor: 'background.paper',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`, // Adjust border based on mode
                   boxShadow: paperCutShadow,
                   mb: 4, // Add margin bottom for spacing between sections
                   // Removed hover effect for simplicity, can be added back if needed
@@ -262,7 +315,7 @@ function App() {
                     flexDirection: 'column',
                     justifyContent: 'space-between', // Adjust content distribution
                     bgcolor: 'background.paper',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`, // Adjust border based on mode
                     boxShadow: paperCutShadow,
                     elevation: 0,
                    }}>
