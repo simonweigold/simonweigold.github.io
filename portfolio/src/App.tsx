@@ -29,13 +29,12 @@ import portrait from './portrait.jpeg';
 // Define structure for section content
 interface SectionContentItem {
   type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'skillsList';
-  text: string | string[];
+  text: string | string[] | JSX.Element;
 }
 
 interface Section {
   id: string;
   title: string;
-  //icon: JSX.Element;
   content: SectionContentItem[];
 }
 
@@ -46,15 +45,23 @@ const sections: Section[] = [
     title: 'Who Am I?',
     //icon: <CodeIcon sx={{ fontSize: 40 }} />,
     content: [
-      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has fueled my innate curiosity and love for exploration, enriching my interactions and broadening my perspectives.' },
+      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has broadened my perspectives and allowed me to grow into the person I am today.' },
       { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.' },
-      { type: 'paragraph', text: 'Away from the computer screen, I unwind by running, recently taking on the challenge of half marathons. These runs help clear my mind, complementing my quieter enjoyment of brilliantly written books.' },
+      { type: 'paragraph', text: (
+        <>
+        Away from the computer screen, I unwind by running. I document my running journey on{' '}
+        <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+          Trailventure
+        </a>
+        .
+      </>
+      )
+      },
     ],
   },
   {
     id: 'skills',
     title: 'What Do I Know?',
-    //icon: <DataObjectIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Technical Skills' },
       { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
