@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'; // Import useState, useMemo, useEffect
+import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -10,18 +10,18 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar'; // Import Avatar
+import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import Chip from '@mui/material/Chip'; // Add this import
-import Switch from '@mui/material/Switch'; // Import Switch
-import Brightness4Icon from '@mui/icons-material/Brightness4'; // Icon for dark mode
-import Brightness7Icon from '@mui/icons-material/Brightness7'; // Icon for light mode
+import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider'; // Import Divider
+import Divider from '@mui/material/Divider';
 
 // Import from within the src directory
 import portrait from './portrait.jpeg';
@@ -30,6 +30,7 @@ import portrait from './portrait.jpeg';
 interface SectionContentItem {
   type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'skillsList';
   text: string | string[] | JSX.Element;
+  skills?: string[];
 }
 
 interface Section {
@@ -80,13 +81,13 @@ const sections: Section[] = [
     title: 'What Do I Do?',
     content: [
       { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Present)' },
-      { type: 'paragraph', text: 'Building an online platform for legal data. Skills used: Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.' },
+      { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastApi', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
       { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
-      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective. Skills used: NLP, BERT, Postgres (pgvector), Azure, WhisperAI.' },
+      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective.', skills: ['Python', 'NumPy', 'PyTorch', 'NLP', 'BERT', 'Postgres (pgvector)', 'Azure', 'WhisperAI'] },
       { type: 'subheading', text: 'Junior Data Scientist @ aserto (Oct 2020 - May 2023)' },
-      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using SPSS and R to analyze business problems and offer solutions based on evidence.' },
+      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using R and SPSS to analyze business problems and offer solutions based on evidence.', skills: ['R', 'SPSS', 'VBA', 'Data Analysis', 'Data Visualization'] },
       { type: 'subheading', text: 'Market Research Intern @ Ipsos (Sep 2021 - Nov 2021)' },
-      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.' },
+      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.', skills: ['Quantitative Research', 'Market Analysis', 'Insight Generation'] },
     ],
   },
   {
@@ -107,12 +108,28 @@ const sections: Section[] = [
 
 const projects = [
   {
+    id: 'project-trailventure',
+    title: 'Trailventure',
+    description: 'Developed a blog website for documenting my running journey, including a personal blog. The website includes a user-friendly input and edit interface for me to easily add new blog posts even when on the go.',
+    link: 'https://trailventure.net',
+    linkText: 'Blog Website',
+    technologies: ['React', 'Express', 'Node', 'MongoDB', 'Docker', 'Azure Container Apps']
+  },
+  {
+    id: 'project-cold-case-analyzer',
+    title: 'CoLD Case Analyzer',
+    description: 'Using LLMs and AI Agents to automate the analysis of court decisions. Building a first prototype allowing legal researchers to boost their efficiency when analysing large numbers of court deicisions.',
+    link: 'https://github.com/choice-of-Law-Dataverse/cold-case-analysis',
+    linkText: 'GitHub Repository',
+    technologies: ['Python', 'Langchain', 'Langgraph', 'GPT', 'Streamlit']
+  },
+  {
     id: 'project-cold',
     title: 'Choice of Law Dataverse',
     description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, Flask, and advanced language models for semantic search. Led data architecture and software development to enhance legal research accessibility.',
     link: 'https://www.choiceoflawdataverse.com/',
     linkText: 'Project Website',
-    technologies: ['SQL (PostgreSQL)', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
+    technologies: ['PostgreSQL', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
   },
   {
     id: 'project-nlp',
@@ -120,7 +137,7 @@ const projects = [
     description: 'Utilized NLP, BERTopic, and GPT-3.5 Turbo to analyze digital payments industry texts. Conducted research for a Master’s thesis, achieving top grades and continued contributions to the research project through technical skills.',
     link: 'https://github.com/simonweigold/business-reports-nlp',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'NLP', 'BERTopic', 'GPT', 'Transformers']
+    technologies: ['NLP', 'Python', 'BERTopic', 'HuggingFace', 'Transformers', 'GPT', 'WhisperAI', 'PostgreSQL (pgvector)', 'Azure VMs']
   },
   {
     id: 'project-spotify',
@@ -128,7 +145,7 @@ const projects = [
     description: 'Examined the link between an artist\'s collaboration network and their musical success using data mining of Spotify data, social network analysis, penalized regression, ANOVA, and various data visualization techniques. Achieved top grades for a seminar paper.',
     link: 'https://github.com/simonweigold/spotify-charts-network',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
+    technologies: ['R', 'Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
   },
   {
     id: 'project-twitter',
@@ -395,14 +412,29 @@ function App() {
                       );
                     case 'paragraph':
                       return (
-                        <Typography
-                          key={index}
-                          variant="body1"
-                          color="text.secondary"
-                          paragraph // Adds bottom margin
-                        >
-                          {item.text}
-                        </Typography>
+                        <Box key={index}> {/* Wrap paragraph and potential skills in a Box */}
+                          <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            paragraph // Adds bottom margin
+                          >
+                            {item.text}
+                          </Typography>
+                          {/* Render skills chips if they exist for this item */}
+                          {item.skills && (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mt: -1, mb: 2 }}> {/* Adjust margins */}
+                              {item.skills.map((skill, skillIndex) => (
+                                <Chip
+                                  key={skillIndex}
+                                  label={skill}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ borderColor: 'secondary.main', color: 'secondary.main' }} // Style like project chips
+                                />
+                              ))}
+                            </Box>
+                          )}
+                        </Box>
                       );
                     case 'list':
                       return (
