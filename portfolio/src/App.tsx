@@ -14,58 +14,89 @@ import Avatar from '@mui/material/Avatar'; // Import Avatar
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import CodeIcon from '@mui/icons-material/Code';
-import DataObjectIcon from '@mui/icons-material/DataObject';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
-import LanguageIcon from '@mui/icons-material/Language';
-import FolderIcon from '@mui/icons-material/Folder';
 import Chip from '@mui/material/Chip'; // Add this import
 import Switch from '@mui/material/Switch'; // Import Switch
 import Brightness4Icon from '@mui/icons-material/Brightness4'; // Icon for dark mode
 import Brightness7Icon from '@mui/icons-material/Brightness7'; // Icon for light mode
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider'; // Import Divider
 
 // Import from within the src directory
 import portrait from './portrait.jpeg';
 
-const sections = [
+// Define structure for section content
+interface SectionContentItem {
+  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'skillsList';
+  text: string | string[];
+}
+
+interface Section {
+  id: string;
+  title: string;
+  //icon: JSX.Element;
+  content: SectionContentItem[];
+}
+
+// Updated sections data structure and content
+const sections: Section[] = [
   {
     id: 'about',
-    title: 'About Me',
-    icon: <CodeIcon sx={{ fontSize: 40 }} />,
-    content: 'Originally from southern Germany, I\'ve journeyed through Frankfurt and Hanover to Switzerland. My passion lies in the intersection of technology and human behavior, combining humanities background with technical expertise. When not coding, I enjoy running and diving into great books.',
+    title: 'Who Am I?',
+    //icon: <CodeIcon sx={{ fontSize: 40 }} />,
+    content: [
+      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has fueled my innate curiosity and love for exploration, enriching my interactions and broadening my perspectives.' },
+      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.' },
+      { type: 'paragraph', text: 'Away from the computer screen, I unwind by running, recently taking on the challenge of half marathons. These runs help clear my mind, complementing my quieter enjoyment of brilliantly written books.' },
+    ],
   },
   {
     id: 'skills',
-    title: 'Technical Skills',
-    icon: <DataObjectIcon sx={{ fontSize: 40 }} />,
-    content: 'Python (NumPy, SciPy, Scikit-learn, Keras, PyTorch, FastAPI), R (Tidyverse, Shiny), SQL (PostgreSQL, MongoDB), JavaScript (React, Nuxt), Git, Docker, Kubernetes, Azure, Cloudflare, Linux',
+    title: 'What Do I Know?',
+    //icon: <DataObjectIcon sx={{ fontSize: 40 }} />,
+    content: [
+      { type: 'subheading', text: 'Technical Skills' },
+      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
+      { type: 'skillsList', text: ['R', 'Tidyverse', 'Shiny'] },
+      { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Express'] },
+      { type: 'skillsList', text: ['Databases', 'PostgreSQL (pgvector, full text search)', 'Microsoft SQL Server', 'MongoDB'] },
+      { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Azure', 'Cloudflare', 'Linux', 'Ubuntu'] },
+      { type: 'subheading', text: 'Languages' },
+      { type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
+      { type: 'subheading', text: 'Fields of Interest' },
+      { type: 'list', text: ['Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
+    ],
   },
   {
     id: 'experience',
-    title: 'Current Roles',
-    icon: <WorkIcon sx={{ fontSize: 40 }} />,
-    content: 'Data Engineer @ University of Lucerne (Sep 2023-Present): Building an online platform for legal data. NLP Researcher @ University of Lucerne (Feb 2024-Aug 2024): Applying BERT to research digital payments from a sociological perspective.',
+    title: 'What Do I Do?',
+    //icon: <WorkIcon sx={{ fontSize: 40 }} />,
+    content: [
+      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Present)' },
+      { type: 'paragraph', text: 'Building an online platform for legal data. Skills used: Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.' },
+      { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
+      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective. Skills used: NLP, BERT, Postgres (pgvector), Azure, WhisperAI.' },
+      { type: 'subheading', text: 'Junior Data Scientist @ aserto (Oct 2020 - May 2023)' },
+      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using SPSS and R to analyze business problems and offer solutions based on evidence.' },
+      { type: 'subheading', text: 'Market Research Intern @ Ipsos (Sep 2021 - Nov 2021)' },
+      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.' },
+    ],
   },
   {
     id: 'education',
-    title: 'Education',
-    icon: <SchoolIcon sx={{ fontSize: 40 }} />,
-    content: 'Master of Arts in Computational Social Sciences @ University of Lucerne (2022-2024), Bachelor of Arts in Media Management @ Hochschule für Musik, Theater und Medien Hannover (2019-2022), European Baccalaureate @ European School Frankfurt',
+    title: 'What Qualifies Me?',
+    //icon: <SchoolIcon sx={{ fontSize: 40 }} />,
+    content: [
+      { type: 'subheading', text: 'Master of Arts in Computational Social Sciences @ University of Lucerne (2022-2024)' },
+      { type: 'paragraph', text: 'Quantitative empirical social research; statistics; machine learning; computer science.' },
+      { type: 'subheading', text: 'Bachelor of Arts in Media Management @ Hochschule für Musik, Theater und Medien Hannover (2019-2022)' },
+      { type: 'paragraph', text: 'Empirical research methodology; statistics; communication; management.' },
+      { type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
+      { type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
+    ],
   },
-  {
-    id: 'languages',
-    title: 'Languages',
-    icon: <LanguageIcon sx={{ fontSize: 40 }} />,
-    content: 'German (C2 - Native), English (C1 - Fluent), Spanish (B1 - Basic)',
-  },
-  {
-    id: 'interests',
-    title: 'Fields of Interest',
-    icon: <AnalyticsIcon sx={{ fontSize: 40 }} />,
-    content: 'Natural Language Processing, Automated Content Analysis, Cloud Computing, Machine Learning, Data-Driven Development, Statistical Modelling & Inference',
-  },
+  // Removed Languages and Interests as separate sections, integrated into 'Skills'
 ];
 
 const projects = [
@@ -75,7 +106,7 @@ const projects = [
     description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, Flask, and advanced language models for semantic search. Led data architecture and software development to enhance legal research accessibility.',
     link: 'https://www.choiceoflawdataverse.com/',
     linkText: 'Project Website',
-    technologies: ['Airtable', 'SQL', 'Python', 'Flask', 'LLM', 'React'] // Added technologies
+    technologies: ['SQL (PostgreSQL)', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
   },
   {
     id: 'project-nlp',
@@ -83,7 +114,7 @@ const projects = [
     description: 'Utilized NLP, BERTopic, and GPT-3.5 Turbo to analyze digital payments industry texts. Conducted research for a Master’s thesis, achieving top grades and continued contributions to the research project through technical skills.',
     link: 'https://github.com/simonweigold/business-reports-nlp',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'NLP', 'BERTopic', 'GPT-3.5', 'Transformers'] // Added technologies
+    technologies: ['Python', 'NLP', 'BERTopic', 'GPT', 'Transformers']
   },
   {
     id: 'project-spotify',
@@ -91,7 +122,7 @@ const projects = [
     description: 'Examined the link between an artist\'s collaboration network and their musical success using data mining of Spotify data, social network analysis, penalized regression, ANOVA, and various data visualization techniques. Achieved top grades for a seminar paper.',
     link: 'https://github.com/simonweigold/spotify-charts-network',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API'] // Added technologies
+    technologies: ['Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
   },
   {
     id: 'project-twitter',
@@ -99,7 +130,7 @@ const projects = [
     description: 'Explored public discourse on Twitter about Elon Musk\'s acquisition using data mining, sentiment analysis, roBERTa, VADER, and NLTK. Achieved excellent grades for a seminar paper.',
     link: 'https://github.com/simonweigold/twitter-sentiment-analysis',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'Data Mining', 'Sentiment Analysis', 'roBERTa', 'VADER', 'NLTK'] // Added technologies
+    technologies: ['Python', 'Data Mining', 'Sentiment Analysis', 'roBERTa', 'VADER', 'NLTK']
   },
 ];
 
@@ -124,14 +155,19 @@ function App() {
             ? {
                 // Light mode palette
                 primary: {
-                  main: '#673ab7', // Example light primary
+                  main: '#673ab7',
                 },
                 secondary: {
-                  main: '#ff4081', // Example light secondary
+                  main: '#7A67E0',
                 },
                 background: {
                   default: '#fafafa',
                   paper: '#ffffff',
+                },
+                text: {
+                  primary: 'rgba(0, 0, 0, 0.87)',
+                  secondary: '#343434',
+                  disabled: 'rgba(0, 0, 0, 0.38)',
                 },
               }
             : {
@@ -143,8 +179,13 @@ function App() {
                   main: '#A99CFF',
                 },
                 background: {
-                  default: '#121212',
-                  paper: '#1e1e1e',
+                  default: '#0F0F0F',
+                  paper: '#111111',
+                },
+                text: {
+                  primary: '#ffffff',
+                  secondary: '#dddddd',
+                  disabled: 'rgba(255, 255, 255, 0.5)',
                 },
               }),
         },
@@ -161,7 +202,7 @@ function App() {
     [mode],
   );
 
-  const paperCutShadow = mode === 'dark' ? '4px 4px 0px rgba(0, 0, 0, 0.3)' : '4px 4px 0px rgba(0, 0, 0, 0.1)';
+  const paperCutShadow = mode === 'dark' ? '4px 4px 0px rgba(15, 15, 15, 0.3)' : '4px 4px 0px rgba(15, 15, 15, 0.1)';
 
   const handleThemeChange = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -179,19 +220,41 @@ function App() {
           color: 'text.primary', // Ensure text color contrasts with background
         }}
       >
-        <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}> {/* Adjust padding for mobile */}
           {/* Top Section with Theme Toggle */}
           <Box
             sx={{
               display: 'flex',
+              // Mobile first: Column layout, centered items
               flexDirection: 'column',
               alignItems: 'center',
-              position: 'relative', // Needed for absolute positioning of the switch
-              mb: 8,
+              position: 'relative', // Keep relative for potential absolute children like toggle
+              mb: 6, // Keep margin bottom for spacing below header
+              gap: 0, // Remove gap for column layout
+              // Desktop overrides: Row layout, vertically centered items
+              '@media (min-width: 600px)': { // Use a breakpoint like sm or md
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4, // Restore gap for row layout
+              },
             }}
           >
-            {/* Theme Toggle Switch - Positioned Top Right */}
-            <Box sx={{ position: 'absolute', top: 0, right: 0, display: 'flex', alignItems: 'center' }}>
+            {/* Theme Toggle Switch - Adjusted Position */}
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%', // Take full width on mobile
+              justifyContent: 'flex-end', // Align to the right on mobile
+              mb: 2, // Add margin below toggle on mobile
+              // Desktop overrides: Absolute positioning
+              '@media (min-width: 600px)': {
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: 'auto', // Reset width
+                mb: 0, // Remove mobile margin
+              },
+            }}>
               <Brightness7Icon sx={{ color: mode === 'light' ? 'primary.main' : 'text.secondary' }} />
               <Switch
                 checked={mode === 'dark'}
@@ -201,101 +264,171 @@ function App() {
               <Brightness4Icon sx={{ color: mode === 'dark' ? 'secondary.main' : 'text.secondary' }} />
             </Box>
 
-            {/* Portrait Avatar */}
+            {/* Portrait Avatar - Adjusted Margins */}
             <Avatar
               alt="Simon Weigold"
-              src={portrait} // Use the imported portrait image
+              src={portrait}
               sx={{
-                width: 120, // Adjust size as needed
+                width: 120,
                 height: 120,
-                mb: 2, // Margin below the avatar
-                border: `3px solid ${theme.palette.secondary.main}` // Optional border
+                mb: 2, // Margin below avatar on mobile
+                border: `3px solid ${theme.palette.secondary.main}`,
+                // Desktop overrides: Remove bottom margin
+                '@media (min-width: 600px)': {
+                  mb: 0,
+                },
               }}
             />
-            <Typography
-              variant="h1"
-              component="h1"
-              sx={{
-                fontSize: { xs: '2.5rem', md: '3.5rem' },
-                textAlign: 'center',
-                mb: 1, // Reduced margin bottom
-              }}
-            >
-              Simon Weigold
-            </Typography>
-            {/* Quote (replaces keywords) */}
-            <Typography
-              variant="h5" // Use h5 or adjust as needed for styling
-              component="h2"
-              sx={{
-                fontSize: { xs: '1.1rem', md: '1.4rem' }, // Adjust font size
-                textAlign: 'center',
-                color: 'text.secondary',
-                fontStyle: 'italic', // Optional: italicize the quote
-                maxWidth: '700px', // Limit width for better readability
-                mb: 4,
-              }}
-            >
-              "Bridging Data Engineering and Social Science to Build Intelligent, Impactful Solutions"
-            </Typography>
 
-                        {/* Social Links */}
-                        <Box sx={{ display: 'flex', gap: 1, mb: 4 }}> {/* Container for icons */}
-              <IconButton
-                aria-label="GitHub profile"
-                component="a" // Use anchor tag behavior
-                href="https://github.com/simonweigold"
-                target="_blank" // Open in new tab
-                rel="noopener noreferrer" // Security best practice
-                sx={{ color: 'text.secondary' }} // Use secondary text color
+            {/* Text Content Wrapper - Adjusted Alignment */}
+            <Box sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              // Mobile first: Center align text
+              alignItems: 'center',
+              textAlign: 'center', // Center text within this box on mobile
+              // Desktop overrides: Align text to start
+              '@media (min-width: 600px)': {
+                alignItems: 'flex-start',
+                textAlign: 'left', // Align text left on desktop
+              },
+            }}
+            >
+              <Typography
+                variant="h1"
+                component="h1"
+                sx={{
+                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  mb: 1,
+                  // textAlign is handled by parent Box now
+                }}
               >
-                <GitHubIcon />
-              </IconButton>
-              <IconButton
-                aria-label="LinkedIn profile"
-                component="a"
-                href="https://linkedin.com/in/simonweigold"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ color: 'text.secondary' }}
+                Simon Weigold
+              </Typography>
+              {/* Quote */}
+              <Typography
+                variant="h5"
+                component="h2"
+                sx={{
+                  fontSize: { xs: '1.1rem', md: '1.4rem' },
+                  // textAlign: 'center', // Remove center alignment
+                  color: 'text.secondary',
+                  fontStyle: 'italic',
+                  maxWidth: '700px',
+                  mb: 2, // Adjusted margin bottom
+                }}
               >
-                <LinkedInIcon />
-              </IconButton>
+                "Bridging Data Engineering and Social Science to Build Intelligent, Impactful Solutions"
+              </Typography>
+
+              {/* Social Links */}
+              <Box sx={{ display: 'flex', gap: 1 }}> {/* Removed mb: 4 */}
+                <IconButton
+                  aria-label="GitHub profile"
+                  component="a" // Use anchor tag behavior
+                  href="https://github.com/simonweigold"
+                  target="_blank" // Open in new tab
+                  rel="noopener noreferrer" // Security best practice
+                  sx={{ color: 'text.secondary' }} // Use secondary text color
+                >
+                  <GitHubIcon />
+                </IconButton>
+                <IconButton
+                  aria-label="LinkedIn profile"
+                  component="a"
+                  href="https://linkedin.com/in/simonweigold"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ color: 'text.secondary' }}
+                >
+                  <LinkedInIcon />
+                </IconButton>
+              </Box>
             </Box>
           </Box>
 
-          {/* Chronological Sections */}
-          <Box sx={{ mb: 8 }}> {/* Container for chronological sections */}
-            {sections.map((section) => (
-              // Removed Grid item wrapper
+          {/* Chronological Sections - Updated Rendering */}
+          <Box sx={{ mb: 8 }}>
+            {sections.map((section, sectionIndex) => (
               <Paper
-                key={section.id} // Key moved to the Paper component
-                // elevation={0} // Keep or remove based on desired paper-cut effect
+                key={section.id}
                 sx={{
                   p: 3,
-                  // Removed height: '100%' as it's less relevant in vertical flow
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',
-                  textAlign: 'center',
+                  // alignItems: 'center', // Remove center alignment
+                  // textAlign: 'center', // Remove center alignment
                   backgroundColor: 'background.paper',
                   border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`, // Adjust border based on mode
                   boxShadow: paperCutShadow,
                   mb: 4, // Add margin bottom for spacing between sections
-                  // Removed hover effect for simplicity, can be added back if needed
                 }}
               >
-                {section.icon}
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  sx={{ mt: 2, mb: 1 }}
-                >
-                  {section.title}
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                  {section.content}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <Typography
+                    variant="h4" // Larger title
+                    component="h2"
+                    sx={{ ml: 2 }} // Add margin left to separate icon and title
+                  >
+                    {section.title}
+                  </Typography>
+                </Box>
+                <Divider sx={{ mb: 2 }} /> {/* Add a divider below the title */}
+                {section.content.map((item, index) => {
+                  switch (item.type) {
+                    case 'subheading':
+                      return (
+                        <Typography
+                          key={index}
+                          variant="h6" // Use h6 for subheadings
+                          component="h3"
+                          sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}
+                        >
+                          {item.text}
+                        </Typography>
+                      );
+                    case 'paragraph':
+                      return (
+                        <Typography
+                          key={index}
+                          variant="body1"
+                          color="text.secondary"
+                          paragraph // Adds bottom margin
+                        >
+                          {item.text}
+                        </Typography>
+                      );
+                    case 'list':
+                      return (
+                        <List key={index} dense sx={{ pl: 2 }}>
+                          {(item.text as string[]).map((listItem, listIndex) => (
+                            <ListItem key={listIndex} disablePadding sx={{ py: 0.2 }}>
+                              <ListItemText primary={`• ${listItem}`} primaryTypographyProps={{ color: 'text.secondary' }} />
+                            </ListItem>
+                          ))}
+                        </List>
+                      );
+                    case 'skillsList': // Special handling for skills to use Chips
+                      return (
+                        <Box key={index} sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mt: 1, mb: 1 }}>
+                          {(item.text as string[]).map((skill, skillIndex) => (
+                            <Chip
+                              key={skillIndex}
+                              label={skill}
+                              size="small"
+                              variant="outlined"
+                              sx={skillIndex === 0
+                                ? { borderColor: 'secondary.main', color: 'secondary.main' } // Highlight first skill
+                                : { borderColor: 'grey.500', color: 'text.secondary' } // Default style for others
+                              }
+                            />
+                          ))}
+                        </Box>
+                      );
+                    default:
+                      return null;
+                  }
+                })}
               </Paper>
             ))}
           </Box>
@@ -303,7 +436,7 @@ function App() {
           {/* Projects Section (remains as a Grid) */}
           <Box sx={{ mb: 8 }}>
             <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FolderIcon sx={{ fontSize: 40, mr: 1 }} /> Projects
+              Projects
             </Typography>
             <Grid container spacing={4}>
               {projects.map((project) => (
