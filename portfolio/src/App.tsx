@@ -78,7 +78,6 @@ const sections: Section[] = [
   {
     id: 'experience',
     title: 'What Do I Do?',
-    //icon: <WorkIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Present)' },
       { type: 'paragraph', text: 'Building an online platform for legal data. Skills used: Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.' },
