@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'; // Import useState, useMemo, useEffect
+import React, { useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -10,18 +10,18 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar'; // Import Avatar
+import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import Chip from '@mui/material/Chip'; // Add this import
-import Switch from '@mui/material/Switch'; // Import Switch
-import Brightness4Icon from '@mui/icons-material/Brightness4'; // Icon for dark mode
-import Brightness7Icon from '@mui/icons-material/Brightness7'; // Icon for light mode
+import Chip from '@mui/material/Chip';
+import Switch from '@mui/material/Switch';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider'; // Import Divider
+import Divider from '@mui/material/Divider';
 
 // Import from within the src directory
 import portrait from './portrait.jpeg';
@@ -29,41 +29,51 @@ import portrait from './portrait.jpeg';
 // Define structure for section content
 interface SectionContentItem {
   type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'skillsList';
-  text: string | string[];
+  text: string | string[] | JSX.Element;
+  skills?: string[];
 }
 
 interface Section {
   id: string;
   title: string;
-  //icon: JSX.Element;
   content: SectionContentItem[];
 }
 
-// Updated sections data structure and content
+// Sections data structure and content
 const sections: Section[] = [
   {
     id: 'about',
     title: 'Who Am I?',
-    //icon: <CodeIcon sx={{ fontSize: 40 }} />,
     content: [
-      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has fueled my innate curiosity and love for exploration, enriching my interactions and broadening my perspectives.' },
-      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.' },
-      { type: 'paragraph', text: 'Away from the computer screen, I unwind by running, recently taking on the challenge of half marathons. These runs help clear my mind, complementing my quieter enjoyment of brilliantly written books.' },
+      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has broadened my perspectives and allowed me to grow into the person I am today.' },
+      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am using my knowledge to solve interdisciplinary problems and create innovative solutions.' },
+      { type: 'paragraph', text: (
+        <>
+        Away from the computer screen, I unwind by running. I document my running journey on{' '}
+        <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
+          Trailventure
+        </a>
+        .
+      </>
+      )
+      },
     ],
   },
   {
     id: 'skills',
     title: 'What Do I Know?',
-    //icon: <DataObjectIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Technical Skills' },
-      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
+      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest', 'Matplotlib', 'Seaborn'] },
       { type: 'skillsList', text: ['R', 'Tidyverse', 'Shiny'] },
       { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Express'] },
       { type: 'skillsList', text: ['Databases', 'PostgreSQL (pgvector, full text search)', 'Microsoft SQL Server', 'MongoDB'] },
       { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Azure', 'Cloudflare', 'Linux', 'Ubuntu'] },
-      { type: 'subheading', text: 'Languages' },
-      { type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
+      { type: 'skillsList', text: ['Cloud Computing', 'Azure Container Apps', 'Azure VMs', 'AKS', 'Azure Functions', 'Azure Storage Account', 'Azure Databases', 'Cloudflare Functions'] },
+      { type: 'skillsList', text: ['Data Analysis', 'NLP', 'Content Analysis', 'Network Analysis', 'Machine Learning', 'Statistics'] },
+      { type: 'skillsList', text: ['Other Tools', 'LaTeX', 'VBA', 'SPSS', 'Airtable'] },
+      //{ type: 'subheading', text: 'Languages' },
+      //{ type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
       { type: 'subheading', text: 'Fields of Interest' },
       { type: 'list', text: ['Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
     ],
@@ -71,42 +81,55 @@ const sections: Section[] = [
   {
     id: 'experience',
     title: 'What Do I Do?',
-    //icon: <WorkIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Present)' },
-      { type: 'paragraph', text: 'Building an online platform for legal data. Skills used: Data Engineering, Python, Flask, Postgres, Airtable, Azure, Project Management.' },
+      { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastApi', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
       { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
-      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective. Skills used: NLP, BERT, Postgres (pgvector), Azure, WhisperAI.' },
+      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective.', skills: ['Python', 'NumPy', 'PyTorch', 'NLP', 'BERT', 'Postgres (pgvector)', 'Azure', 'WhisperAI'] },
       { type: 'subheading', text: 'Junior Data Scientist @ aserto (Oct 2020 - May 2023)' },
-      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using SPSS and R to analyze business problems and offer solutions based on evidence.' },
+      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using R and SPSS to analyze business problems and offer solutions based on evidence.', skills: ['R', 'SPSS', 'VBA', 'Data Analysis', 'Data Visualization'] },
       { type: 'subheading', text: 'Market Research Intern @ Ipsos (Sep 2021 - Nov 2021)' },
-      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.' },
+      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.', skills: ['Quantitative Research', 'Market Analysis', 'Insight Generation'] },
     ],
   },
   {
     id: 'education',
     title: 'What Qualifies Me?',
-    //icon: <SchoolIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Master of Arts in Computational Social Sciences @ University of Lucerne (2022-2024)' },
       { type: 'paragraph', text: 'Quantitative empirical social research; statistics; machine learning; computer science.' },
       { type: 'subheading', text: 'Bachelor of Arts in Media Management @ Hochschule für Musik, Theater und Medien Hannover (2019-2022)' },
       { type: 'paragraph', text: 'Empirical research methodology; statistics; communication; management.' },
-      { type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
-      { type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
+      //{ type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
+      //{ type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
     ],
   },
-  // Removed Languages and Interests as separate sections, integrated into 'Skills'
 ];
 
 const projects = [
   {
+    id: 'project-trailventure',
+    title: 'Trailventure',
+    description: 'Developed a blog website for documenting my running journey. The website includes a user-friendly input and edit interface for me to easily add new blog posts even when on the go.',
+    link: 'https://trailventure.net',
+    linkText: 'Blog Website',
+    technologies: ['React', 'Express', 'Node', 'MongoDB', 'Docker', 'Azure Container Apps']
+  },
+  {
+    id: 'project-cold-case-analyzer',
+    title: 'CoLD Case Analyzer',
+    description: 'Using LLMs and AI Agents to automate the analysis of court decisions. Building a first prototype allowing legal researchers to boost their efficiency when analysing large numbers of court decisions.',
+    link: 'https://github.com/choice-of-Law-Dataverse/cold-case-analysis',
+    linkText: 'GitHub Repository',
+    technologies: ['Python', 'Langchain', 'Langgraph', 'GPT', 'Streamlit']
+  },
+  {
     id: 'project-cold',
     title: 'Choice of Law Dataverse',
-    description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, Flask, and advanced language models for semantic search. Led data architecture and software development to enhance legal research accessibility.',
+    description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, FastAPI, and Azure for running the technical infrastructure. Led data architecture and software development to enhance legal research accessibility.',
     link: 'https://www.choiceoflawdataverse.com/',
     linkText: 'Project Website',
-    technologies: ['SQL (PostgreSQL)', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
+    technologies: ['PostgreSQL', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
   },
   {
     id: 'project-nlp',
@@ -114,7 +137,7 @@ const projects = [
     description: 'Utilized NLP, BERTopic, and GPT-3.5 Turbo to analyze digital payments industry texts. Conducted research for a Master’s thesis, achieving top grades and continued contributions to the research project through technical skills.',
     link: 'https://github.com/simonweigold/business-reports-nlp',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'NLP', 'BERTopic', 'GPT', 'Transformers']
+    technologies: ['NLP', 'Python', 'BERTopic', 'HuggingFace', 'Transformers', 'GPT', 'WhisperAI', 'PostgreSQL (pgvector)', 'Azure VMs']
   },
   {
     id: 'project-spotify',
@@ -122,7 +145,7 @@ const projects = [
     description: 'Examined the link between an artist\'s collaboration network and their musical success using data mining of Spotify data, social network analysis, penalized regression, ANOVA, and various data visualization techniques. Achieved top grades for a seminar paper.',
     link: 'https://github.com/simonweigold/spotify-charts-network',
     linkText: 'GitHub Repository',
-    technologies: ['Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
+    technologies: ['R', 'Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
   },
   {
     id: 'project-twitter',
@@ -171,7 +194,7 @@ function App() {
                 },
               }
             : {
-                // Dark mode palette (existing)
+                // Dark mode palette
                 primary: {
                   main: '#7A67E0',
                 },
@@ -202,7 +225,7 @@ function App() {
     [mode],
   );
 
-  const paperCutShadow = mode === 'dark' ? '4px 4px 0px rgba(15, 15, 15, 0.3)' : '4px 4px 0px rgba(15, 15, 15, 0.1)';
+  const paperCutShadow = mode === 'dark' ? '2px 2px 2px rgba(15, 15, 15, 0.3)' : '2px 2px 2px rgba(50, 50, 50, 0.1)';
 
   const handleThemeChange = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -368,7 +391,7 @@ function App() {
                   <Typography
                     variant="h4" // Larger title
                     component="h2"
-                    sx={{ ml: 2 }} // Add margin left to separate icon and title
+                    // sx={{ ml: 2 }} // Remove margin left
                   >
                     {section.title}
                   </Typography>
@@ -389,14 +412,29 @@ function App() {
                       );
                     case 'paragraph':
                       return (
-                        <Typography
-                          key={index}
-                          variant="body1"
-                          color="text.secondary"
-                          paragraph // Adds bottom margin
-                        >
-                          {item.text}
-                        </Typography>
+                        <Box key={index}> {/* Wrap paragraph and potential skills in a Box */}
+                          <Typography
+                            variant="body1"
+                            color="text.secondary"
+                            paragraph // Adds bottom margin
+                          >
+                            {item.text}
+                          </Typography>
+                          {/* Render skills chips if they exist for this item */}
+                          {item.skills && (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mt: -1, mb: 2 }}> {/* Adjust margins */}
+                              {item.skills.map((skill, skillIndex) => (
+                                <Chip
+                                  key={skillIndex}
+                                  label={skill}
+                                  size="small"
+                                  variant="outlined"
+                                  sx={{ borderColor: 'secondary.main', color: 'secondary.main' }} // Style like project chips
+                                />
+                              ))}
+                            </Box>
+                          )}
+                        </Box>
                       );
                     case 'list':
                       return (
