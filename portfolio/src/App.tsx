@@ -39,15 +39,14 @@ interface Section {
   content: SectionContentItem[];
 }
 
-// Updated sections data structure and content
+// Sections data structure and content
 const sections: Section[] = [
   {
     id: 'about',
     title: 'Who Am I?',
-    //icon: <CodeIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has broadened my perspectives and allowed me to grow into the person I am today.' },
-      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am expanding my knowledge in technology and programming, continually excited by the prospect of discovering and mastering new concepts.' },
+      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am using my knowledge to solve interdisciplinary problems and create innovative solutions.' },
       { type: 'paragraph', text: (
         <>
         Away from the computer screen, I unwind by running. I document my running journey on{' '}
@@ -65,13 +64,16 @@ const sections: Section[] = [
     title: 'What Do I Know?',
     content: [
       { type: 'subheading', text: 'Technical Skills' },
-      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
+      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest', 'Matplotlib', 'Seaborn'] },
       { type: 'skillsList', text: ['R', 'Tidyverse', 'Shiny'] },
       { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Express'] },
       { type: 'skillsList', text: ['Databases', 'PostgreSQL (pgvector, full text search)', 'Microsoft SQL Server', 'MongoDB'] },
       { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Azure', 'Cloudflare', 'Linux', 'Ubuntu'] },
-      { type: 'subheading', text: 'Languages' },
-      { type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
+      { type: 'skillsList', text: ['Cloud Computing', 'Azure Container Apps', 'Azure VMs', 'AKS', 'Azure Functions', 'Azure Storage Account', 'Azure Databases', 'Cloudflare Functions'] },
+      { type: 'skillsList', text: ['Data Analysis', 'NLP', 'Content Analysis', 'Network Analysis', 'Machine Learning', 'Statistics'] },
+      { type: 'skillsList', text: ['Other Tools', 'LaTeX', 'VBA', 'SPSS', 'Airtable'] },
+      //{ type: 'subheading', text: 'Languages' },
+      //{ type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
       { type: 'subheading', text: 'Fields of Interest' },
       { type: 'list', text: ['Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
     ],
@@ -93,24 +95,22 @@ const sections: Section[] = [
   {
     id: 'education',
     title: 'What Qualifies Me?',
-    //icon: <SchoolIcon sx={{ fontSize: 40 }} />,
     content: [
       { type: 'subheading', text: 'Master of Arts in Computational Social Sciences @ University of Lucerne (2022-2024)' },
       { type: 'paragraph', text: 'Quantitative empirical social research; statistics; machine learning; computer science.' },
       { type: 'subheading', text: 'Bachelor of Arts in Media Management @ Hochschule für Musik, Theater und Medien Hannover (2019-2022)' },
       { type: 'paragraph', text: 'Empirical research methodology; statistics; communication; management.' },
-      { type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
-      { type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
+      //{ type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
+      //{ type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
     ],
   },
-  // Removed Languages and Interests as separate sections, integrated into 'Skills'
 ];
 
 const projects = [
   {
     id: 'project-trailventure',
     title: 'Trailventure',
-    description: 'Developed a blog website for documenting my running journey, including a personal blog. The website includes a user-friendly input and edit interface for me to easily add new blog posts even when on the go.',
+    description: 'Developed a blog website for documenting my running journey. The website includes a user-friendly input and edit interface for me to easily add new blog posts even when on the go.',
     link: 'https://trailventure.net',
     linkText: 'Blog Website',
     technologies: ['React', 'Express', 'Node', 'MongoDB', 'Docker', 'Azure Container Apps']
@@ -118,7 +118,7 @@ const projects = [
   {
     id: 'project-cold-case-analyzer',
     title: 'CoLD Case Analyzer',
-    description: 'Using LLMs and AI Agents to automate the analysis of court decisions. Building a first prototype allowing legal researchers to boost their efficiency when analysing large numbers of court deicisions.',
+    description: 'Using LLMs and AI Agents to automate the analysis of court decisions. Building a first prototype allowing legal researchers to boost their efficiency when analysing large numbers of court decisions.',
     link: 'https://github.com/choice-of-Law-Dataverse/cold-case-analysis',
     linkText: 'GitHub Repository',
     technologies: ['Python', 'Langchain', 'Langgraph', 'GPT', 'Streamlit']
@@ -126,7 +126,7 @@ const projects = [
   {
     id: 'project-cold',
     title: 'Choice of Law Dataverse',
-    description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, Flask, and advanced language models for semantic search. Led data architecture and software development to enhance legal research accessibility.',
+    description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, FastAPI, and Azure for running the technical infrastructure. Led data architecture and software development to enhance legal research accessibility.',
     link: 'https://www.choiceoflawdataverse.com/',
     linkText: 'Project Website',
     technologies: ['PostgreSQL', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
@@ -194,7 +194,7 @@ function App() {
                 },
               }
             : {
-                // Dark mode palette (existing)
+                // Dark mode palette
                 primary: {
                   main: '#7A67E0',
                 },
@@ -225,7 +225,7 @@ function App() {
     [mode],
   );
 
-  const paperCutShadow = mode === 'dark' ? '4px 4px 0px rgba(15, 15, 15, 0.3)' : '4px 4px 0px rgba(15, 15, 15, 0.1)';
+  const paperCutShadow = mode === 'dark' ? '2px 2px 2px rgba(15, 15, 15, 0.3)' : '2px 2px 2px rgba(50, 50, 50, 0.1)';
 
   const handleThemeChange = () => {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -391,7 +391,7 @@ function App() {
                   <Typography
                     variant="h4" // Larger title
                     component="h2"
-                    sx={{ ml: 2 }} // Add margin left to separate icon and title
+                    // sx={{ ml: 2 }} // Remove margin left
                   >
                     {section.title}
                   </Typography>
