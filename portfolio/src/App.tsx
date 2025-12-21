@@ -64,12 +64,12 @@ const sections: Section[] = [
     title: 'What Do I Know?',
     content: [
       { type: 'subheading', text: 'Technical Skills' },
-      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest', 'Matplotlib', 'Seaborn'] },
+      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
       { type: 'skillsList', text: ['R', 'Tidyverse', 'Shiny'] },
-      { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Express'] },
+      { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Vue', 'Express'] },
       { type: 'skillsList', text: ['Databases', 'PostgreSQL (pgvector, full text search)', 'Microsoft SQL Server', 'MongoDB'] },
-      { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Azure', 'Cloudflare', 'Linux', 'Ubuntu'] },
-      { type: 'skillsList', text: ['Cloud Computing', 'Azure Container Apps', 'Azure VMs', 'AKS', 'Azure Functions', 'Azure Storage Account', 'Azure Databases', 'Cloudflare Functions'] },
+      { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Ubuntu'] },
+      { type: 'skillsList', text: ['Cloud Computing', 'Azure', 'GCP', 'Cloudflare'] },
       { type: 'skillsList', text: ['Data Analysis', 'NLP', 'Content Analysis', 'Network Analysis', 'Machine Learning', 'Statistics'] },
       { type: 'skillsList', text: ['Other Tools', 'LaTeX', 'VBA', 'SPSS', 'Airtable'] },
       //{ type: 'subheading', text: 'Languages' },
@@ -82,8 +82,10 @@ const sections: Section[] = [
     id: 'experience',
     title: 'What Do I Do?',
     content: [
-      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Present)' },
-      { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastApi', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
+      { type: 'subheading', text: 'Fullstack Developer @ Coop Rechtsschutz (Oct 2025 - Present)' },
+      { type: 'paragraph', text: 'Helping legal professionals work more efficiently', skills: ['FastAPI', 'PostgreSQL', 'Vue', 'GCP'] },
+      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Sep 2025)' },
+      { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastAPI', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
       { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
       { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective.', skills: ['Python', 'NumPy', 'PyTorch', 'NLP', 'BERT', 'Postgres (pgvector)', 'Azure', 'WhisperAI'] },
       { type: 'subheading', text: 'Junior Data Scientist @ aserto (Oct 2020 - May 2023)' },
@@ -107,6 +109,14 @@ const sections: Section[] = [
 ];
 
 const projects = [
+  {
+    id: 'project-clerk',
+    title: 'CLERK',
+    description: 'Building an AI system that enables a collective production and validation of workflows for LLM-based applications.',
+    link: 'https://openclerk.ch',
+    linkText: 'Project Website',
+    technologies: ['React', 'FastAPI', 'Langchain', 'Langgraph', 'Supabase', 'Docker', 'Azure Container Apps']
+  },
   {
     id: 'project-trailventure',
     title: 'Trailventure',
@@ -471,41 +481,53 @@ function App() {
             ))}
           </Box>
 
-          {/* Projects Section (remains as a Grid) */}
+          {/* Projects Section */}
           <Box sx={{ mb: 8 }}>
             <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               Projects
             </Typography>
-            <Grid container spacing={4}>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(2, 1fr)',
+                  md: 'repeat(3, 1fr)',
+                },
+                gap: 4,
+                alignItems: 'stretch',
+              }}
+            >
               {projects.map((project) => (
-                <Grid item xs={12} sm={6} md={4} key={project.id}>
-                  <Card sx={{
-                    // height: '100%', // Remove or comment out height: 100%
-                    aspectRatio: '1 / 1', // Enforce square aspect ratio
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between', // Adjust content distribution
-                    bgcolor: 'background.paper',
-                    border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`, // Adjust border based on mode
-                    boxShadow: paperCutShadow,
-                    elevation: 0,
-                   }}>
+                <Box key={project.id} sx={{ display: 'flex' }}>
+                  <Card
+                    sx={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      bgcolor: 'background.paper',
+                      border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+                      boxShadow: paperCutShadow,
+                      elevation: 0,
+                    }}
+                  >
                     {/* CardMedia removed */}
-                    <CardContent sx={{ flexGrow: 1, overflow: 'auto' /* Add overflow handling */ }}>
+                    <CardContent sx={{ flexGrow: 1 }}>
                       <Typography gutterBottom variant="h5" component="div">
                         {project.title}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 /* Add margin below description */ }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         {project.description}
                       </Typography>
                        {/* Technologies Section */}
-                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 'auto' /* Push chips towards bottom */ }}>
+                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 'auto' }}>
                         {project.technologies.map((tech) => (
                           <Chip key={tech} label={tech} size="small" variant="outlined" sx={{ borderColor: 'secondary.main', color: 'secondary.main' }} />
                         ))}
                       </Box>
                     </CardContent>
-                    <CardActions sx={{ mt: 'auto' /* Ensure actions are at the bottom */ }}>
+                    <CardActions sx={{ mt: 'auto' }}>
                       <Button
                         size="small"
                         href={project.link}
@@ -517,9 +539,9 @@ function App() {
                       </Button>
                     </CardActions>
                   </Card>
-                </Grid>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           </Box>
 
         </Container>
