@@ -1,0 +1,63 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "input",
+      "data": { "label": "AI Tools" },
+      "position": { "x": 250, "y": 25 }
+    },
+    {
+      "id": "2",
+      "data": { "label": "Natural Language Processing" },
+      "position": { "x": 100, "y": 125 }
+    },
+    {
+      "id": "3",
+      "data": { "label": "Image Generation" },
+      "position": { "x": 400, "y": 125 }
+    },
+    {
+      "id": "4",
+      "data": { "label": "Code Generation" },
+      "position": { "x": 250, "y": 250 }
+    },
+    {
+      "id": "5",
+      "type": "custom",
+      "data": {
+        "name": "ChatGPT",
+        "rating": 4.8,
+        "evaluation": "Excellent for a wide range of NLP tasks."
+      },
+      "position": { "x": 50, "y": 250 }
+    },
+    {
+      "id": "6",
+      "type": "custom",
+      "data": {
+        "name": "Midjourney",
+        "rating": 4.7,
+        "evaluation": "Generates high-quality, artistic images."
+      },
+      "position": { "x": 450, "y": 250 }
+    },
+    {
+      "id": "7",
+      "type": "custom",
+      "data": {
+        "name": "GitHub Copilot",
+        "rating": 4.5,
+        "evaluation": "Great for code completion and suggestions."
+      },
+      "position": { "x": 200, "y": 375 }
+    }
+  ],
+  "edges": [
+    { "id": "e1-2", "source": "1", "target": "2" },
+    { "id": "e1-3", "source": "1", "target": "3" },
+    { "id": "e1-4", "source": "1", "target": "4" },
+    { "id": "e2-5", "source": "2", "target": "5" },
+    { "id": "e3-6", "source": "3", "target": "6" },
+    { "id": "e4-7", "source": "4", "target": "7" }
+  ]
+}
