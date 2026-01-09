@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -17,16 +17,10 @@ import Rating from '@mui/material/Rating';
 import LinearProgress from '@mui/material/LinearProgress';
 import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
-import {
-  forceSimulation,
-  forceLink,
-  forceManyBody,
-  forceCenter,
-  forceCollide,
-  SimulationNodeDatum,
-  SimulationLinkDatum,
-} from 'd3-force';
 
 // Types
 interface ToolRatings {
@@ -67,21 +61,11 @@ interface AIToolsData {
   ratingCategories: RatingCategory[];
 }
 
-// Graph node types
-interface GraphNode extends SimulationNodeDatum {
-  id: string;
-  name: string;
-  type: 'center' | 'category' | 'tool';
-  color: string;
-  radius: number;
-  data?: Category | Tool;
-  parentId?: string;
-}
-
-interface GraphLink extends SimulationLinkDatum<GraphNode> {
-  source: string | GraphNode;
-  target: string | GraphNode;
-  color: string;
+// Tile item type for masonry
+interface TileItem {
+  type: 'category' | 'tool';
+  category: Category;
+  tool?: Tool;
 }
 
 function AITools() {
@@ -92,33 +76,12 @@ function AITools() {
   const [data, setData] = useState<AIToolsData | null>(null);
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
   const [selectedToolCategory, setSelectedToolCategory] = useState<Category | null>(null);
-  const [nodes, setNodes] = useState<GraphNode[]>([]);
-  const [links, setLinks] = useState<GraphLink[]>([]);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const simulationRef = useRef<ReturnType<typeof forceSimulation<GraphNode>> | null>(null);
+  const [hoveredTile, setHoveredTile] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     localStorage.setItem('themeMode', mode);
   }, [mode]);
-
-  // Responsive dimensions
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({
-          width: Math.min(rect.width, 1000),
-          height: Math.min(600, window.innerHeight - 300),
-        });
-      }
-    };
-
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
 
   // Load data
   useEffect(() => {
@@ -128,105 +91,37 @@ function AITools() {
       .catch((err) => console.error('Failed to load AI map data:', err));
   }, []);
 
-  // Build and simulate graph
-  useEffect(() => {
-    if (!data) return;
-
-    const { width, height } = dimensions;
-    const centerX = width / 2;
-    const centerY = height / 2;
-
-    // Create nodes
-    const graphNodes: GraphNode[] = [
-      {
-        id: 'center',
-        name: 'AI Map',
-        type: 'center',
-        color: '#7A67E0',
-        radius: 50,
-        x: centerX,
-        y: centerY,
-        fx: centerX, // Fixed position for center
-        fy: centerY,
-      },
-    ];
-
-    const graphLinks: GraphLink[] = [];
-
+  // Build masonry tiles - category tiles followed by their tool tiles, filtered by search
+  const tiles = useMemo((): TileItem[] => {
+    if (!data) return [];
+    
+    const query = searchQuery.toLowerCase().trim();
+    const items: TileItem[] = [];
+    
     data.categories.forEach((category) => {
-      // Add category node
-      graphNodes.push({
-        id: category.id,
-        name: category.name,
-        type: 'category',
-        color: category.color,
-        radius: 40,
-        data: category,
-      });
-
-      graphLinks.push({
-        source: 'center',
-        target: category.id,
-        color: category.color,
-      });
-
-      // Add tool nodes as children of categories
-      category.tools.forEach((tool) => {
-        graphNodes.push({
-          id: tool.id,
-          name: tool.name,
-          type: 'tool',
-          color: category.color,
-          radius: 25,
-          data: tool,
-          parentId: category.id,
+      // Filter tools by search query
+      const filteredTools = query
+        ? category.tools.filter((tool) =>
+            tool.name.toLowerCase().includes(query) ||
+            tool.company.toLowerCase().includes(query) ||
+            tool.description.toLowerCase().includes(query) ||
+            tool.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+            category.name.toLowerCase().includes(query)
+          )
+        : category.tools;
+      
+      // Only add category and tools if there are matching tools (or no search query)
+      if (filteredTools.length > 0) {
+        // Add category tile
+        items.push({ type: 'category', category });
+        // Add filtered tool tiles for this category
+        filteredTools.forEach((tool) => {
+          items.push({ type: 'tool', category, tool });
         });
-
-        graphLinks.push({
-          source: category.id,
-          target: tool.id,
-          color: category.color,
-        });
-      });
+      }
     });
-
-    // Create force simulation
-    const simulation = forceSimulation<GraphNode>(graphNodes)
-      .force(
-        'link',
-        forceLink<GraphNode, GraphLink>(graphLinks)
-          .id((d) => d.id)
-          .distance((d) => {
-            const target = typeof d.target === 'object' ? d.target : null;
-            // Shorter distance for tool nodes
-            if (target && target.type === 'tool') return 100;
-            return 150;
-          })
-          .strength(0.6)
-      )
-      .force('charge', forceManyBody().strength(-400))
-      .force('center', forceCenter(centerX, centerY))
-      .force(
-        'collision',
-        forceCollide<GraphNode>().radius((d) => d.radius + 15)
-      )
-      .alphaDecay(0.02);
-
-    simulationRef.current = simulation;
-
-    // Update state on each tick
-    simulation.on('tick', () => {
-      setNodes([...graphNodes]);
-      setLinks([...graphLinks]);
-    });
-
-    // Run simulation for a bit then stop
-    simulation.alpha(1).restart();
-
-    return () => {
-      simulation.stop();
-    };
-  }, [data, dimensions]);
+    return items;
+  }, [data, searchQuery]);
 
   const theme = useMemo(
     () =>
@@ -273,145 +168,183 @@ function AITools() {
     return values.reduce((a, b) => a + b, 0) / values.length;
   };
 
-  const handleNodeClick = useCallback((node: GraphNode) => {
-    if (node.type === 'tool' && node.data) {
-      // Find the parent category for this tool
-      const parentCategory = data?.categories.find((cat) => cat.id === node.parentId);
-      if (parentCategory) {
-        setSelectedToolCategory(parentCategory);
-        setSelectedTool(node.data as Tool);
-      }
-    }
-  }, [data]);
+  const handleToolClick = (tool: Tool, category: Category) => {
+    setSelectedTool(tool);
+    setSelectedToolCategory(category);
+  };
 
-  const renderForceGraph = () => {
-    const { width, height } = dimensions;
-
+  const renderCategoryTile = (category: Category) => {
+    const isHovered = hoveredTile === `cat-${category.id}`;
+    
     return (
-      <svg width={width} height={height} style={{ overflow: 'visible' }}>
-        {/* Links */}
-        {links.map((link, index) => {
-          const sourceNode = typeof link.source === 'object' ? link.source : null;
-          const targetNode = typeof link.target === 'object' ? link.target : null;
+      <Box
+        key={`cat-${category.id}`}
+        onMouseEnter={() => setHoveredTile(`cat-${category.id}`)}
+        onMouseLeave={() => setHoveredTile(null)}
+        sx={{
+          borderRadius: 3,
+          overflow: 'hidden',
+          backgroundColor: category.color,
+          opacity: 0.95,
+          p: 3,
+          transition: 'all 0.3s ease',
+          transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+          boxShadow: isHovered 
+            ? `0 8px 32px ${category.color}60`
+            : `0 4px 16px ${category.color}30`,
+        }}
+      >
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            fontWeight: 700, 
+            color: '#fff',
+            mb: 1,
+          }}
+        >
+          {category.name}
+        </Typography>
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: 'rgba(255,255,255,0.85)',
+            lineHeight: 1.5,
+          }}
+        >
+          {category.description}
+        </Typography>
+        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Chip
+            label={`${category.tools.length} tools`}
+            size="small"
+            sx={{
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              color: '#fff',
+              fontWeight: 600,
+            }}
+          />
+        </Box>
+      </Box>
+    );
+  };
 
-          if (!sourceNode || !targetNode || sourceNode.x == null || targetNode.x == null) {
-            return null;
-          }
-
-          const isHovered = hoveredNode === targetNode.id;
-
-          return (
-            <line
-              key={index}
-              x1={sourceNode.x}
-              y1={sourceNode.y}
-              x2={targetNode.x}
-              y2={targetNode.y}
-              stroke={link.color}
-              strokeWidth={isHovered ? 4 : 2}
-              strokeOpacity={isHovered ? 1 : 0.4}
-              style={{ transition: 'all 0.3s ease' }}
-            />
-          );
-        })}
-
-        {/* Nodes */}
-        {nodes.map((node) => {
-          if (node.x == null || node.y == null) return null;
-
-          const isHovered = hoveredNode === node.id;
-          const isCenter = node.type === 'center';
-          const scale = isHovered && !isCenter ? 1.15 : 1;
-
-          return (
-            <g
-              key={node.id}
-              transform={`translate(${node.x}, ${node.y}) scale(${scale})`}
-              style={{
-                cursor: node.type === 'tool' ? 'pointer' : 'default',
-                transition: 'transform 0.2s ease',
+  const renderToolTile = (tool: Tool, category: Category) => {
+    const isHovered = hoveredTile === `tool-${tool.id}`;
+    const overallRating = getOverallRating(tool.ratings);
+    
+    return (
+      <Box
+        key={`tool-${tool.id}`}
+        onClick={() => handleToolClick(tool, category)}
+        onMouseEnter={() => setHoveredTile(`tool-${tool.id}`)}
+        onMouseLeave={() => setHoveredTile(null)}
+        sx={{
+          position: 'relative',
+          borderRadius: 2,
+          overflow: 'hidden',
+          backgroundColor: mode === 'dark' ? 'rgba(30,30,30,0.9)' : 'rgba(255,255,255,0.95)',
+          border: `2px solid ${category.color}40`,
+          p: 2.5,
+          pt: 3,
+          cursor: 'pointer',
+          transition: 'all 0.3s ease',
+          transform: isHovered ? 'scale(1.02) translateY(-4px)' : 'scale(1)',
+          boxShadow: isHovered 
+            ? `0 12px 40px ${category.color}40`
+            : `0 2px 8px rgba(0,0,0,0.1)`,
+          '&:hover': {
+            borderColor: category.color,
+          },
+        }}
+      >
+        {/* Color accent bar */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 4,
+            backgroundColor: category.color,
+            opacity: isHovered ? 1 : 0.6,
+            transition: 'opacity 0.3s ease',
+          }}
+        />
+        
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              fontWeight: 700, 
+              color: 'text.primary',
+              pr: 1,
+            }}
+          >
+            {tool.name}
+          </Typography>
+          <Chip
+            label={overallRating.toFixed(1)}
+            size="small"
+            sx={{
+              backgroundColor: `${category.color}20`,
+              color: category.color,
+              fontWeight: 700,
+              minWidth: 40,
+            }}
+          />
+        </Box>
+        
+        <Typography 
+          variant="caption" 
+          sx={{ 
+            color: category.color,
+            fontWeight: 500,
+            display: 'block',
+            mb: 1,
+          }}
+        >
+          {tool.company}
+        </Typography>
+        
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: 'text.secondary',
+            fontSize: '0.8rem',
+            lineHeight: 1.6,
+            mb: 1.5,
+          }}
+        >
+          {tool.description}
+        </Typography>
+        
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+          {tool.tags.slice(0, 2).map((tag) => (
+            <Chip
+              key={tag}
+              label={tag}
+              size="small"
+              sx={{
+                height: 20,
+                fontSize: '0.65rem',
+                backgroundColor: `${category.color}15`,
+                color: category.color,
+                border: `1px solid ${category.color}30`,
               }}
-              onClick={() => handleNodeClick(node)}
-              onMouseEnter={() => setHoveredNode(node.id)}
-              onMouseLeave={() => setHoveredNode(null)}
-            >
-              {/* Glow effect */}
-              <defs>
-                <filter id={`glow-${node.id}`} x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation={isHovered ? 8 : 4} result="coloredBlur" />
-                  <feMerge>
-                    <feMergeNode in="coloredBlur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id={`gradient-${node.id}`} x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor={node.color} stopOpacity={isCenter ? 1 : 0.3} />
-                  <stop offset="100%" stopColor={node.color} stopOpacity={isCenter ? 0.8 : 0.6} />
-                </linearGradient>
-              </defs>
-
-              {/* Node circle */}
-              <circle
-                r={node.radius}
-                fill={`url(#gradient-${node.id})`}
-                stroke={node.color}
-                strokeWidth={isCenter ? 0 : 3}
-                filter={isHovered ? `url(#glow-${node.id})` : undefined}
-                style={{ transition: 'all 0.3s ease' }}
-              />
-
-              {/* Node text */}
-              <text
-                textAnchor="middle"
-                dy={isCenter ? -8 : 0}
-                fill={mode === 'dark' ? '#fff' : isCenter ? '#fff' : node.color}
-                fontSize={isCenter ? 16 : 11}
-                fontWeight={700}
-                style={{ pointerEvents: 'none' }}
-              >
-                {node.name.length > 12 ? (
-                  <>
-                    <tspan x="0" dy={isCenter ? 0 : -6}>
-                      {node.name.split(' ')[0] || node.name.substring(0, 10)}
-                    </tspan>
-                    <tspan x="0" dy={14}>
-                      {node.name.split(' ').slice(1).join(' ') || ''}
-                    </tspan>
-                  </>
-                ) : (
-                  node.name
-                )}
-              </text>
-
-              {/* Subtitle for center */}
-              {isCenter && (
-                <text
-                  textAnchor="middle"
-                  dy={12}
-                  fill="rgba(255,255,255,0.8)"
-                  fontSize={10}
-                  style={{ pointerEvents: 'none' }}
-                >
-                  Click a tool
-                </text>
-              )}
-
-              {/* Tool count for categories */}
-              {node.type === 'category' && node.data && (
-                <text
-                  textAnchor="middle"
-                  dy={node.name.length > 12 ? 22 : 16}
-                  fill={mode === 'dark' ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.5)'}
-                  fontSize={9}
-                  style={{ pointerEvents: 'none' }}
-                >
-                  {(node.data as Category).tools.length} tools
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
+            />
+          ))}
+          <Chip
+            label={tool.pricing}
+            size="small"
+            sx={{
+              height: 20,
+              fontSize: '0.65rem',
+              backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+              color: 'text.secondary',
+            }}
+          />
+        </Box>
+      </Box>
     );
   };
 
@@ -615,7 +548,7 @@ function AITools() {
                 <ArrowBackIcon />
               </IconButton>
               <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                AI Map Explorer
+                AI Map
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -625,18 +558,78 @@ function AITools() {
             </Box>
           </Box>
 
-          {/* Mindmap View */}
+          {/* Search Bar */}
+          <Box sx={{ mb: 4, maxWidth: 500, mx: 'auto' }}>
+            <TextField
+              fullWidth
+              placeholder="Search tools by name, company, tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'text.secondary' }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  '&:hover': {
+                    backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                  },
+                  '&.Mui-focused': {
+                    backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                  },
+                },
+              }}
+            />
+          </Box>
+
+          {/* Masonry Grid - Using CSS columns for true masonry with horizontal order simulation */}
           <Box
-            ref={containerRef}
             sx={{
-              width: '100%',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minHeight: 500,
+              gap: 2,
+              alignItems: 'flex-start',
             }}
           >
-            {data && renderForceGraph()}
+            {(() => {
+              // Distribute tiles into 4 columns maintaining horizontal reading order
+              const columnCount = 4;
+              const columns: TileItem[][] = Array.from({ length: columnCount }, () => []);
+              
+              // Distribute items row by row (horizontally)
+              tiles.forEach((item, index) => {
+                const columnIndex = index % columnCount;
+                columns[columnIndex].push(item);
+              });
+
+              return columns.map((columnItems, colIndex) => (
+                <Box
+                  key={`column-${colIndex}`}
+                  sx={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    gap: 2,
+                    // Hide columns on smaller screens
+                    display: { 
+                      xs: colIndex === 0 ? 'flex' : 'none',
+                      sm: colIndex < 2 ? 'flex' : 'none',
+                      md: colIndex < 3 ? 'flex' : 'none',
+                      lg: 'flex'
+                    },
+                  }}
+                >
+                  {columnItems.map((item) =>
+                    item.type === 'category'
+                      ? renderCategoryTile(item.category)
+                      : renderToolTile(item.tool!, item.category)
+                  )}
+                </Box>
+              ));
+            })()}
           </Box>
 
           {/* Tool Detail Modal */}
