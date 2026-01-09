@@ -5,8 +5,6 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Switch from '@mui/material/Switch';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
@@ -19,7 +17,6 @@ import Rating from '@mui/material/Rating';
 import LinearProgress from '@mui/material/LinearProgress';
 import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
-import Zoom from '@mui/material/Zoom';
 import { Link } from 'react-router-dom';
 import {
   forceSimulation,
@@ -93,8 +90,8 @@ function AITools() {
     return savedMode || 'dark';
   });
   const [data, setData] = useState<AIToolsData | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
+  const [selectedToolCategory, setSelectedToolCategory] = useState<Category | null>(null);
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [links, setLinks] = useState<GraphLink[]>([]);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
@@ -133,7 +130,7 @@ function AITools() {
 
   // Build and simulate graph
   useEffect(() => {
-    if (!data || selectedCategory) return;
+    if (!data) return;
 
     const { width, height } = dimensions;
     const centerX = width / 2;
@@ -146,7 +143,7 @@ function AITools() {
         name: 'AI Map',
         type: 'center',
         color: '#7A67E0',
-        radius: 60,
+        radius: 50,
         x: centerX,
         y: centerY,
         fx: centerX, // Fixed position for center
@@ -157,12 +154,13 @@ function AITools() {
     const graphLinks: GraphLink[] = [];
 
     data.categories.forEach((category) => {
+      // Add category node
       graphNodes.push({
         id: category.id,
         name: category.name,
         type: 'category',
         color: category.color,
-        radius: 50,
+        radius: 40,
         data: category,
       });
 
@@ -170,6 +168,25 @@ function AITools() {
         source: 'center',
         target: category.id,
         color: category.color,
+      });
+
+      // Add tool nodes as children of categories
+      category.tools.forEach((tool) => {
+        graphNodes.push({
+          id: tool.id,
+          name: tool.name,
+          type: 'tool',
+          color: category.color,
+          radius: 25,
+          data: tool,
+          parentId: category.id,
+        });
+
+        graphLinks.push({
+          source: category.id,
+          target: tool.id,
+          color: category.color,
+        });
       });
     });
 
@@ -179,14 +196,19 @@ function AITools() {
         'link',
         forceLink<GraphNode, GraphLink>(graphLinks)
           .id((d) => d.id)
-          .distance(180)
-          .strength(0.8)
+          .distance((d) => {
+            const target = typeof d.target === 'object' ? d.target : null;
+            // Shorter distance for tool nodes
+            if (target && target.type === 'tool') return 100;
+            return 150;
+          })
+          .strength(0.6)
       )
-      .force('charge', forceManyBody().strength(-800))
+      .force('charge', forceManyBody().strength(-400))
       .force('center', forceCenter(centerX, centerY))
       .force(
         'collision',
-        forceCollide<GraphNode>().radius((d) => d.radius + 20)
+        forceCollide<GraphNode>().radius((d) => d.radius + 15)
       )
       .alphaDecay(0.02);
 
@@ -204,7 +226,7 @@ function AITools() {
     return () => {
       simulation.stop();
     };
-  }, [data, dimensions, selectedCategory]);
+  }, [data, dimensions]);
 
   const theme = useMemo(
     () =>
@@ -246,19 +268,21 @@ function AITools() {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
-  const paperCutShadow =
-    mode === 'dark' ? '2px 2px 2px rgba(15, 15, 15, 0.3)' : '2px 2px 2px rgba(50, 50, 50, 0.1)';
-
   const getOverallRating = (ratings: ToolRatings): number => {
     const values = Object.values(ratings);
     return values.reduce((a, b) => a + b, 0) / values.length;
   };
 
   const handleNodeClick = useCallback((node: GraphNode) => {
-    if (node.type === 'category' && node.data) {
-      setSelectedCategory(node.data as Category);
+    if (node.type === 'tool' && node.data) {
+      // Find the parent category for this tool
+      const parentCategory = data?.categories.find((cat) => cat.id === node.parentId);
+      if (parentCategory) {
+        setSelectedToolCategory(parentCategory);
+        setSelectedTool(node.data as Tool);
+      }
     }
-  }, []);
+  }, [data]);
 
   const renderForceGraph = () => {
     const { width, height } = dimensions;
@@ -304,7 +328,7 @@ function AITools() {
               key={node.id}
               transform={`translate(${node.x}, ${node.y}) scale(${scale})`}
               style={{
-                cursor: node.type === 'category' ? 'pointer' : 'default',
+                cursor: node.type === 'tool' ? 'pointer' : 'default',
                 transition: 'transform 0.2s ease',
               }}
               onClick={() => handleNodeClick(node)}
@@ -368,7 +392,7 @@ function AITools() {
                   fontSize={10}
                   style={{ pointerEvents: 'none' }}
                 >
-                  Click a category
+                  Click a tool
                 </text>
               )}
 
@@ -391,139 +415,8 @@ function AITools() {
     );
   };
 
-  const renderCategoryDetail = () => {
-    if (!selectedCategory) return null;
-
-    return (
-      <Fade in={true}>
-        <Box sx={{ width: '100%', maxWidth: 1200, mx: 'auto' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, gap: 2 }}>
-            <IconButton
-              onClick={() => {
-                setSelectedCategory(null);
-                setSelectedTool(null);
-              }}
-              sx={{
-                color: 'text.secondary',
-                '&:hover': { color: selectedCategory.color },
-              }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-            <Box
-              sx={{
-                width: 16,
-                height: 16,
-                borderRadius: '50%',
-                backgroundColor: selectedCategory.color,
-              }}
-            />
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>
-              {selectedCategory.name}
-            </Typography>
-          </Box>
-          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-            {selectedCategory.description}
-          </Typography>
-
-          {/* Tools Grid */}
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                lg: 'repeat(4, 1fr)',
-              },
-              gap: 3,
-            }}
-          >
-            {selectedCategory.tools.map((tool, index) => (
-              <Zoom key={tool.id} in={true} style={{ transitionDelay: `${index * 50}ms` }}>
-                <Card
-                  onClick={() => setSelectedTool(tool)}
-                  sx={{
-                    cursor: 'pointer',
-                    bgcolor: 'background.paper',
-                    border: `1px solid ${
-                      mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
-                    }`,
-                    boxShadow: paperCutShadow,
-                    transition: 'all 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: `0 12px 40px ${selectedCategory.color}30`,
-                      borderColor: selectedCategory.color,
-                    },
-                  }}
-                >
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'flex-start',
-                        mb: 1,
-                      }}
-                    >
-                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        {tool.name}
-                      </Typography>
-                      <Chip
-                        label={getOverallRating(tool.ratings).toFixed(1)}
-                        size="small"
-                        sx={{
-                          backgroundColor: selectedCategory.color,
-                          color: '#fff',
-                          fontWeight: 700,
-                        }}
-                      />
-                    </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: 'block', mb: 1 }}
-                    >
-                      by {tool.company}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, minHeight: 60 }}>
-                      {tool.description.length > 100
-                        ? `${tool.description.substring(0, 100)}...`
-                        : tool.description}
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 2 }}>
-                      {tool.tags.slice(0, 2).map((tag) => (
-                        <Chip
-                          key={tag}
-                          label={tag}
-                          size="small"
-                          variant="outlined"
-                          sx={{
-                            borderColor: selectedCategory.color,
-                            color: selectedCategory.color,
-                            fontSize: '0.65rem',
-                          }}
-                        />
-                      ))}
-                    </Box>
-                    <Typography
-                      variant="caption"
-                      sx={{ color: selectedCategory.color, fontWeight: 600 }}
-                    >
-                      {tool.pricing}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Zoom>
-            ))}
-          </Box>
-        </Box>
-      </Fade>
-    );
-  };
-
   const renderToolDetail = () => {
-    if (!selectedTool || !selectedCategory || !data) return null;
+    if (!selectedTool || !selectedToolCategory || !data) return null;
 
     return (
       <Fade in={true}>
@@ -541,7 +434,10 @@ function AITools() {
             justifyContent: 'center',
             padding: 2,
           }}
-          onClick={() => setSelectedTool(null)}
+          onClick={() => {
+            setSelectedTool(null);
+            setSelectedToolCategory(null);
+          }}
         >
           <Paper
             onClick={(e) => e.stopPropagation()}
@@ -552,7 +448,7 @@ function AITools() {
               overflow: 'auto',
               p: 4,
               borderRadius: 3,
-              border: `2px solid ${selectedCategory.color}`,
+              border: `2px solid ${selectedToolCategory.color}`,
             }}
           >
             <Box
@@ -566,7 +462,10 @@ function AITools() {
                   by {selectedTool.company}
                 </Typography>
               </Box>
-              <IconButton onClick={() => setSelectedTool(null)}>
+              <IconButton onClick={() => {
+                setSelectedTool(null);
+                setSelectedToolCategory(null);
+              }}>
                 <CloseIcon />
               </IconButton>
             </Box>
@@ -597,7 +496,7 @@ function AITools() {
                         backgroundColor:
                           mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
                         '& .MuiLinearProgress-bar': {
-                          backgroundColor: selectedCategory.color,
+                          backgroundColor: selectedToolCategory.color,
                           borderRadius: 4,
                         },
                       }}
@@ -612,7 +511,7 @@ function AITools() {
                 Overall Score
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="h3" sx={{ fontWeight: 700, color: selectedCategory.color }}>
+                <Typography variant="h3" sx={{ fontWeight: 700, color: selectedToolCategory.color }}>
                   {getOverallRating(selectedTool.ratings).toFixed(1)}
                 </Typography>
                 <Rating
@@ -620,7 +519,7 @@ function AITools() {
                   precision={0.1}
                   readOnly
                   sx={{
-                    '& .MuiRating-iconFilled': { color: selectedCategory.color },
+                    '& .MuiRating-iconFilled': { color: selectedToolCategory.color },
                   }}
                 />
               </Box>
@@ -633,8 +532,8 @@ function AITools() {
               <Chip
                 label={selectedTool.pricing}
                 sx={{
-                  backgroundColor: `${selectedCategory.color}20`,
-                  color: selectedCategory.color,
+                  backgroundColor: `${selectedToolCategory.color}20`,
+                  color: selectedToolCategory.color,
                   fontWeight: 600,
                 }}
               />
@@ -650,7 +549,7 @@ function AITools() {
                     key={tag}
                     label={tag}
                     variant="outlined"
-                    sx={{ borderColor: selectedCategory.color, color: selectedCategory.color }}
+                    sx={{ borderColor: selectedToolCategory.color, color: selectedToolCategory.color }}
                   />
                 ))}
               </Box>
@@ -665,7 +564,7 @@ function AITools() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 1,
-                backgroundColor: selectedCategory.color,
+                backgroundColor: selectedToolCategory.color,
                 color: '#fff',
                 px: 3,
                 py: 1.5,
@@ -676,7 +575,7 @@ function AITools() {
                 transition: 'all 0.2s ease',
                 '&:hover': {
                   transform: 'scale(1.02)',
-                  boxShadow: `0 4px 20px ${selectedCategory.color}50`,
+                  boxShadow: `0 4px 20px ${selectedToolCategory.color}50`,
                 },
               }}
             >
@@ -726,33 +625,19 @@ function AITools() {
             </Box>
           </Box>
 
-          {/* Subtitle */}
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mb: 6, textAlign: 'center', maxWidth: 600, mx: 'auto' }}
+          {/* Mindmap View */}
+          <Box
+            ref={containerRef}
+            sx={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 500,
+            }}
           >
-            Explore and compare AI tools on this interactive map. Click on a category to
-            discover tools, and click on a tool to see detailed ratings and information.
-          </Typography>
-
-          {/* Mindmap View or Category Detail */}
-          {!selectedCategory ? (
-            <Box
-              ref={containerRef}
-              sx={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 500,
-              }}
-            >
-              {data && renderForceGraph()}
-            </Box>
-          ) : (
-            renderCategoryDetail()
-          )}
+            {data && renderForceGraph()}
+          </Box>
 
           {/* Tool Detail Modal */}
           {selectedTool && renderToolDetail()}
