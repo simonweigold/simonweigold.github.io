@@ -22,6 +22,8 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { Link } from 'react-router-dom';
 
 // Import from within the src directory
 import portrait from './portrait.jpeg';
@@ -355,7 +357,7 @@ function App() {
               </Typography>
 
               {/* Social Links */}
-              <Box sx={{ display: 'flex', gap: 1 }}> {/* Removed mb: 4 */}
+              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}> {/* Removed mb: 4 */}
                 <IconButton
                   aria-label="GitHub profile"
                   component="a" // Use anchor tag behavior
@@ -376,6 +378,24 @@ function App() {
                 >
                   <LinkedInIcon />
                 </IconButton>
+                <Button
+                  component={Link}
+                  to="/ai-tools"
+                  variant="outlined"
+                  size="small"
+                  startIcon={<AutoAwesomeIcon />}
+                  sx={{
+                    ml: 1,
+                    borderColor: 'secondary.main',
+                    color: 'secondary.main',
+                    '&:hover': {
+                      borderColor: 'primary.main',
+                      backgroundColor: 'rgba(122, 103, 224, 0.1)',
+                    },
+                  }}
+                >
+                  AI Tools
+                </Button>
               </Box>
             </Box>
           </Box>

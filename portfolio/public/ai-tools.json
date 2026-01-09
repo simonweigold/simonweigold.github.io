@@ -1,0 +1,463 @@
+{
+  "categories": [
+    {
+      "id": "chat",
+      "name": "Chat & Assistants",
+      "description": "AI-powered conversational assistants for general-purpose tasks",
+      "color": "#7C3AED",
+      "tools": [
+        {
+          "id": "chatgpt",
+          "name": "ChatGPT",
+          "company": "OpenAI",
+          "description": "Leading conversational AI with GPT-4 capabilities for text generation, analysis, and creative tasks.",
+          "link": "https://chatgpt.com",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 3.5,
+            "features": 5
+          },
+          "pricing": "Free / $20/mo Plus",
+          "tags": ["General Purpose", "Creative Writing", "Analysis"]
+        },
+        {
+          "id": "claude",
+          "name": "Claude",
+          "company": "Anthropic",
+          "description": "Safety-focused AI assistant known for nuanced conversations and long context windows.",
+          "link": "https://claude.ai",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 3.5,
+            "features": 4.5
+          },
+          "pricing": "Free / $20/mo Pro",
+          "tags": ["Safe AI", "Long Context", "Research"]
+        },
+        {
+          "id": "gemini",
+          "name": "Gemini",
+          "company": "Google",
+          "description": "Google's multimodal AI with strong reasoning and integration with Google services.",
+          "link": "https://gemini.google.com",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4.5,
+            "easeOfUse": 4.5,
+            "pricing": 4,
+            "features": 4
+          },
+          "pricing": "Free / $20/mo Advanced",
+          "tags": ["Multimodal", "Google Integration", "Research"]
+        },
+        {
+          "id": "perplexity",
+          "name": "Perplexity",
+          "company": "Perplexity AI",
+          "description": "AI-powered search engine that provides cited answers with real-time web access.",
+          "link": "https://perplexity.ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4.5,
+            "easeOfUse": 5,
+            "pricing": 4,
+            "features": 4
+          },
+          "pricing": "Free / $20/mo Pro",
+          "tags": ["Search", "Citations", "Real-time"]
+        }
+      ]
+    },
+    {
+      "id": "coding",
+      "name": "Coding & Development",
+      "description": "AI tools for software development, code completion, and debugging",
+      "color": "#10B981",
+      "tools": [
+        {
+          "id": "github-copilot",
+          "name": "GitHub Copilot",
+          "company": "GitHub/Microsoft",
+          "description": "AI pair programmer that suggests code completions and entire functions in your IDE.",
+          "link": "https://github.com/features/copilot",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 5,
+            "easeOfUse": 5,
+            "pricing": 3,
+            "features": 4.5
+          },
+          "pricing": "$10/mo Individual",
+          "tags": ["Code Completion", "IDE Integration", "Multi-language"]
+        },
+        {
+          "id": "cursor",
+          "name": "Cursor",
+          "company": "Cursor Inc",
+          "description": "AI-first code editor with deep integration of GPT-4 for intelligent code editing.",
+          "link": "https://cursor.sh",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4,
+            "easeOfUse": 4.5,
+            "pricing": 3.5,
+            "features": 5
+          },
+          "pricing": "Free / $20/mo Pro",
+          "tags": ["Code Editor", "GPT-4", "Refactoring"]
+        },
+        {
+          "id": "replit-ai",
+          "name": "Replit AI",
+          "company": "Replit",
+          "description": "Cloud-based IDE with AI assistance for coding, debugging, and deployment.",
+          "link": "https://replit.com",
+          "ratings": {
+            "accuracy": 3.5,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 4,
+            "features": 4
+          },
+          "pricing": "Free / $25/mo Hacker",
+          "tags": ["Cloud IDE", "Deployment", "Collaboration"]
+        },
+        {
+          "id": "codeium",
+          "name": "Codeium",
+          "company": "Codeium",
+          "description": "Free AI code completion tool supporting 70+ languages with IDE extensions.",
+          "link": "https://codeium.com",
+          "ratings": {
+            "accuracy": 3.5,
+            "speed": 4.5,
+            "easeOfUse": 4.5,
+            "pricing": 5,
+            "features": 3.5
+          },
+          "pricing": "Free Individual",
+          "tags": ["Free", "Multi-language", "IDE Extension"]
+        }
+      ]
+    },
+    {
+      "id": "image",
+      "name": "Image Generation",
+      "description": "AI tools for creating and editing images from text prompts",
+      "color": "#F59E0B",
+      "tools": [
+        {
+          "id": "midjourney",
+          "name": "Midjourney",
+          "company": "Midjourney Inc",
+          "description": "Industry-leading AI art generator known for stunning, artistic image generation.",
+          "link": "https://midjourney.com",
+          "ratings": {
+            "accuracy": 5,
+            "speed": 3.5,
+            "easeOfUse": 3.5,
+            "pricing": 3,
+            "features": 4.5
+          },
+          "pricing": "$10/mo Basic",
+          "tags": ["Art Generation", "High Quality", "Discord"]
+        },
+        {
+          "id": "dalle",
+          "name": "DALL-E 3",
+          "company": "OpenAI",
+          "description": "OpenAI's image generator with excellent prompt understanding and text rendering.",
+          "link": "https://openai.com/dall-e-3",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 3.5,
+            "features": 4
+          },
+          "pricing": "Included with ChatGPT Plus",
+          "tags": ["Text in Images", "ChatGPT Integration", "Editing"]
+        },
+        {
+          "id": "stable-diffusion",
+          "name": "Stable Diffusion",
+          "company": "Stability AI",
+          "description": "Open-source image generation model that can run locally with full customization.",
+          "link": "https://stability.ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4,
+            "easeOfUse": 2.5,
+            "pricing": 5,
+            "features": 5
+          },
+          "pricing": "Free (Open Source)",
+          "tags": ["Open Source", "Local Running", "Customizable"]
+        },
+        {
+          "id": "ideogram",
+          "name": "Ideogram",
+          "company": "Ideogram AI",
+          "description": "AI image generator excelling at typography and text within images.",
+          "link": "https://ideogram.ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4,
+            "easeOfUse": 4.5,
+            "pricing": 4,
+            "features": 3.5
+          },
+          "pricing": "Free / $8/mo Basic",
+          "tags": ["Typography", "Text in Images", "Logos"]
+        }
+      ]
+    },
+    {
+      "id": "video",
+      "name": "Video & Audio",
+      "description": "AI tools for video generation, editing, and audio processing",
+      "color": "#EF4444",
+      "tools": [
+        {
+          "id": "runway",
+          "name": "Runway",
+          "company": "Runway ML",
+          "description": "Professional AI video generation and editing suite with Gen-2 model.",
+          "link": "https://runway.ml",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 3,
+            "easeOfUse": 4,
+            "pricing": 2.5,
+            "features": 5
+          },
+          "pricing": "$15/mo Standard",
+          "tags": ["Video Generation", "Professional", "Editing"]
+        },
+        {
+          "id": "elevenlabs",
+          "name": "ElevenLabs",
+          "company": "ElevenLabs",
+          "description": "Advanced AI voice synthesis with realistic speech generation and cloning.",
+          "link": "https://elevenlabs.io",
+          "ratings": {
+            "accuracy": 5,
+            "speed": 4.5,
+            "easeOfUse": 4.5,
+            "pricing": 3,
+            "features": 4.5
+          },
+          "pricing": "Free / $5/mo Starter",
+          "tags": ["Voice Synthesis", "Voice Cloning", "Text-to-Speech"]
+        },
+        {
+          "id": "descript",
+          "name": "Descript",
+          "company": "Descript Inc",
+          "description": "AI-powered video/audio editing through text transcription editing.",
+          "link": "https://descript.com",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 3.5,
+            "features": 4.5
+          },
+          "pricing": "Free / $12/mo Creator",
+          "tags": ["Transcription", "Text Editing", "Podcast"]
+        },
+        {
+          "id": "suno",
+          "name": "Suno",
+          "company": "Suno AI",
+          "description": "AI music generation tool that creates full songs from text prompts.",
+          "link": "https://suno.ai",
+          "ratings": {
+            "accuracy": 3.5,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 4,
+            "features": 3.5
+          },
+          "pricing": "Free / $10/mo Pro",
+          "tags": ["Music Generation", "Songwriting", "Creative"]
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity & Writing",
+      "description": "AI tools for enhancing productivity, writing, and content creation",
+      "color": "#3B82F6",
+      "tools": [
+        {
+          "id": "notion-ai",
+          "name": "Notion AI",
+          "company": "Notion",
+          "description": "AI assistant integrated into Notion for writing, summarizing, and organizing.",
+          "link": "https://notion.so/product/ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4.5,
+            "easeOfUse": 5,
+            "pricing": 3,
+            "features": 4
+          },
+          "pricing": "$10/mo add-on",
+          "tags": ["Note-taking", "Summarization", "Organization"]
+        },
+        {
+          "id": "grammarly",
+          "name": "Grammarly",
+          "company": "Grammarly Inc",
+          "description": "AI writing assistant for grammar, clarity, and style improvements.",
+          "link": "https://grammarly.com",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 5,
+            "easeOfUse": 5,
+            "pricing": 3,
+            "features": 4
+          },
+          "pricing": "Free / $12/mo Premium",
+          "tags": ["Grammar", "Writing Style", "Browser Extension"]
+        },
+        {
+          "id": "jasper",
+          "name": "Jasper",
+          "company": "Jasper AI",
+          "description": "AI content platform for marketing copy, blog posts, and brand content.",
+          "link": "https://jasper.ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4.5,
+            "easeOfUse": 4,
+            "pricing": 2,
+            "features": 4.5
+          },
+          "pricing": "$49/mo Creator",
+          "tags": ["Marketing", "Copywriting", "Brand Voice"]
+        },
+        {
+          "id": "otter",
+          "name": "Otter.ai",
+          "company": "Otter.ai",
+          "description": "AI meeting transcription and note-taking with real-time collaboration.",
+          "link": "https://otter.ai",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 5,
+            "easeOfUse": 5,
+            "pricing": 4,
+            "features": 4
+          },
+          "pricing": "Free / $17/mo Pro",
+          "tags": ["Transcription", "Meetings", "Collaboration"]
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "name": "Research & Analysis",
+      "description": "AI tools for academic research, data analysis, and information synthesis",
+      "color": "#8B5CF6",
+      "tools": [
+        {
+          "id": "semantic-scholar",
+          "name": "Semantic Scholar",
+          "company": "Allen Institute for AI",
+          "description": "AI-powered academic search engine with paper recommendations and citations.",
+          "link": "https://semanticscholar.org",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4.5,
+            "easeOfUse": 4.5,
+            "pricing": 5,
+            "features": 4
+          },
+          "pricing": "Free",
+          "tags": ["Academic", "Citations", "Paper Discovery"]
+        },
+        {
+          "id": "elicit",
+          "name": "Elicit",
+          "company": "Elicit",
+          "description": "AI research assistant that helps find and summarize academic papers.",
+          "link": "https://elicit.com",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4,
+            "easeOfUse": 4.5,
+            "pricing": 4,
+            "features": 4
+          },
+          "pricing": "Free / $10/mo Plus",
+          "tags": ["Literature Review", "Summarization", "Academic"]
+        },
+        {
+          "id": "consensus",
+          "name": "Consensus",
+          "company": "Consensus AI",
+          "description": "AI search engine that finds and synthesizes scientific research answers.",
+          "link": "https://consensus.app",
+          "ratings": {
+            "accuracy": 4,
+            "speed": 4,
+            "easeOfUse": 5,
+            "pricing": 4,
+            "features": 3.5
+          },
+          "pricing": "Free / $9/mo Premium",
+          "tags": ["Science", "Evidence-based", "Research"]
+        },
+        {
+          "id": "scite",
+          "name": "scite.ai",
+          "company": "scite",
+          "description": "AI platform that shows how papers are cited and whether claims are supported.",
+          "link": "https://scite.ai",
+          "ratings": {
+            "accuracy": 4.5,
+            "speed": 4,
+            "easeOfUse": 4,
+            "pricing": 3,
+            "features": 4.5
+          },
+          "pricing": "$20/mo Premium",
+          "tags": ["Citation Analysis", "Fact-checking", "Academic"]
+        }
+      ]
+    }
+  ],
+  "ratingCategories": [
+    {
+      "id": "accuracy",
+      "name": "Accuracy",
+      "description": "How accurate and reliable are the outputs"
+    },
+    {
+      "id": "speed",
+      "name": "Speed",
+      "description": "How fast the tool generates responses"
+    },
+    {
+      "id": "easeOfUse",
+      "name": "Ease of Use",
+      "description": "How intuitive and user-friendly the interface is"
+    },
+    {
+      "id": "pricing",
+      "name": "Value for Money",
+      "description": "Quality relative to the cost"
+    },
+    {
+      "id": "features",
+      "name": "Features",
+      "description": "Range and depth of available features"
+    }
+  ]
+}
