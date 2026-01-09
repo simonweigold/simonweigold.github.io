@@ -128,7 +128,7 @@ function AITools() {
     fetch('/ai-tools.json')
       .then((res) => res.json())
       .then((json) => setData(json))
-      .catch((err) => console.error('Failed to load AI tools data:', err));
+      .catch((err) => console.error('Failed to load AI map data:', err));
   }, []);
 
   // Build and simulate graph
@@ -143,7 +143,7 @@ function AITools() {
     const graphNodes: GraphNode[] = [
       {
         id: 'center',
-        name: 'AI Tools',
+        name: 'AI Map',
         type: 'center',
         color: '#7A67E0',
         radius: 60,
@@ -716,7 +716,7 @@ function AITools() {
                 <ArrowBackIcon />
               </IconButton>
               <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                AI Tools Explorer
+                AI Map Explorer
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -732,7 +732,7 @@ function AITools() {
             color="text.secondary"
             sx={{ mb: 6, textAlign: 'center', maxWidth: 600, mx: 'auto' }}
           >
-            Explore and compare AI tools across different categories. Click on a category to
+            Explore and compare AI tools on this interactive map. Click on a category to
             discover tools, and click on a tool to see detailed ratings and information.
           </Typography>
 

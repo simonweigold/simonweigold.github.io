@@ -380,7 +380,7 @@ function App() {
                 </IconButton>
                 <Button
                   component={Link}
-                  to="/ai-tools"
+                  to="/ai-map"
                   variant="outlined"
                   size="small"
                   startIcon={<AutoAwesomeIcon />}
@@ -394,7 +394,7 @@ function App() {
                     },
                   }}
                 >
-                  AI Tools
+                  AI Map
                 </Button>
               </Box>
             </Box>
