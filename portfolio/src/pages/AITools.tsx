@@ -17,7 +17,7 @@ import Rating from '@mui/material/Rating';
 import LinearProgress from '@mui/material/LinearProgress';
 import Tooltip from '@mui/material/Tooltip';
 import Fade from '@mui/material/Fade';
-import TextField from '@mui/material/TextField';
+import TextField, { textFieldClasses } from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
@@ -182,9 +182,9 @@ function AITools() {
         onMouseEnter={() => setHoveredTile(`cat-${category.id}`)}
         onMouseLeave={() => setHoveredTile(null)}
         sx={{
-          borderRadius: 3,
+          borderRadius: 1,
           overflow: 'hidden',
-          backgroundColor: category.color,
+          border: `2px solid ${category.color}40`,
           opacity: 0.95,
           p: 3,
           transition: 'all 0.3s ease',
@@ -198,7 +198,8 @@ function AITools() {
           variant="h5" 
           sx={{ 
             fontWeight: 700, 
-            color: '#fff',
+            //color: '#fff',
+            color: category.color,
             mb: 1,
           }}
         >
@@ -207,30 +208,18 @@ function AITools() {
         <Typography 
           variant="body2" 
           sx={{ 
-            color: 'rgba(255,255,255,0.85)',
+            color: 'text.primary',
             lineHeight: 1.5,
           }}
         >
           {category.description}
         </Typography>
-        <Box sx={{ mt: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip
-            label={`${category.tools.length} tools`}
-            size="small"
-            sx={{
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              color: '#fff',
-              fontWeight: 600,
-            }}
-          />
-        </Box>
       </Box>
     );
   };
 
   const renderToolTile = (tool: Tool, category: Category) => {
     const isHovered = hoveredTile === `tool-${tool.id}`;
-    const overallRating = getOverallRating(tool.ratings);
     
     return (
       <Box
@@ -240,13 +229,11 @@ function AITools() {
         onMouseLeave={() => setHoveredTile(null)}
         sx={{
           position: 'relative',
-          borderRadius: 2,
+          borderRadius: 1,
           overflow: 'hidden',
           backgroundColor: mode === 'dark' ? 'rgba(30,30,30,0.9)' : 'rgba(255,255,255,0.95)',
           border: `2px solid ${category.color}40`,
           p: 2.5,
-          pt: 3,
-          cursor: 'pointer',
           transition: 'all 0.3s ease',
           transform: isHovered ? 'scale(1.02) translateY(-4px)' : 'scale(1)',
           boxShadow: isHovered 
@@ -256,21 +243,7 @@ function AITools() {
             borderColor: category.color,
           },
         }}
-      >
-        {/* Color accent bar */}
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 4,
-            backgroundColor: category.color,
-            opacity: isHovered ? 1 : 0.6,
-            transition: 'opacity 0.3s ease',
-          }}
-        />
-        
+      > 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
           <Typography 
             variant="subtitle1" 
@@ -282,16 +255,6 @@ function AITools() {
           >
             {tool.name}
           </Typography>
-          <Chip
-            label={overallRating.toFixed(1)}
-            size="small"
-            sx={{
-              backgroundColor: `${category.color}20`,
-              color: category.color,
-              fontWeight: 700,
-              minWidth: 40,
-            }}
-          />
         </Box>
         
         <Typography 
@@ -319,20 +282,6 @@ function AITools() {
         </Typography>
         
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-          {tool.tags.slice(0, 2).map((tag) => (
-            <Chip
-              key={tag}
-              label={tag}
-              size="small"
-              sx={{
-                height: 20,
-                fontSize: '0.65rem',
-                backgroundColor: `${category.color}15`,
-                color: category.color,
-                border: `1px solid ${category.color}30`,
-              }}
-            />
-          ))}
           <Chip
             label={tool.pricing}
             size="small"
@@ -344,180 +293,37 @@ function AITools() {
             }}
           />
         </Box>
-      </Box>
-    );
-  };
-
-  const renderToolDetail = () => {
-    if (!selectedTool || !selectedToolCategory || !data) return null;
-
-    return (
-      <Fade in={true}>
         <Box
+          component="a"
+          href={tool.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
           sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.8)',
-            zIndex: 1000,
             display: 'flex',
             alignItems: 'center',
+            gap: 1,
+            border: `2px solid ${category.color}40`,
+            borderRadius: 1,
+            color: category.color,
+            backgroundColor: `${category.color}10`,
+            px: 3,
+            py: 1.5,
+            mt: 2,
+            textDecoration: 'none',
+            fontWeight: 200,
+            cursor: 'pointer',
             justifyContent: 'center',
-            padding: 2,
-          }}
-          onClick={() => {
-            setSelectedTool(null);
-            setSelectedToolCategory(null);
+            transition: 'all 0.2s ease',
+            '&:hover': {
+              transform: 'scale(1.02)',
+              boxShadow: `0 4px 20px ${category.color}50`,
+            },
           }}
         >
-          <Paper
-            onClick={(e) => e.stopPropagation()}
-            sx={{
-              maxWidth: 600,
-              width: '100%',
-              maxHeight: '90vh',
-              overflow: 'auto',
-              p: 4,
-              borderRadius: 3,
-              border: `2px solid ${selectedToolCategory.color}`,
-            }}
-          >
-            <Box
-              sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}
-            >
-              <Box>
-                <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                  {selectedTool.name}
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                  by {selectedTool.company}
-                </Typography>
-              </Box>
-              <IconButton onClick={() => {
-                setSelectedTool(null);
-                setSelectedToolCategory(null);
-              }}>
-                <CloseIcon />
-              </IconButton>
-            </Box>
-
-            <Typography variant="body1" sx={{ mb: 3 }}>
-              {selectedTool.description}
-            </Typography>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                Ratings
-              </Typography>
-              {data.ratingCategories.map((ratingCat) => (
-                <Tooltip key={ratingCat.id} title={ratingCat.description} placement="left">
-                  <Box sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography variant="body2">{ratingCat.name}</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                        {selectedTool.ratings[ratingCat.id]}/5
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={(selectedTool.ratings[ratingCat.id] / 5) * 100}
-                      sx={{
-                        height: 8,
-                        borderRadius: 4,
-                        backgroundColor:
-                          mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
-                        '& .MuiLinearProgress-bar': {
-                          backgroundColor: selectedToolCategory.color,
-                          borderRadius: 4,
-                        },
-                      }}
-                    />
-                  </Box>
-                </Tooltip>
-              ))}
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                Overall Score
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Typography variant="h3" sx={{ fontWeight: 700, color: selectedToolCategory.color }}>
-                  {getOverallRating(selectedTool.ratings).toFixed(1)}
-                </Typography>
-                <Rating
-                  value={getOverallRating(selectedTool.ratings)}
-                  precision={0.1}
-                  readOnly
-                  sx={{
-                    '& .MuiRating-iconFilled': { color: selectedToolCategory.color },
-                  }}
-                />
-              </Box>
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                Pricing
-              </Typography>
-              <Chip
-                label={selectedTool.pricing}
-                sx={{
-                  backgroundColor: `${selectedToolCategory.color}20`,
-                  color: selectedToolCategory.color,
-                  fontWeight: 600,
-                }}
-              />
-            </Box>
-
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="h6" sx={{ mb: 1, fontWeight: 600 }}>
-                Tags
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                {selectedTool.tags.map((tag) => (
-                  <Chip
-                    key={tag}
-                    label={tag}
-                    variant="outlined"
-                    sx={{ borderColor: selectedToolCategory.color, color: selectedToolCategory.color }}
-                  />
-                ))}
-              </Box>
-            </Box>
-
-            <Box
-              component="a"
-              href={selectedTool.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                backgroundColor: selectedToolCategory.color,
-                color: '#fff',
-                px: 3,
-                py: 1.5,
-                borderRadius: 2,
-                textDecoration: 'none',
-                fontWeight: 600,
-                justifyContent: 'center',
-                transition: 'all 0.2s ease',
-                '&:hover': {
-                  transform: 'scale(1.02)',
-                  boxShadow: `0 4px 20px ${selectedToolCategory.color}50`,
-                },
-              }}
-            >
-              Visit Website
-              <OpenInNewIcon sx={{ fontSize: 18 }} />
-            </Box>
-          </Paper>
+          Visit Website
         </Box>
-      </Fade>
+      </Box>
     );
   };
 
@@ -631,9 +437,6 @@ function AITools() {
               ));
             })()}
           </Box>
-
-          {/* Tool Detail Modal */}
-          {selectedTool && renderToolDetail()}
         </Container>
       </Box>
     </ThemeProvider>
