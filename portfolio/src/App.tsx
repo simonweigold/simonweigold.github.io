@@ -47,8 +47,8 @@ const sections: Section[] = [
     id: 'about',
     title: 'Who Am I?',
     content: [
-      { type: 'paragraph', text: 'Originally from a small town in southern Germany, my journey through Frankfurt and Hanover has led me back south to the heart of Switzerland. Each new location has broadened my perspectives and allowed me to grow into the person I am today.' },
-      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior—a perfect intersection of my personal interests and professional goals. Now, with a solid foundation in the humanities and robust technical skills, I am using my knowledge to solve interdisciplinary problems and create innovative solutions.' },
+      { type: 'paragraph', text: 'Computers. Society. Curiosity. After finishing my Masters in Computational Social Sciences, I have been working in the legal field, applying my technical skills to make the life of legal professionals easier.' },
+      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior. Now, with a solid foundation in the humanities and robust technical skills, I am using my knowledge to solve interdisciplinary problems and create innovative solutions.' },
       { type: 'paragraph', text: (
         <>
         Away from the computer screen, I unwind by running. I document my running journey on{' '}
@@ -77,16 +77,16 @@ const sections: Section[] = [
       //{ type: 'subheading', text: 'Languages' },
       //{ type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
       { type: 'subheading', text: 'Fields of Interest' },
-      { type: 'list', text: ['Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
+      { type: 'list', text: ['Legal Tech', 'Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
     ],
   },
   {
     id: 'experience',
     title: 'What Do I Do?',
     content: [
-      { type: 'subheading', text: 'Fullstack Developer @ Coop Rechtsschutz (Oct 2025 - Present)' },
+      { type: 'subheading', text: 'Fullstack Developer @ Coop Rechtsschutz (Sep 2025 - Present)' },
       { type: 'paragraph', text: 'Helping legal professionals work more efficiently', skills: ['FastAPI', 'PostgreSQL', 'Vue', 'GCP'] },
-      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Sep 2025)' },
+      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Aug 2025)' },
       { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastAPI', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
       { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
       { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective.', skills: ['Python', 'NumPy', 'PyTorch', 'NLP', 'BERT', 'Postgres (pgvector)', 'Azure', 'WhisperAI'] },
@@ -447,6 +447,7 @@ function App() {
                             variant="body1"
                             color="text.secondary"
                             paragraph // Adds bottom margin
+                            sx={{ fontSize: '1.2rem' }}
                           >
                             {item.text}
                           </Typography>
