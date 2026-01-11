@@ -276,6 +276,7 @@ function AITools() {
             fontSize: '0.8rem',
             lineHeight: 1.6,
             mb: 1.5,
+            whiteSpace: 'pre-line',
           }}
         >
           {tool.description}
