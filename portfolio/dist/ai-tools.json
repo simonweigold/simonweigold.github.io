@@ -1,0 +1,172 @@
+{
+  "categories": [
+    {
+      "id": "chat",
+      "name": "Chat & Assistants",
+      "description": "AI-powered conversational assistants for general-purpose tasks",
+      "color": "#7C3AED",
+      "tools": [
+        {
+          "id": "chatgpt",
+          "name": "ChatGPT",
+          "company": "OpenAI",
+          "description": "The tool that started the AI revolution. ChatGPT remains the most versatile general-purpose AI assistant, excelling at everything from creative writing to code debugging. GPT-5 is fast and multimodal. Personally, I prefer ChatGPT to competitors for the way it feels when talking to it.\n\nFor a long time I have been using it with a Plus subscription but I eventually cancelled. Even with the free tier I find it very useful. The added benefits of the Plus subscription were not enough to keep me from switching to the free tier.",
+          "pricing": "Monthly: EUR0 / EUR23 / EUR229",
+          "link": "https://chatgpt.com"
+        },
+        {
+          "id": "claude",
+          "name": "Claude",
+          "company": "Anthropic",
+          "description": "Having only sparsely used it, I find Claude to be a capable assistant but not as versatile as ChatGPT. The interface is clean and the responses are generally accurate, but it lacks the feeling of a true conversation partner.",
+          "pricing": "Monthly: $0 / $20 / $100",
+          "link": "https://claude.ai"
+        },
+        {
+          "id": "gemini",
+          "name": "Gemini",
+          "company": "Google",
+          "description": "Google's contender has improved dramatically and I see myself using it more and more. The integration with Google services is seamless, making it a strong choice for those already in the ecosystem. Responses are clean and accurate, lacking some of the personality of ChatGPT. Nano Banana (pro) is the goat for image generation.",
+          "pricing": "Monthly: Free / AI Pro / AI Ultra",
+          "link": "https://gemini.google.com"
+        },
+        {
+          "id": "le-chat",
+          "name": "Le Chat",
+          "company": "Mistral",
+          "description": "European AI Chat. Open-weight models. Mistral Large 3 shows promising results. This would be the go-to choice for anyone looking for high-quality conversational AI that is based in EU.",
+          "pricing": "Monthly: $0 / $14.99",
+          "link": "https://chat.mistral.ai/chat"
+        }
+      ]
+    },
+    {
+      "id": "coding",
+      "name": "Coding & Development",
+      "description": "AI tools for software development, code completion, and debugging",
+      "color": "#10B981",
+      "tools": [
+        {
+          "id": "github-copilot",
+          "name": "GitHub Copilot",
+          "company": "GitHub/Microsoft",
+          "description": "Still the gold standard for in-IDE code completion. The tab-complete suggestions are good. Copilot Chat is already good and with newer models being added on a rolling basis, it’s only getting better. Personally, I find the Agent mode with its option to include context and specifying specific code snippets to edit indispensible. My current model of choice: Claude Opus 4.5. Downsides: occasional confident-but-wrong suggestions. Essential for professional developers, but verify its output.",
+          "pricing": "Monthly: $0 / $10 / $39",
+          "link": "https://github.com/features/copilot"
+        },
+        {
+          "id": "claude-code",
+          "name": "Claude Code",
+          "company": "Anthropic",
+          "description": "A specialized version of Claude for code-related tasks. It lives in the terminal. From what I hear online and from colleagues, it can be even more powerful than its competitors. I have yet to try it myself.",
+          "pricing": "Monthly: $0 / $20 / $100",
+          "link": "https://claude.ai"
+        },
+        {
+          "id": "google-jules",
+          "name": "Jules",
+          "company": "Google",
+          "description": "Interesting idea to run feature development and bug fixes asynchronously. Jules takes quite long but from the way it is set up it is quite thorough in understanding the context of the repo it works in and it makes contributions by creating new branches. My experience: it takes long and results are not really satisfying. But I see potential.",
+          "pricing": "Monthly: Free / AI Pro / AI Ultra",
+          "link": "https://jules.google"
+        }
+      ]
+    },
+    {
+      "id": "image",
+      "name": "Image Generation",
+      "description": "AI tools for creating and editing images from text prompts",
+      "color": "#F59E0B",
+      "tools": [
+        {
+          "id": "nanobanana",
+          "name": "Nano Banana",
+          "company": "Google",
+          "description": "The best image generation model I have seen and used. I don't generate too many images myself, but the quality is impressive.",
+          "pricing": "Monthly: Free / AI Pro / AI Ultra",
+          "link": "https://gemini.google/ch/overview/image-generation/?hl=de-CH"
+        },
+        {
+          "id": "firefly",
+          "name": "Firefly",
+          "company": "Adobe",
+          "description": "Literally the worst image generation model I can think of. The user interface is somewhat pretty but most often the generated images fail to meet user instructions. The fact that you need to pay Adobe more than what's reasonable does not help.",
+          "pricing": "Monthly: CHF10.80 / CHF21.60 / CHF217.30",
+          "link": "https://adobe.com/sensei/generative-ai/firefly.html"
+        },
+        {
+          "id": "flux",
+          "name": "Flux",
+          "company": "Black Forest Labs",
+          "description": "Open Weights Image Generation Model. The best open model for image generation I have seen.",
+          "pricing": "Individual via API",
+          "link": "https://bfl.ai"
+        }
+      ]
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity & Writing",
+      "description": "AI tools for enhancing productivity, writing, and content creation",
+      "color": "#3B82F6",
+      "tools": [
+        {
+          "id": "notion-ai",
+          "name": "Notion AI",
+          "company": "Notion",
+          "description": "I like notion because it is a somewhat nicer structured Google Docs. I use it for taking notes and organizing my thoughts while having everything online, i.e. accessible from any device and location. The AI features seem a bit excessive in my opinion.",
+          "pricing": "Monthly: $0 / $12 / $24",
+          "link": "https://notion.so/product/ai"
+        },
+        {
+          "id": "airtable",
+          "name": "Airtable",
+          "company": "Airtable",
+          "description": "Airtable is basically Excel in the web and more similar to an SQL database but with a user-friendly interface. I use Airtable for organizing my personal finances and have used it before in large-scale data collection for research projects. Airtable's AI features help organize and manage your data more effectively. The AI can suggest ways to structure your tables, define columns, and even generate content based on your data.",
+          "pricing": "Monthly: $0 / $24 / $54",
+          "link": "https://airtable.com"
+        }
+      ]
+    },
+    {
+      "id": "research",
+      "name": "Research & Analysis",
+      "description": "AI tools for academic research, data analysis, and information synthesis",
+      "color": "#8B5CF6",
+      "tools": [
+        {
+          "id": "notebook-lm",
+          "name": "Notebook LM",
+          "company": "Google",
+          "description": "Tool for managing and organizing documents and notes. A mix of research plus AI for productivity.",
+          "pricing": "Monthly: Free / AI Plus / AI Pro / AI Ultra",
+          "link": "https://gemini.google.com"
+        },
+        {
+          "id": "semantic-scholar",
+          "name": "Semantic Scholar",
+          "company": "Ai2",
+          "description": "Google Scholar's smarter cousin. The AI-powered search aims to understand research concepts, not just keywords. TLDR summaries. Citation context.",
+          "pricing": "Free",
+          "link": "https://semanticscholar.org"
+        },
+        {
+          "id": "consensus",
+          "name": "Consensus",
+          "company": "Consensus AI",
+          "description": "Ask factual questions, get science-backed answers. Consensus searches academic papers and synthesizes what research actually says about a topic, with links to sources. Great for getting evidence-based answers quickly. Limited to questions with empirical research. Won't help with novel or theoretical questions. A useful complement to traditional search. I use it mostly in the beginning stages of research.",
+          "pricing": "Free / $9/mo Premium",
+          "link": "https://consensus.app"
+        },
+        {
+          "id": "hyperlink",
+          "name": "Hyperlink",
+          "company": "Nexa AI",
+          "description": "Free AI tool that runs fully locally and offline while accessing files on the device it runs on.",
+          "link": "https://hyperlink.nexa.ai",
+          "pricing": "Free"
+        }
+      ]
+    }
+  ]
+}
