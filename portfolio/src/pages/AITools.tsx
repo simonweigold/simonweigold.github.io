@@ -4,42 +4,25 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
 import Chip from '@mui/material/Chip';
 import Switch from '@mui/material/Switch';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import IconButton from '@mui/material/IconButton';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import CloseIcon from '@mui/icons-material/Close';
-import Rating from '@mui/material/Rating';
-import LinearProgress from '@mui/material/LinearProgress';
-import Tooltip from '@mui/material/Tooltip';
-import Fade from '@mui/material/Fade';
-import TextField, { textFieldClasses } from '@mui/material/TextField';
+import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import { Link } from 'react-router-dom';
 
 // Types
-interface ToolRatings {
-  accuracy: number;
-  speed: number;
-  easeOfUse: number;
-  pricing: number;
-  features: number;
-}
-
 interface Tool {
   id: string;
   name: string;
   company: string;
   description: string;
   link: string;
-  ratings: ToolRatings;
   pricing: string;
-  tags: string[];
 }
 
 interface Category {
@@ -50,22 +33,8 @@ interface Category {
   tools: Tool[];
 }
 
-interface RatingCategory {
-  id: keyof ToolRatings;
-  name: string;
-  description: string;
-}
-
 interface AIToolsData {
   categories: Category[];
-  ratingCategories: RatingCategory[];
-}
-
-// Tile item type for masonry
-interface TileItem {
-  type: 'category' | 'tool';
-  category: Category;
-  tool?: Tool;
 }
 
 function AITools() {
@@ -74,8 +43,6 @@ function AITools() {
     return savedMode || 'dark';
   });
   const [data, setData] = useState<AIToolsData | null>(null);
-  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
-  const [selectedToolCategory, setSelectedToolCategory] = useState<Category | null>(null);
   const [hoveredTile, setHoveredTile] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
@@ -90,38 +57,6 @@ function AITools() {
       .then((json) => setData(json))
       .catch((err) => console.error('Failed to load AI map data:', err));
   }, []);
-
-  // Build masonry tiles - category tiles followed by their tool tiles, filtered by search
-  const tiles = useMemo((): TileItem[] => {
-    if (!data) return [];
-    
-    const query = searchQuery.toLowerCase().trim();
-    const items: TileItem[] = [];
-    
-    data.categories.forEach((category) => {
-      // Filter tools by search query
-      const filteredTools = query
-        ? category.tools.filter((tool) =>
-            tool.name.toLowerCase().includes(query) ||
-            tool.company.toLowerCase().includes(query) ||
-            tool.description.toLowerCase().includes(query) ||
-            tool.tags.some((tag) => tag.toLowerCase().includes(query)) ||
-            category.name.toLowerCase().includes(query)
-          )
-        : category.tools;
-      
-      // Only add category and tools if there are matching tools (or no search query)
-      if (filteredTools.length > 0) {
-        // Add category tile
-        items.push({ type: 'category', category });
-        // Add filtered tool tiles for this category
-        filteredTools.forEach((tool) => {
-          items.push({ type: 'tool', category, tool });
-        });
-      }
-    });
-    return items;
-  }, [data, searchQuery]);
 
   const theme = useMemo(
     () =>
@@ -142,16 +77,16 @@ function AITools() {
             : {
                 primary: { main: '#7A67E0' },
                 secondary: { main: '#A99CFF' },
-                background: { default: '#0F0F0F', paper: '#111111' },
+                background: { default: '#0a0a0a', paper: '#111111' },
                 text: {
-                  primary: '#ffffff',
-                  secondary: '#dddddd',
-                  disabled: 'rgba(255, 255, 255, 0.5)',
+                  primary: '#e0e0e0',
+                  secondary: '#a0a0a0',
+                  disabled: 'rgba(255, 255, 255, 0.4)',
                 },
               }),
         },
         typography: {
-          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          fontFamily: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
           h1: { fontWeight: 700 },
           h2: { fontWeight: 600 },
         },
@@ -163,16 +98,6 @@ function AITools() {
     setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
-  const getOverallRating = (ratings: ToolRatings): number => {
-    const values = Object.values(ratings);
-    return values.reduce((a, b) => a + b, 0) / values.length;
-  };
-
-  const handleToolClick = (tool: Tool, category: Category) => {
-    setSelectedTool(tool);
-    setSelectedToolCategory(category);
-  };
-
   const renderCategoryTile = (category: Category) => {
     const isHovered = hoveredTile === `cat-${category.id}`;
     
@@ -182,147 +107,204 @@ function AITools() {
         onMouseEnter={() => setHoveredTile(`cat-${category.id}`)}
         onMouseLeave={() => setHoveredTile(null)}
         sx={{
-          borderRadius: 1,
+          borderRadius: 0,
           overflow: 'hidden',
-          border: `2px solid ${category.color}40`,
-          opacity: 0.95,
-          p: 3,
-          transition: 'all 0.3s ease',
-          transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+          border: `1px solid ${category.color}`,
+          //borderLeft: `4px solid ${category.color}`,
+          backgroundColor: mode === 'dark' ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.95)',
+          p: 2,
+          transition: 'all 0.2s ease',
+          transform: isHovered ? 'translateX(4px)' : 'translateX(0)',
           boxShadow: isHovered 
-            ? `0 8px 32px ${category.color}60`
-            : `0 4px 16px ${category.color}30`,
+            ? `0 0 20px ${category.color}40, inset 0 0 20px ${category.color}10`
+            : 'none',
+          position: 'relative',
+          '&::before': {
+            content: '">"',
+            position: 'absolute',
+            left: 12,
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: category.color,
+            fontWeight: 700,
+            fontSize: '1.2rem',
+            opacity: isHovered ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          },
         }}
       >
-        <Typography 
-          variant="h5" 
-          sx={{ 
-            fontWeight: 700, 
-            //color: '#fff',
-            color: category.color,
-            mb: 1,
-          }}
-        >
-          {category.name}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, pl: isHovered ? 3 : 0, transition: 'padding 0.2s ease' }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 700, 
+              color: category.color,
+              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+            }}
+          >
+            [{category.name}]
+          </Typography>
+        </Box>
         <Typography 
           variant="body2" 
           sx={{ 
-            color: 'text.primary',
-            lineHeight: 1.5,
+            color: mode === 'dark' ? 'rgba(255,255,255,0.6)' : 'text.secondary',
+            fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+            fontSize: '0.75rem',
+            mt: 0.5,
+            pl: isHovered ? 3 : 0,
+            transition: 'padding 0.2s ease',
           }}
         >
-          {category.description}
+          // {category.description}
         </Typography>
       </Box>
     );
   };
 
-  const renderToolTile = (tool: Tool, category: Category) => {
+  const renderToolTile = (tool: Tool, category: Category, isLast: boolean) => {
     const isHovered = hoveredTile === `tool-${tool.id}`;
     
     return (
       <Box
         key={`tool-${tool.id}`}
-        onClick={() => handleToolClick(tool, category)}
-        onMouseEnter={() => setHoveredTile(`tool-${tool.id}`)}
-        onMouseLeave={() => setHoveredTile(null)}
         sx={{
+          display: 'flex',
           position: 'relative',
-          borderRadius: 1,
-          overflow: 'hidden',
-          backgroundColor: mode === 'dark' ? 'rgba(30,30,30,0.9)' : 'rgba(255,255,255,0.95)',
-          border: `2px solid ${category.color}40`,
-          p: 2.5,
-          transition: 'all 0.3s ease',
-          transform: isHovered ? 'scale(1.02) translateY(-4px)' : 'scale(1)',
-          boxShadow: isHovered 
-            ? `0 12px 40px ${category.color}40`
-            : `0 2px 8px rgba(0,0,0,0.1)`,
-          '&:hover': {
-            borderColor: category.color,
-          },
         }}
-      > 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              fontWeight: 700, 
-              color: 'text.primary',
-              pr: 1,
-            }}
-          >
-            {tool.name}
-          </Typography>
-        </Box>
-        
-        <Typography 
-          variant="caption" 
-          sx={{ 
-            color: category.color,
-            fontWeight: 500,
-            display: 'block',
-            mb: 1,
-          }}
-        >
-          {tool.company}
-        </Typography>
-        
-        <Typography 
-          variant="body2" 
-          sx={{ 
-            color: 'text.secondary',
-            fontSize: '0.8rem',
-            lineHeight: 1.6,
-            mb: 1.5,
-            whiteSpace: 'pre-line',
-          }}
-        >
-          {tool.description}
-        </Typography>
-        
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-          <Chip
-            label={tool.pricing}
-            size="small"
-            sx={{
-              height: 20,
-              fontSize: '0.65rem',
-              backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
-              color: 'text.secondary',
-            }}
-          />
-        </Box>
+      >
+        {/* Tree connector - vertical line */}
         <Box
-          component="a"
-          href={tool.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e: React.MouseEvent) => e.stopPropagation()}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            border: `2px solid ${category.color}40`,
-            borderRadius: 1,
-            color: category.color,
-            backgroundColor: `${category.color}10`,
-            px: 3,
-            py: 1.5,
-            mt: 2,
-            textDecoration: 'none',
-            fontWeight: 200,
-            cursor: 'pointer',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              transform: 'scale(1.02)',
-              boxShadow: `0 4px 20px ${category.color}50`,
+            width: 24,
+            flexShrink: 0,
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              left: 8,
+              top: 0,
+              bottom: 0,
+              width: 2,
+              backgroundColor: category.color,
+              opacity: 0.4,
             },
           }}
-        >
-          Visit Website
+        />
+        
+        {/* Tool content */}
+        <Box
+          component="div"
+          onMouseEnter={() => setHoveredTile(`tool-${tool.id}`)}
+          onMouseLeave={() => setHoveredTile(null)}
+          sx={{
+            flex: 1,
+            position: 'relative',
+            borderRadius: 0,
+            overflow: 'hidden',
+            backgroundColor: mode === 'dark' ? 'rgba(20,20,20,0.8)' : 'rgba(255,255,255,0.95)',
+            border: `1px solid ${isHovered ? category.color : 'rgba(255,255,255,0.15)'}`,
+            p: 2,
+            transition: 'all 0.2s ease',
+            cursor: 'default',
+            boxShadow: isHovered 
+              ? `0 0 15px ${category.color}30`
+              : 'none',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 2,
+              backgroundColor: category.color,
+              opacity: isHovered ? 1 : 0,
+              transition: 'opacity 0.2s ease',
+            },
+          }}
+        > 
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 0.5 }}>
+            <Typography 
+              sx={{ 
+                fontWeight: 700, 
+                color: category.color,
+                fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                fontSize: '0.95rem',
+              }}
+            >
+              $ {tool.name}
+            </Typography>
+            <Chip
+              label={tool.pricing}
+              size="small"
+              sx={{
+                height: 18,
+                fontSize: '0.6rem',
+                fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                backgroundColor: 'transparent',
+                border: `1px solid ${category.color}50`,
+                color: category.color,
+                borderRadius: 0,
+              }}
+            />
+          </Box>
+          
+          <Typography 
+            sx={{ 
+              color: mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'text.secondary',
+              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+              fontSize: '0.7rem',
+              mb: 1,
+            }}
+          >
+            @{tool.company}
+          </Typography>
+          
+          <Typography 
+            sx={{ 
+              color: mode === 'dark' ? 'rgba(255,255,255,0.75)' : 'text.secondary',
+              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+              fontSize: '0.75rem',
+              lineHeight: 1.7,
+              mb: 1.5,
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {tool.description}
+          </Typography>
+          
+          <Box
+            component="a"
+            href={tool.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              border: `1px solid ${category.color}`,
+              borderRadius: 0,
+              color: category.color,
+              backgroundColor: 'transparent',
+              px: 2,
+              py: 0.75,
+              textDecoration: 'none',
+              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+              fontSize: '0.7rem',
+              fontWeight: 500,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              '&:hover': {
+                backgroundColor: category.color,
+                color: '#000',
+                boxShadow: `0 0 10px ${category.color}`,
+              },
+            }}
+          >
+            {'>'} OPEN_LINK
+          </Box>
         </Box>
       </Box>
     );
@@ -351,17 +333,35 @@ function AITools() {
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <IconButton component={Link} to="/" sx={{ color: 'text.secondary' }}>
+              <IconButton 
+                component={Link} 
+                to="/" 
+                sx={{ 
+                  color: mode === 'dark' ? '#e0e0e0' : 'text.secondary',
+                  border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'}`,
+                  borderRadius: 0,
+                  '&:hover': {
+                    backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                  },
+                }}
+              >
                 <ArrowBackIcon />
               </IconButton>
-              <Typography variant="h4" sx={{ fontWeight: 700 }}>
-                AI Map
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700,
+                  fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                  color: mode === 'dark' ? '#e0e0e0' : 'text.primary',
+                }}
+              >
+                ./AI_MAP
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Brightness7Icon sx={{ color: mode === 'light' ? 'primary.main' : 'text.secondary' }} />
+              <Brightness7Icon sx={{ color: mode === 'light' ? 'primary.main' : 'rgba(255,255,255,0.5)' }} />
               <Switch checked={mode === 'dark'} onChange={handleThemeChange} color="secondary" />
-              <Brightness4Icon sx={{ color: mode === 'dark' ? 'secondary.main' : 'text.secondary' }} />
+              <Brightness4Icon sx={{ color: mode === 'dark' ? '#e0e0e0' : 'text.secondary' }} />
             </Box>
           </Box>
 
@@ -381,62 +381,203 @@ function AITools() {
               }}
               sx={{
                 '& .MuiOutlinedInput-root': {
-                  borderRadius: 3,
-                  backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
+                  borderRadius: 0,
+                  border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)'}`,
+                  backgroundColor: mode === 'dark' ? 'rgba(30,30,30,0.8)' : 'rgba(0,0,0,0.03)',
+                  fontFamily: '"JetBrains Mono", "Fira Code", monospace',
                   '&:hover': {
-                    backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                    backgroundColor: mode === 'dark' ? 'rgba(40,40,40,0.8)' : 'rgba(0,0,0,0.05)',
+                    borderColor: mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
                   },
                   '&.Mui-focused': {
-                    backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)',
+                    backgroundColor: mode === 'dark' ? 'rgba(50,50,50,0.8)' : 'rgba(0,0,0,0.05)',
+                    borderColor: mode === 'dark' ? '#e0e0e0' : 'primary.main',
+                    boxShadow: mode === 'dark' ? '0 0 10px rgba(255,255,255,0.1)' : 'none',
                   },
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  border: 'none',
+                },
+                '& input': {
+                  fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                  fontSize: '0.85rem',
+                },
+                '& input::placeholder': {
+                  fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                  opacity: 0.6,
                 },
               }}
             />
           </Box>
 
-          {/* Masonry Grid - Using CSS columns for true masonry with horizontal order simulation */}
+          {/* Terminal-style Tree Layout */}
           <Box
             sx={{
-              display: 'flex',
-              gap: 2,
-              alignItems: 'flex-start',
+              maxWidth: 900,
+              mx: 'auto',
+              fontFamily: '"JetBrains Mono", "Fira Code", monospace',
             }}
           >
-            {(() => {
-              // Distribute tiles into 4 columns maintaining horizontal reading order
-              const columnCount = 4;
-              const columns: TileItem[][] = Array.from({ length: columnCount }, () => []);
-              
-              // Distribute items row by row (horizontally)
-              tiles.forEach((item, index) => {
-                const columnIndex = index % columnCount;
-                columns[columnIndex].push(item);
-              });
-
-              return columns.map((columnItems, colIndex) => (
-                <Box
-                  key={`column-${colIndex}`}
+            {/* Terminal header */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                mb: 2,
+                pb: 1,
+                borderBottom: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.1)'}`,
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography
                   sx={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    gap: 2,
-                    // Hide columns on smaller screens
-                    display: { 
-                      xs: colIndex === 0 ? 'flex' : 'none',
-                      sm: colIndex < 2 ? 'flex' : 'none',
-                      md: colIndex < 3 ? 'flex' : 'none',
-                      lg: 'flex'
+                    color: mode === 'dark' ? 'rgba(255,255,255,0.7)' : 'text.secondary',
+                    fontSize: '0.75rem',
+                    fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                  }}
+                >
+                  user@simonweigold.github.io:~$
+                </Typography>
+                <Typography
+                  sx={{
+                    color: mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'text.secondary',
+                    fontSize: '0.75rem',
+                    fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                  }}
+                >
+                  ./ai-map --list --verbose
+                </Typography>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <Box
+                  sx={{
+                    width: 16,
+                    height: 16,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
+                    fontSize: '0.6rem',
+                    color: mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'text.secondary',
+                    cursor: 'default',
+                    '&:hover': {
+                      backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
                     },
                   }}
                 >
-                  {columnItems.map((item) =>
-                    item.type === 'category'
-                      ? renderCategoryTile(item.category)
-                      : renderToolTile(item.tool!, item.category)
-                  )}
+                  _
                 </Box>
-              ));
-            })()}
+                <Box
+                  sx={{
+                    width: 16,
+                    height: 16,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
+                    fontSize: '0.6rem',
+                    color: mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'text.secondary',
+                    cursor: 'default',
+                    '&:hover': {
+                      backgroundColor: mode === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                    },
+                  }}
+                >
+                  □
+                </Box>
+                <Box
+                  sx={{
+                    width: 16,
+                    height: 16,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: `1px solid ${mode === 'dark' ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)'}`,
+                    fontSize: '0.6rem',
+                    color: mode === 'dark' ? 'rgba(255,255,255,0.5)' : 'text.secondary',
+                    cursor: 'default',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,0,0,0.3)',
+                      borderColor: 'rgba(255,0,0,0.5)',
+                    },
+                  }}
+                >
+                  ×
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Categories and Tools Tree */}
+            {data?.categories
+              .filter((category) => {
+                const query = searchQuery.toLowerCase().trim();
+                if (!query) return true;
+                const hasMatchingTools = category.tools.some(
+                  (tool) =>
+                    tool.name.toLowerCase().includes(query) ||
+                    tool.company.toLowerCase().includes(query) ||
+                    tool.description.toLowerCase().includes(query) ||
+                    category.name.toLowerCase().includes(query)
+                );
+                return hasMatchingTools;
+              })
+              .map((category, catIndex, filteredCategories) => {
+                const query = searchQuery.toLowerCase().trim();
+                const filteredTools = query
+                  ? category.tools.filter(
+                      (tool) =>
+                        tool.name.toLowerCase().includes(query) ||
+                        tool.company.toLowerCase().includes(query) ||
+                        tool.description.toLowerCase().includes(query) ||
+                        category.name.toLowerCase().includes(query)
+                    )
+                  : category.tools;
+
+                return (
+                  <Box key={category.id} sx={{ mb: 3 }}>
+                    {/* Category */}
+                    {renderCategoryTile(category)}
+                    
+                    {/* Tools */}
+                    <Box sx={{ mt: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      {filteredTools.map((tool, toolIndex) =>
+                        renderToolTile(tool, category, toolIndex === filteredTools.length - 1)
+                      )}
+                    </Box>
+                  </Box>
+                );
+              })}
+
+            {/* Terminal cursor */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 1,
+                mt: 4,
+                color: mode === 'dark' ? '#e0e0e0' : 'text.primary',
+                fontFamily: '"JetBrains Mono", "Fira Code", monospace',
+                fontSize: '0.85rem',
+              }}
+            >
+              <span style={{ color: mode === 'dark' ? '#8be9fd' : '#0066cc' }}>user@simonweigold.github.io</span>
+              <span style={{ color: mode === 'dark' ? '#e0e0e0' : '#333' }}>:</span>
+              <span style={{ color: mode === 'dark' ? '#bd93f9' : '#6a0dad' }}>~</span>
+              <span style={{ color: mode === 'dark' ? '#e0e0e0' : '#333' }}>$</span>
+              <Box
+                sx={{
+                  width: 8,
+                  height: 16,
+                  backgroundColor: mode === 'dark' ? '#e0e0e0' : 'text.primary',
+                  animation: 'blink 1s step-end infinite',
+                  '@keyframes blink': {
+                    '0%, 100%': { opacity: 1 },
+                    '50%': { opacity: 0 },
+                  },
+                }}
+              />
+            </Box>
           </Box>
         </Container>
       </Box>
