@@ -1,573 +1,728 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Button from '@mui/material/Button';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import Chip from '@mui/material/Chip';
-import Switch from '@mui/material/Switch';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
 
-// Import from within the src directory
-import portrait from './portrait.jpeg';
-
-// Define structure for section content
-interface SectionContentItem {
-  type: 'heading' | 'subheading' | 'paragraph' | 'list' | 'skillsList';
-  text: string | string[] | JSX.Element;
-  skills?: string[];
-}
-
-interface Section {
-  id: string;
-  title: string;
-  content: SectionContentItem[];
-}
-
-// Sections data structure and content
-const sections: Section[] = [
+/* ─── DATA ─── */
+const experiences = [
   {
-    id: 'about',
-    title: 'Who Am I?',
-    content: [
-      { type: 'paragraph', text: 'Computers. Society. Curiosity. After finishing my Masters in Computational Social Sciences, I have been working in the legal field, applying my technical skills to make the life of legal professionals easier.' },
-      { type: 'paragraph', text: 'My initial interest in media\'s role within society quickly evolved into a fascination with the dynamic interplay between technology and human behavior. Now, with a solid foundation in the humanities and robust technical skills, I am using my knowledge to solve interdisciplinary problems and create innovative solutions.' },
-      { type: 'paragraph', text: (
-        <>
-        Away from the computer screen, I unwind by running. I document my running journey on{' '}
-        <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
-          Trailventure
-        </a>
-        .
-      </>
-      )
-      },
-    ],
+    id: "e1",
+    role: "Software Engineer",
+    company: "Coop Rechtsschutz",
+    date: "2025 – Present",
+    desc: "Helping legal professionals work more efficiently via modern web stacks and cloud infrastructure.",
+    skills: ["FastAPI", "PostgreSQL", "Vue", "GCP"],
   },
   {
-    id: 'skills',
-    title: 'What Do I Know?',
-    content: [
-      { type: 'subheading', text: 'Technical Skills' },
-      { type: 'skillsList', text: ['Python', 'Pandas', 'NumPy', 'SciPy', 'Scikit-learn', 'Keras', 'PyTorch', 'Langchain', 'Langgraph', 'FastAPI', 'Flask', 'Pydantic', 'Pytest'] },
-      { type: 'skillsList', text: ['R', 'Tidyverse', 'Shiny'] },
-      { type: 'skillsList', text: ['JavaScript', 'React', 'Nuxt', 'Vue', 'Express'] },
-      { type: 'skillsList', text: ['Databases', 'PostgreSQL (pgvector, full text search)', 'Microsoft SQL Server', 'MongoDB'] },
-      { type: 'skillsList', text: ['DevOps', 'Git', 'GitHub Actions', 'Docker', 'Kubernetes', 'Ubuntu'] },
-      { type: 'skillsList', text: ['Cloud Computing', 'Azure', 'GCP', 'Cloudflare'] },
-      { type: 'skillsList', text: ['Data Analysis', 'NLP', 'Content Analysis', 'Network Analysis', 'Machine Learning', 'Statistics'] },
-      { type: 'skillsList', text: ['Other Tools', 'LaTeX', 'VBA', 'SPSS', 'Airtable'] },
-      //{ type: 'subheading', text: 'Languages' },
-      //{ type: 'list', text: ['German (C2 - Native)', 'English (C1 - Fluent)', 'Spanish (B1 - Basic)'] },
-      { type: 'subheading', text: 'Fields of Interest' },
-      { type: 'list', text: ['Legal Tech', 'Natural Language Processing', 'Automated Content Analysis', 'Cloud Computing', 'Machine Learning', 'Data-Driven Development', 'Statistical Modelling & Inference'] },
-    ],
+    id: "e2",
+    role: "Data Engineer",
+    company: "University of Lucerne",
+    date: "2023 – 2025",
+    desc: "Building an online platform for legal data ingestion, processing, and distribution.",
+    skills: ["Python", "FastAPI", "PostgreSQL", "Airtable", "Azure", "SCRUM"],
   },
   {
-    id: 'experience',
-    title: 'What Do I Do?',
-    content: [
-      { type: 'subheading', text: 'Fullstack Developer @ Coop Rechtsschutz (Sep 2025 - Present)' },
-      { type: 'paragraph', text: 'Helping legal professionals work more efficiently', skills: ['FastAPI', 'PostgreSQL', 'Vue', 'GCP'] },
-      { type: 'subheading', text: 'Data Engineer @ University of Lucerne (Sep 2023 - Aug 2025)' },
-      { type: 'paragraph', text: 'Building an online platform for legal data.', skills: ['Python', 'FastAPI', 'PostgreSQL', 'Airtable', 'Azure', 'SCRUM'] },
-      { type: 'subheading', text: 'NLP Researcher @ University of Lucerne (Feb 2024 - Aug 2024)' },
-      { type: 'paragraph', text: 'Applying BERT to research digital payments from a sociological perspective.', skills: ['Python', 'NumPy', 'PyTorch', 'NLP', 'BERT', 'Postgres (pgvector)', 'Azure', 'WhisperAI'] },
-      { type: 'subheading', text: 'Junior Data Scientist @ aserto (Oct 2020 - May 2023)' },
-      { type: 'paragraph', text: 'Starting as Intern, working myself up to Junior Data Scientist, using R and SPSS to analyze business problems and offer solutions based on evidence.', skills: ['R', 'SPSS', 'VBA', 'Data Analysis', 'Data Visualization'] },
-      { type: 'subheading', text: 'Market Research Intern @ Ipsos (Sep 2021 - Nov 2021)' },
-      { type: 'paragraph', text: 'Delivering insights to the FMCG and innovation industry through quantitative market research.', skills: ['Quantitative Research', 'Market Analysis', 'Insight Generation'] },
-    ],
+    id: "e3",
+    role: "NLP Researcher",
+    company: "University of Lucerne",
+    date: "2024",
+    desc: "Applied BERT to research digital payments from a sociological perspective.",
+    skills: ["Python", "PyTorch", "NLP", "BERT", "PostgreSQL", "Azure"],
   },
   {
-    id: 'education',
-    title: 'What Qualifies Me?',
-    content: [
-      { type: 'subheading', text: 'Master of Arts in Computational Social Sciences @ University of Lucerne (2022-2024)' },
-      { type: 'paragraph', text: 'Quantitative empirical social research; statistics; machine learning; computer science.' },
-      { type: 'subheading', text: 'Bachelor of Arts in Media Management @ Hochschule für Musik, Theater und Medien Hannover (2019-2022)' },
-      { type: 'paragraph', text: 'Empirical research methodology; statistics; communication; management.' },
-      //{ type: 'subheading', text: 'European Baccalaureate @ European School Frankfurt' },
-      //{ type: 'paragraph', text: 'Advanced courses in Physics, Music, Spanish.' },
-    ],
+    id: "e4",
+    role: "Junior Data Scientist",
+    company: "aserto",
+    date: "2020 – 2023",
+    desc: "Evidence-based business analytics. Rised from intern to junior, delivering insights with R and SPSS.",
+    skills: ["R", "SPSS", "VBA", "Data Analysis", "Visualization"],
+  },
+  {
+    id: "e5",
+    role: "Market Research Intern",
+    company: "Ipsos",
+    date: "2021",
+    desc: "Quantitative market research delivering insights to FMCG and innovation clients.",
+    skills: ["Quantitative Research", "Market Analysis"],
   },
 ];
 
 const projects = [
   {
-    id: 'project-clerk',
-    title: 'CLERK',
-    description: 'Building an AI system that enables a collective production and validation of workflows for LLM-based applications.',
-    link: 'https://openclerk.ch',
-    linkText: 'Project Website',
-    technologies: ['React', 'FastAPI', 'Langchain', 'Langgraph', 'Supabase', 'Docker', 'Azure Container Apps']
+    id: "p1",
+    title: "CLERK",
+    desc: "AI system enabling collective production and validation of LLM-based application workflows.",
+    link: "https://openclerk.ch",
+    tech: ["React", "FastAPI", "Langchain", "Langgraph", "Supabase", "Docker", "Azure"],
   },
   {
-    id: 'project-trailventure',
-    title: 'Trailventure',
-    description: 'Developed a blog website for documenting my running journey. The website includes a user-friendly input and edit interface for me to easily add new blog posts even when on the go.',
-    link: 'https://trailventure.net',
-    linkText: 'Blog Website',
-    technologies: ['React', 'Express', 'Node', 'MongoDB', 'Docker', 'Azure Container Apps']
+    id: "p2",
+    title: "Trailventure",
+    desc: "Blog website documenting my running journey. Built for mobile publishing on the go.",
+    link: "https://trailventure.net",
+    tech: ["React", "Express", "Node", "MongoDB", "Docker", "Azure"],
   },
   {
-    id: 'project-cold-case-analyzer',
-    title: 'CoLD Case Analyzer',
-    description: 'Using LLMs and AI Agents to automate the analysis of court decisions. Building a first prototype allowing legal researchers to boost their efficiency when analysing large numbers of court decisions.',
-    link: 'https://github.com/choice-of-Law-Dataverse/cold-case-analysis',
-    linkText: 'GitHub Repository',
-    technologies: ['Python', 'Langchain', 'Langgraph', 'GPT', 'Streamlit']
+    id: "p3",
+    title: "CoLD Case Analyzer",
+    desc: "LLMs and AI agents automating analysis of court decisions for legal researchers.",
+    link: "https://github.com/choice-of-Law-Dataverse/cold-case-analysis",
+    tech: ["Python", "Langchain", "Langgraph", "GPT", "Streamlit"],
   },
   {
-    id: 'project-cold',
-    title: 'Choice of Law Dataverse',
-    description: 'Created an open-access platform for private international law research data using Airtable, SQL, Python, FastAPI, and Azure for running the technical infrastructure. Led data architecture and software development to enhance legal research accessibility.',
-    link: 'https://www.choiceoflawdataverse.com/',
-    linkText: 'Project Website',
-    technologies: ['PostgreSQL', 'Airtable', 'Azure', 'Python', 'FastAPI', 'Langchain', 'GPT', 'Nuxt.JS']
+    id: "p4",
+    title: "Choice of Law Dataverse",
+    desc: "Open-access platform for private international law research data and tooling.",
+    link: "https://www.choiceoflawdataverse.com/",
+    tech: ["PostgreSQL", "Airtable", "Azure", "Python", "FastAPI", "Nuxt.JS"],
   },
   {
-    id: 'project-nlp',
-    title: 'Digital Payments NLP',
-    description: 'Utilized NLP, BERTopic, and GPT-3.5 Turbo to analyze digital payments industry texts. Conducted research for a Master’s thesis, achieving top grades and continued contributions to the research project through technical skills.',
-    link: 'https://github.com/simonweigold/business-reports-nlp',
-    linkText: 'GitHub Repository',
-    technologies: ['NLP', 'Python', 'BERTopic', 'HuggingFace', 'Transformers', 'GPT', 'WhisperAI', 'PostgreSQL (pgvector)', 'Azure VMs']
+    id: "p5",
+    title: "Digital Payments NLP",
+    desc: "NLP, BERTopic, and GPT analysis of digital payments industry discourse.",
+    link: "https://github.com/simonweigold/business-reports-nlp",
+    tech: ["Python", "BERTopic", "HuggingFace", "GPT", "PostgreSQL", "Azure"],
   },
   {
-    id: 'project-spotify',
-    title: 'Spotify Network Analysis',
-    description: 'Examined the link between an artist\'s collaboration network and their musical success using data mining of Spotify data, social network analysis, penalized regression, ANOVA, and various data visualization techniques. Achieved top grades for a seminar paper.',
-    link: 'https://github.com/simonweigold/spotify-charts-network',
-    linkText: 'GitHub Repository',
-    technologies: ['R', 'Python', 'Data Mining', 'SNA', 'Regression', 'ANOVA', 'Spotify API']
+    id: "p6",
+    title: "Spotify Network Analysis",
+    desc: "Examined how artist collaboration networks influence musical success via data mining and SNA.",
+    link: "https://github.com/simonweigold/spotify-charts-network",
+    tech: ["R", "Python", "SNA", "Regression", "Spotify API"],
   },
   {
-    id: 'project-twitter',
-    title: 'Twitter Sentiment Analysis',
-    description: 'Explored public discourse on Twitter about Elon Musk\'s acquisition using data mining, sentiment analysis, roBERTa, VADER, and NLTK. Achieved excellent grades for a seminar paper.',
-    link: 'https://github.com/simonweigold/twitter-sentiment-analysis',
-    linkText: 'GitHub Repository',
-    technologies: ['Python', 'Data Mining', 'Sentiment Analysis', 'roBERTa', 'VADER', 'NLTK']
+    id: "p7",
+    title: "Twitter Sentiment Analysis",
+    desc: "Public discourse analysis on Elon Musk's Twitter acquisition using roBERTa and VADER.",
+    link: "https://github.com/simonweigold/twitter-sentiment-analysis",
+    tech: ["Python", "roBERTa", "VADER", "NLTK"],
   },
 ];
 
-function App() {
-  const [mode, setMode] = useState<'light' | 'dark'>(() => {
-    // Initialize state from localStorage or default to dark
-    const savedMode = localStorage.getItem('themeMode') as 'light' | 'dark';
-    return savedMode || 'dark';
-  });
+const skills = [
+  "Python","Pandas","NumPy","SciPy","Scikit-learn","Keras","PyTorch","Langchain","Langgraph",
+  "FastAPI","Flask","Pydantic","Pytest","R","Tidyverse","Shiny","JavaScript","React","Nuxt",
+  "Vue","Express", "Databases","PostgreSQL","SQL Server","MongoDB", "DevOps", "Git","Docker","Kubernetes","Azure",
+  "GCP","Cloudflare", "Data Science", "NLP","Network Analysis","Statistics",
+];
 
-  // Update localStorage when mode changes
+const skillCategory = (s: string): string => {
+  const langs = new Set(["Python", "R", "JavaScript", "Databases"]);
+  const abstract = new Set(["DevOps", "Data Science"]);
+  if (langs.has(s)) return "lang";
+  if (abstract.has(s)) return "abs";
+  return "lib";
+};
+
+/* ─── PERLIN NOISE ─── */
+class PerlinNoise {
+  p: Uint8Array;
+
+  constructor() {
+    this.p = new Uint8Array(512);
+    const perm = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) perm[i] = i;
+    for (let i = 0; i < 256; i++) {
+      const r = i + ~~(Math.random() * (256 - i));
+      const t = perm[i];
+      perm[i] = perm[r];
+      perm[r] = t;
+    }
+    for (let i = 0; i < 512; i++) this.p[i] = perm[i & 255];
+  }
+
+  fade(t: number): number {
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+
+  lerp(t: number, a: number, b: number): number {
+    return a + t * (b - a);
+  }
+
+  grad(hash: number, x: number, y: number): number {
+    switch (hash & 3) {
+      case 0: return x + y;
+      case 1: return -x + y;
+      case 2: return x - y;
+      case 3: return -x - y;
+      default: return 0;
+    }
+  }
+
+  noise2D(x: number, y: number): number {
+    const X = Math.floor(x) & 255;
+    const Y = Math.floor(y) & 255;
+    x -= Math.floor(x);
+    y -= Math.floor(y);
+    const u = this.fade(x);
+    const v = this.fade(y);
+    const A = this.p[X] + Y;
+    const B = this.p[X + 1] + Y;
+    return this.lerp(
+      v,
+      this.lerp(u, this.grad(this.p[A], x, y), this.grad(this.p[B], x - 1, y)),
+      this.lerp(u, this.grad(this.p[A + 1], x, y - 1), this.grad(this.p[B + 1], x - 1, y - 1))
+    );
+  }
+}
+
+/* ─── GENERATIVE CANVAS ─── */
+function GenerativeCanvas({ mode }: { mode: string }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseRef = useRef({ x: 0.5, y: 0.5 });
+  const noiseRef = useRef(new PerlinNoise());
+  const timeRef = useRef(0);
+  const rafRef = useRef<number>(0);
+
   useEffect(() => {
-    localStorage.setItem('themeMode', mode);
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+    const ctx = canvas.getContext("2d")!;
+    const dpr = window.devicePixelRatio || 1;
+
+    const resize = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + "px";
+      canvas.style.height = h + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(container);
+
+    const handleMouse = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseRef.current.x = (e.clientX - rect.left) / rect.width;
+      mouseRef.current.y = (e.clientY - rect.top) / rect.height;
+    };
+    canvas.addEventListener("mousemove", handleMouse);
+
+    const cellSize = 16;
+
+    const draw = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const cols = Math.ceil(w / cellSize);
+      const rows = Math.ceil(h / cellSize);
+
+      ctx.fillStyle = "#FDFBF7";
+      ctx.fillRect(0, 0, w, h);
+
+      timeRef.current += 0.004;
+      const t = timeRef.current;
+      const noise = noiseRef.current;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * cellSize;
+          const y = j * cellSize;
+          const u = i / cols;
+          const v = j / rows;
+          let b = 0.5;
+
+          if (mode === "noise") {
+            const s = 5;
+            b = noise.noise2D(u * s + t * 0.3, v * s) * 0.5 + 0.5;
+            b += noise.noise2D(u * s * 2 - t * 0.2, v * s * 2 + t * 0.2) * 0.25;
+            b = Math.min(1, Math.max(0, b));
+          } else if (mode === "wave") {
+            const f = 12;
+            b = Math.sin(u * f + t * 3) * Math.cos(v * f + t * 2) * 0.5 + 0.5;
+            b += Math.sin((u + v) * f * 1.5 - t * 2.5) * 0.2;
+            b = Math.min(1, Math.max(0, b));
+          } else if (mode === "mouse") {
+            const mx = mouseRef.current.x;
+            const my = mouseRef.current.y;
+            const dx = u - mx;
+            const dy = v - my;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            b = Math.max(0, 1 - dist * 1.8);
+            b += noise.noise2D(u * 12, v * 12) * 0.08;
+            b = Math.min(1, Math.max(0, b));
+          }
+
+          const state = Math.min(7, Math.floor(b * 7) + 1);
+          const cx = x + cellSize / 2;
+          const cy = y + cellSize / 2;
+          const s2 = cellSize * 0.32;
+
+          ctx.fillStyle = "#111";
+          ctx.strokeStyle = "#111";
+          ctx.lineWidth = 1.2;
+
+          switch (state) {
+            case 1:
+              ctx.fillRect(cx - 1, cy - 1, 2, 2);
+              break;
+            case 2:
+              ctx.beginPath();
+              ctx.moveTo(cx, cy - s2 * 0.6);
+              ctx.lineTo(cx, cy + s2 * 0.6);
+              ctx.moveTo(cx - s2 * 0.6, cy);
+              ctx.lineTo(cx + s2 * 0.6, cy);
+              ctx.stroke();
+              break;
+            case 3:
+              ctx.beginPath();
+              ctx.moveTo(cx - s2 * 0.5, cy + s2 * 0.5);
+              ctx.lineTo(cx + s2 * 0.5, cy - s2 * 0.5);
+              ctx.stroke();
+              break;
+            case 4:
+              ctx.beginPath();
+              ctx.arc(cx, cy, s2 * 0.25, 0, Math.PI * 2);
+              ctx.stroke();
+              ctx.beginPath();
+              ctx.arc(cx, cy, s2 * 0.5, 0, Math.PI * 2);
+              ctx.stroke();
+              break;
+            case 5:
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(cx - s2 * 0.4, cy - s2 * 0.4);
+              ctx.lineTo(cx + s2 * 0.4, cy + s2 * 0.4);
+              ctx.moveTo(cx + s2 * 0.4, cy - s2 * 0.4);
+              ctx.lineTo(cx - s2 * 0.4, cy + s2 * 0.4);
+              ctx.stroke();
+              ctx.lineWidth = 1.2;
+              break;
+            case 6:
+              ctx.strokeRect(cx - s2 * 0.4, cy - s2 * 0.4, s2 * 0.8, s2 * 0.8);
+              break;
+            case 7:
+              ctx.fillRect(cx - s2 * 0.4, cy - s2 * 0.4, s2 * 0.8, s2 * 0.8);
+              break;
+          }
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+      canvas.removeEventListener("mousemove", handleMouse);
+    };
   }, [mode]);
 
-  const theme = useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-          ...(mode === 'light'
-            ? {
-                // Light mode palette
-                primary: {
-                  main: '#673ab7',
-                },
-                secondary: {
-                  main: '#7A67E0',
-                },
-                background: {
-                  default: '#fafafa',
-                  paper: '#ffffff',
-                },
-                text: {
-                  primary: 'rgba(0, 0, 0, 0.87)',
-                  secondary: '#343434',
-                  disabled: 'rgba(0, 0, 0, 0.38)',
-                },
-              }
-            : {
-                // Dark mode palette
-                primary: {
-                  main: '#7A67E0',
-                },
-                secondary: {
-                  main: '#A99CFF',
-                },
-                background: {
-                  default: '#0F0F0F',
-                  paper: '#111111',
-                },
-                text: {
-                  primary: '#ffffff',
-                  secondary: '#dddddd',
-                  disabled: 'rgba(255, 255, 255, 0.5)',
-                },
-              }),
-        },
-        typography: {
-          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-          h1: {
-            fontWeight: 700,
-          },
-          h2: {
-            fontWeight: 600,
-          },
-        },
-      }),
-    [mode],
+  return (
+    <div ref={containerRef} style={{ width: "100%", height: "100%", position: "relative" }}>
+      <canvas ref={canvasRef} style={{ display: "block" }} />
+    </div>
   );
+}
 
-  const paperCutShadow = mode === 'dark' ? '2px 2px 2px rgba(15, 15, 15, 0.3)' : '2px 2px 2px rgba(50, 50, 50, 0.1)';
+/* ─── APP ─── */
+function App() {
+  const [activeExp, setActiveExp] = useState<number | null>(0);
+  const [activeProj, setActiveProj] = useState<number | null>(null);
+  const [canvasMode, setCanvasMode] = useState("noise");
 
-  const handleThemeChange = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  const selectExp = (idx: number) => {
+    setActiveExp(idx);
+    setActiveProj(null);
   };
 
+  const selectProj = (idx: number) => {
+    setActiveProj(idx);
+    setActiveExp(null);
+  };
+
+  const detailData =
+    activeProj !== null
+      ? { type: "project" as const, ...projects[activeProj] }
+      : activeExp !== null
+      ? { type: "experience" as const, ...experiences[activeExp] }
+      : null;
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box
-        sx={{
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: 'background.default',
-          color: 'text.primary', // Ensure text color contrasts with background
-        }}
-      >
-        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}> {/* Adjust padding for mobile */}
-          {/* Top Section with Theme Toggle */}
-          <Box
-            sx={{
-              display: 'flex',
-              // Mobile first: Column layout, centered items
-              flexDirection: 'column',
-              alignItems: 'center',
-              position: 'relative', // Keep relative for potential absolute children like toggle
-              mb: 6, // Keep margin bottom for spacing below header
-              gap: 0, // Remove gap for column layout
-              // Desktop overrides: Row layout, vertically centered items
-              '@media (min-width: 600px)': { // Use a breakpoint like sm or md
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4, // Restore gap for row layout
-              },
-            }}
-          >
-            {/* Theme Toggle Switch - Adjusted Position */}
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              width: '100%', // Take full width on mobile
-              justifyContent: 'flex-end', // Align to the right on mobile
-              mb: 2, // Add margin below toggle on mobile
-              // Desktop overrides: Absolute positioning
-              '@media (min-width: 600px)': {
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: 'auto', // Reset width
-                mb: 0, // Remove mobile margin
-              },
-            }}>
-              <Brightness7Icon sx={{ color: mode === 'light' ? 'primary.main' : 'text.secondary' }} />
-              <Switch
-                checked={mode === 'dark'}
-                onChange={handleThemeChange}
-                color="secondary"
-              />
-              <Brightness4Icon sx={{ color: mode === 'dark' ? 'secondary.main' : 'text.secondary' }} />
-            </Box>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; }
+        html, body {
+          margin: 0; padding: 0;
+          width: 100%; height: 100%;
+          overflow: hidden;
+          background: #111;
+          font-family: 'Inter', sans-serif;
+          -webkit-font-smoothing: antialiased;
+        }
+        #root { width: 100%; height: 100%; }
 
-            {/* Portrait Avatar - Adjusted Margins */}
-            <Avatar
-              alt="Simon Weigold"
-              src={portrait}
-              sx={{
-                width: 120,
-                height: 120,
-                mb: 2, // Margin below avatar on mobile
-                border: `3px solid ${theme.palette.secondary.main}`,
-                // Desktop overrides: Remove bottom margin
-                '@media (min-width: 600px)': {
-                  mb: 0,
-                },
-              }}
-            />
+        .bauhaus-frame {
+          width: 100vw; height: 100vh;
+          display: grid;
+          grid-template-columns: 1.6fr 1.2fr 1fr 1fr;
+          grid-template-rows: 1.4fr 1fr 1fr;
+          gap: 1px;
+          background: #111;
+          border: 4px solid #111;
+        }
 
-            {/* Text Content Wrapper - Adjusted Alignment */}
-            <Box sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              // Mobile first: Center align text
-              alignItems: 'center',
-              textAlign: 'center', // Center text within this box on mobile
-              // Desktop overrides: Align text to start
-              '@media (min-width: 600px)': {
-                alignItems: 'flex-start',
-                textAlign: 'left', // Align text left on desktop
-              },
-            }}
-            >
-              <Typography
-                variant="h1"
-                component="h1"
-                sx={{
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
-                  mb: 1,
-                  // textAlign is handled by parent Box now
-                }}
+        .panel {
+          background: #FDFBF7;
+          position: relative;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          padding: 1.25rem;
+        }
+
+        .panel-label {
+          font-size: 0.6rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.14em;
+          color: #777;
+          margin-bottom: 0.6rem;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          flex-shrink: 0;
+        }
+        .panel-label::before {
+          content: '';
+          display: inline-block;
+          width: 8px; height: 8px;
+          background: #E63946;
+        }
+
+        /* Hero */
+        .hero h1 {
+          font-size: clamp(1.8rem, 3.2vw, 3.2rem);
+          font-weight: 800;
+          line-height: 0.95;
+          color: #111;
+          margin: 0 0 0.4rem 0;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+        }
+        .hero h2 {
+          font-size: clamp(0.7rem, 1vw, 0.95rem);
+          font-weight: 500;
+          color: #444;
+          margin: 0 0 0.75rem 0;
+          line-height: 1.3;
+        }
+        .hero p {
+          font-size: clamp(0.72rem, 0.85vw, 0.85rem);
+          color: #333;
+          line-height: 1.45;
+          margin: 0 0 0.5rem 0;
+          max-width: 92%;
+        }
+        .hero a {
+          color: #1D3557;
+          text-decoration: none;
+          font-weight: 700;
+          border-bottom: 1px solid #1D3557;
+        }
+        .hero a:hover { color: #E63946; border-bottom-color: #E63946; }
+
+        /* Lists */
+        .list { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+        .list-item {
+          padding: 4px 0;
+          border-bottom: 1px solid rgba(17,17,17,0.07);
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 0.78rem;
+          color: #222;
+          line-height: 1.25;
+        }
+        .list-item:last-child { border-bottom: none; }
+        .list-item:hover { color: #E63946; padding-left: 5px; }
+        .list-item.active { color: #E63946; padding-left: 5px; font-weight: 700; }
+        .list-item .meta { font-size: 0.68rem; color: #888; font-weight: 400; display: block; margin-top: 1px; }
+        .exp-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+        .exp-date { font-size: 0.68rem; color: #888; font-weight: 400; white-space: nowrap; flex-shrink: 0; }
+
+        /* Detail */
+        .detail-content { display: flex; flex-direction: column; height: 100%; }
+        .detail-label {
+          font-size: 0.58rem; font-weight: 700; text-transform: uppercase;
+          letter-spacing: 0.1em; margin-bottom: 0.4rem;
+        }
+        .detail-title {
+          font-size: clamp(0.95rem, 1.4vw, 1.35rem);
+          font-weight: 700; color: #111; margin: 0 0 0.2rem 0; line-height: 1.15;
+        }
+        .detail-sub {
+          font-size: 0.74rem; color: #555; margin-bottom: 0.6rem; font-weight: 500;
+        }
+        .detail-desc {
+          font-size: 0.78rem; color: #333; line-height: 1.45;
+          margin-bottom: 0.75rem; flex: 1; overflow: hidden;
+        }
+        .detail-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 0.6rem; }
+        .detail-tag {
+          font-size: 0.62rem; padding: 2px 5px;
+          border: 1px solid #111; color: #111; font-weight: 500;
+        }
+        .detail-link {
+          display: inline-block; font-size: 0.68rem; font-weight: 700;
+          text-transform: uppercase; color: #E63946; text-decoration: none;
+          border-bottom: 2px solid #E63946; align-self: flex-start;
+        }
+        .detail-link:hover { background: #E63946; color: #fff; }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .detail-animate { animation: fadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+
+        /* Skills */
+        .skills-cloud { display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+        .skill-tag {
+          font-size: 0.65rem; padding: 2px 5px;
+          border: 1px solid #111; color: #111; font-weight: 500; line-height: 1;
+        }
+        .skill-tag.lang { background: #1D3557; border-color: #1D3557; color: #FDFBF7; }
+        .skill-tag.lib { background: #FDFBF7; border-color: #111; color: #111; }
+        .skill-tag.abs { background: #F4D35E; border-color: #F4D35E; color: #111; }
+
+        /* Education */
+        .edu-item { margin-bottom: 0.6rem; }
+        .edu-degree { font-size: 0.76rem; font-weight: 700; color: #111; line-height: 1.2; margin-bottom: 1px; }
+        .edu-school { font-size: 0.7rem; color: #444; }
+        .edu-date { font-size: 0.68rem; color: #888; margin-top: 1px; }
+
+        /* Contact */
+        .contact-links { display: flex; flex-direction: column; gap: 5px; }
+        .contact-links a {
+          font-size: 0.78rem; color: #222; text-decoration: none; font-weight: 600;
+          transition: color 0.2s; border-bottom: 1px solid transparent;
+          display: inline-block; align-self: flex-start;
+        }
+        .contact-links a:hover { color: #E63946; border-bottom-color: #E63946; }
+        .contact-link-btn {
+          font-family: 'Inter', sans-serif; font-size: 0.78rem; color: #999;
+          background: none; border: none; padding: 0; cursor: not-allowed;
+          font-weight: 600; text-align: left;
+        }
+
+        /* Canvas */
+        .canvas-main { padding: 0; }
+        .canvas-controls {
+          position: absolute; bottom: 12px; right: 12px;
+          display: flex; gap: 4px; z-index: 10;
+        }
+        .canvas-btn {
+          font-family: 'Inter', sans-serif; font-size: 0.55rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.04em;
+          padding: 4px 6px; border: 1px solid #111;
+          background: #FDFBF7; color: #111; cursor: pointer; transition: all 0.2s;
+        }
+        .canvas-btn:hover { background: #111; color: #FDFBF7; }
+        .canvas-btn.active { background: #E63946; border-color: #E63946; color: #fff; }
+
+        /* Decorative geometry */
+        .hero::after {
+          content: ''; position: absolute; right: 1rem; top: 1rem;
+          width: 28px; height: 28px; background: #F4D35E;
+        }
+        .contact::before {
+          content: ''; position: absolute; left: 1rem; bottom: 1rem;
+          width: 20px; height: 20px; border: 3px solid #1D3557;
+        }
+
+        /* Grid placement */
+        .hero { grid-column: 1 / 2; grid-row: 1 / 2; }
+        .experience { grid-column: 2 / 3; grid-row: 1 / 2; }
+        .canvas-main { grid-column: 3 / 5; grid-row: 1 / 3; }
+        .projects { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .detail { grid-column: 2 / 3; grid-row: 2 / 4; }
+        .skills { grid-column: 1 / 2; grid-row: 3 / 4; }
+        .education { grid-column: 3 / 4; grid-row: 3 / 4; }
+        .contact { grid-column: 4 / 5; grid-row: 3 / 4; }
+      `}</style>
+
+      <div className="bauhaus-frame">
+        {/* HERO */}
+        <div className="panel hero">
+          <div className="panel-label">Identity</div>
+          <h1>
+            Simon
+            <br />
+            Weigold
+          </h1>
+          <h2>
+            Software Engineer &amp;
+            <br />
+            Computational Social Scientist
+          </h2>
+          <p>Building tools at the intersection of law, language, and machine learning.</p>
+          <p>
+            Away from the screen:{" "}
+            <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer">
+              Trailventure →
+            </a>
+          </p>
+        </div>
+
+        {/* EXPERIENCE */}
+        <div className="panel experience">
+          <div className="panel-label">Experience</div>
+          <ul className="list">
+            {experiences.map((exp, idx) => (
+              <li
+                key={exp.id}
+                className={`list-item ${activeExp === idx && activeProj === null ? "active" : ""}`}
+                onClick={() => selectExp(idx)}
               >
-                Simon Weigold
-              </Typography>
-              {/* Quote */}
-              <Typography
-                variant="h5"
-                component="h2"
-                sx={{
-                  fontSize: { xs: '1.1rem', md: '1.4rem' },
-                  // textAlign: 'center', // Remove center alignment
-                  color: 'text.secondary',
-                  fontStyle: 'italic',
-                  maxWidth: '700px',
-                  mb: 2, // Adjusted margin bottom
-                }}
-              >
-                "Bridging Data Engineering and Social Science to Build Intelligent, Impactful Solutions"
-              </Typography>
+                <div className="exp-line">
+                  <span>{exp.role}</span>
+                  <span className="exp-date">{exp.date}</span>
+                </div>
+                <span className="meta">{exp.company}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-              {/* Social Links */}
-              <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}> {/* Removed mb: 4 */}
-                <IconButton
-                  aria-label="GitHub profile"
-                  component="a" // Use anchor tag behavior
-                  href="https://github.com/simonweigold"
-                  target="_blank" // Open in new tab
-                  rel="noopener noreferrer" // Security best practice
-                  sx={{ color: 'text.secondary' }} // Use secondary text color
-                >
-                  <GitHubIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="LinkedIn profile"
-                  component="a"
-                  href="https://linkedin.com/in/simonweigold"
+        {/* CANVAS */}
+        <div className="panel canvas-main">
+          <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10, fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#777", display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, background: "#E63946" }} /> Art Engine
+          </div>
+          <GenerativeCanvas mode={canvasMode} />
+          <div className="canvas-controls">
+            {/*{["noise", "wave", "mouse"].map((m) => (*/}
+            {["noise"].map((m) => (
+              <button
+                key={m}
+                className={`canvas-btn ${canvasMode === m ? "active" : ""}`}
+                onClick={() => setCanvasMode(m)}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* PROJECTS */}
+        <div className="panel projects">
+          <div className="panel-label">Projects</div>
+          <ul className="list">
+            {projects.map((proj, idx) => (
+              <li
+                key={proj.id}
+                className={`list-item ${activeProj === idx ? "active" : ""}`}
+                onClick={() => selectProj(idx)}
+              >
+                {proj.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* DETAIL */}
+        <div className="panel detail">
+          <div className="panel-label">Focus</div>
+          {detailData ? (
+            <div key={detailData.id} className="detail-content detail-animate">
+              <div
+                className="detail-label"
+                style={{ color: detailData.type === "project" ? "#1D3557" : "#E63946" }}
+              >
+                {detailData.type}
+              </div>
+              <div className="detail-title">
+                {detailData.type === "project" ? detailData.title : (detailData as typeof experiences[0]).role}
+              </div>
+              <div className="detail-sub">
+                {detailData.type === "project"
+                  ? detailData.link.replace("https://", "").replace("http://", "")
+                  : (
+                    <span style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                      <span>{(detailData as typeof experiences[0]).company}</span>
+                      <span style={{ whiteSpace: "nowrap", flexShrink: 0 }}>{(detailData as typeof experiences[0]).date}</span>
+                    </span>
+                  )}
+              </div>
+              <div className="detail-desc">{detailData.desc}</div>
+              <div className="detail-tags">
+                {(detailData.type === "project"
+                  ? (detailData as typeof projects[0]).tech
+                  : (detailData as typeof experiences[0]).skills
+                ).map((t) => (
+                  <span key={t} className="detail-tag">
+                    {t}
+                  </span>
+                ))}
+              </div>
+              {detailData.type === "project" && (
+                <a
+                  href={(detailData as typeof projects[0]).link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  sx={{ color: 'text.secondary' }}
+                  className="detail-link"
                 >
-                  <LinkedInIcon />
-                </IconButton>
-                <Button
-                  component={Link}
-                  to="/ai-map"
-                  variant="outlined"
-                  size="small"
-                  startIcon={<AutoAwesomeIcon />}
-                  sx={{
-                    ml: 1,
-                    borderColor: 'secondary.main',
-                    color: 'secondary.main',
-                    '&:hover': {
-                      borderColor: 'primary.main',
-                      backgroundColor: 'rgba(122, 103, 224, 0.1)',
-                    },
-                  }}
-                >
-                  AI Map
-                </Button>
-              </Box>
-            </Box>
-          </Box>
+                  Visit Project →
+                </a>
+              )}
+            </div>
+          ) : (
+            <div className="detail-content">
+              <div className="detail-desc" style={{ color: "#777" }}>
+                Select an experience or project to inspect details.
+              </div>
+            </div>
+          )}
+        </div>
 
-          {/* Chronological Sections - Updated Rendering */}
-          <Box sx={{ mb: 8 }}>
-            {sections.map((section, sectionIndex) => (
-              <Paper
-                key={section.id}
-                sx={{
-                  p: 3,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  // alignItems: 'center', // Remove center alignment
-                  // textAlign: 'center', // Remove center alignment
-                  backgroundColor: 'background.paper',
-                  border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`, // Adjust border based on mode
-                  boxShadow: paperCutShadow,
-                  mb: 4, // Add margin bottom for spacing between sections
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Typography
-                    variant="h4" // Larger title
-                    component="h2"
-                    // sx={{ ml: 2 }} // Remove margin left
-                  >
-                    {section.title}
-                  </Typography>
-                </Box>
-                <Divider sx={{ mb: 2 }} /> {/* Add a divider below the title */}
-                {section.content.map((item, index) => {
-                  switch (item.type) {
-                    case 'subheading':
-                      return (
-                        <Typography
-                          key={index}
-                          variant="h6" // Use h6 for subheadings
-                          component="h3"
-                          sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}
-                        >
-                          {item.text}
-                        </Typography>
-                      );
-                    case 'paragraph':
-                      return (
-                        <Box key={index}> {/* Wrap paragraph and potential skills in a Box */}
-                          <Typography
-                            variant="body1"
-                            color="text.secondary"
-                            paragraph // Adds bottom margin
-                            sx={{ fontSize: '1.2rem' }}
-                          >
-                            {item.text}
-                          </Typography>
-                          {/* Render skills chips if they exist for this item */}
-                          {item.skills && (
-                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mt: -1, mb: 2 }}> {/* Adjust margins */}
-                              {item.skills.map((skill, skillIndex) => (
-                                <Chip
-                                  key={skillIndex}
-                                  label={skill}
-                                  size="small"
-                                  variant="outlined"
-                                  sx={{ borderColor: 'secondary.main', color: 'secondary.main' }} // Style like project chips
-                                />
-                              ))}
-                            </Box>
-                          )}
-                        </Box>
-                      );
-                    case 'list':
-                      return (
-                        <List key={index} dense sx={{ pl: 2 }}>
-                          {(item.text as string[]).map((listItem, listIndex) => (
-                            <ListItem key={listIndex} disablePadding sx={{ py: 0.2 }}>
-                              <ListItemText primary={`• ${listItem}`} primaryTypographyProps={{ color: 'text.secondary' }} />
-                            </ListItem>
-                          ))}
-                        </List>
-                      );
-                    case 'skillsList': // Special handling for skills to use Chips
-                      return (
-                        <Box key={index} sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.8, mt: 1, mb: 1 }}>
-                          {(item.text as string[]).map((skill, skillIndex) => (
-                            <Chip
-                              key={skillIndex}
-                              label={skill}
-                              size="small"
-                              variant="outlined"
-                              sx={skillIndex === 0
-                                ? { borderColor: 'secondary.main', color: 'secondary.main' } // Highlight first skill
-                                : { borderColor: 'grey.500', color: 'text.secondary' } // Default style for others
-                              }
-                            />
-                          ))}
-                        </Box>
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-              </Paper>
+        {/* SKILLS */}
+        <div className="panel skills">
+          <div className="panel-label">Stack</div>
+          <div className="skills-cloud">
+            {skills.map((s) => (
+              <span key={s} className={`skill-tag ${skillCategory(s)}`}>
+                {s}
+              </span>
             ))}
-          </Box>
+          </div>
+        </div>
 
-          {/* Projects Section */}
-          <Box sx={{ mb: 8 }}>
-            <Typography variant="h3" component="h2" sx={{ textAlign: 'center', mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Projects
-            </Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: {
-                  xs: '1fr',
-                  sm: 'repeat(2, 1fr)',
-                  md: 'repeat(3, 1fr)',
-                },
-                gap: 4,
-                alignItems: 'stretch',
-              }}
-            >
-              {projects.map((project) => (
-                <Box key={project.id} sx={{ display: 'flex' }}>
-                  <Card
-                    sx={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      bgcolor: 'background.paper',
-                      border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
-                      boxShadow: paperCutShadow,
-                      elevation: 0,
-                    }}
-                  >
-                    {/* CardMedia removed */}
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {project.title}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                        {project.description}
-                      </Typography>
-                       {/* Technologies Section */}
-                       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mt: 'auto' }}>
-                        {project.technologies.map((tech) => (
-                          <Chip key={tech} label={tech} size="small" variant="outlined" sx={{ borderColor: 'secondary.main', color: 'secondary.main' }} />
-                        ))}
-                      </Box>
-                    </CardContent>
-                    <CardActions sx={{ mt: 'auto' }}>
-                      <Button
-                        size="small"
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ color: 'secondary.main' }}
-                      >
-                        {project.linkText}
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Box>
-              ))}
-            </Box>
-          </Box>
+        {/* EDUCATION */}
+        <div className="panel education">
+          <div className="panel-label">Education</div>
+          <div className="edu-item">
+            <div className="edu-degree">MA Computational Social Sciences</div>
+            <div className="edu-school">University of Lucerne</div>
+            <div className="edu-date">2022 – 2024</div>
+          </div>
+          <div className="edu-item">
+            <div className="edu-degree">BA Media Management</div>
+            <div className="edu-school">HMTM Hannover</div>
+            <div className="edu-date">2019 – 2022</div>
+          </div>
+        </div>
 
-        </Container>
-      </Box>
-    </ThemeProvider>
+        {/* CONTACT */}
+        <div className="panel contact">
+          <div className="panel-label">Link</div>
+          <div className="contact-links">
+            <a href="https://github.com/simonweigold" target="_blank" rel="noopener noreferrer">
+              GitHub
+            </a>
+            <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer">
+              Trailventure
+            </a>
+            <a href="https://linkedin.com/in/simonweigold" target="_blank" rel="noopener noreferrer">
+              LinkedIn
+            </a>
+            <a href="mailto:simonw750@gmail.com">Email</a>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
