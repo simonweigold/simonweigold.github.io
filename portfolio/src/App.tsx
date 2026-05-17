@@ -322,6 +322,7 @@ function App() {
   const [activeExp, setActiveExp] = useState<number | null>(0);
   const [activeProj, setActiveProj] = useState<number | null>(null);
   const [canvasMode, setCanvasMode] = useState("noise");
+  const detailRef = useRef<HTMLDivElement>(null);
 
   const selectExp = (idx: number) => {
     setActiveExp(idx);
@@ -332,6 +333,14 @@ function App() {
     setActiveProj(idx);
     setActiveExp(null);
   };
+
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+  }, [activeExp, activeProj]);
 
   const detailData =
     activeProj !== null
@@ -542,6 +551,49 @@ function App() {
         .skills { grid-column: 1 / 2; grid-row: 3 / 4; }
         .education { grid-column: 3 / 4; grid-row: 3 / 4; }
         .contact { grid-column: 4 / 5; grid-row: 3 / 4; }
+
+        /* ── Mobile ── */
+        @media (max-width: 768px) {
+          html, body { overflow-y: auto; height: auto; }
+          #root { height: auto; min-height: 100vh; }
+
+          .bauhaus-frame {
+            width: 100%;
+            height: auto;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto 140px auto auto;
+            border-width: 3px;
+          }
+
+          /* Hero: full width banner */
+          .hero { grid-column: 1 / 3; grid-row: 1; }
+          .hero h1 { font-size: 2.4rem; }
+          .hero h2 { font-size: 0.85rem; }
+          .hero p  { font-size: 0.82rem; }
+
+          /* Experience + Projects side by side */
+          .experience { grid-column: 1 / 2; grid-row: 2; }
+          .projects   { grid-column: 2 / 3; grid-row: 2; }
+
+          /* Detail: full-width panel below lists */
+          .detail { grid-column: 1 / 3; grid-row: 3; }
+
+          /* Canvas: thin generative strip below focus */
+          .canvas-main { grid-column: 1 / 3; grid-row: 4; }
+
+          /* Education + Contact side by side */
+          .education { grid-column: 1 / 2; grid-row: 5; }
+          .contact   { grid-column: 2 / 3; grid-row: 5; }
+
+          /* Skills: full width at the bottom */
+          .skills { grid-column: 1 / 3; grid-row: 6; }
+
+          /* Panel adjustments */
+          .panel { padding: 1rem; }
+          .list-item { padding: 7px 0; }
+          .detail-content { height: auto; }
+          .detail-desc { flex: none; overflow: visible; }
+        }
       `}</style>
 
       <div className="bauhaus-frame">
@@ -624,7 +676,7 @@ function App() {
         </div>
 
         {/* DETAIL */}
-        <div className="panel detail">
+        <div ref={detailRef} className="panel detail">
           <div className="panel-label">Focus</div>
           {detailData ? (
             <div key={detailData.id} className="detail-content detail-animate">
