@@ -8,7 +8,7 @@ const experiences = [
     company: "Coop Rechtsschutz",
     date: "2025 – Present",
     desc: "Helping legal professionals work more efficiently via modern web stacks and cloud infrastructure.",
-    skills: ["FastAPI", "PostgreSQL", "Vue", "GCP"],
+    skills: ["Python", "FastAPI", "Google ADK", "JavaScript", "Vue", "Databases", "PostgreSQL", "Knowledge Graphs", "DevOps", "Git", "Docker", "Terraform", "GCP"],
   },
   {
     id: "e2",
@@ -16,7 +16,7 @@ const experiences = [
     company: "University of Lucerne",
     date: "2023 – 2025",
     desc: "Building an online platform for legal data ingestion, processing, and distribution.",
-    skills: ["Python", "FastAPI", "PostgreSQL", "Airtable", "Azure", "SCRUM"],
+    skills: ["Python", "FastAPI", "Databases", "PostgreSQL", "Airtable", "Azure", "SCRUM"],
   },
   {
     id: "e3",
@@ -24,7 +24,7 @@ const experiences = [
     company: "University of Lucerne",
     date: "2024",
     desc: "Applied BERT to research digital payments from a sociological perspective.",
-    skills: ["Python", "PyTorch", "NLP", "BERT", "PostgreSQL", "Azure"],
+    skills: ["Python", "PyTorch", "Data Science", "NLP", "BERT", "Databases", "PostgreSQL", "DevOps", "Azure"],
   },
   {
     id: "e4",
@@ -32,7 +32,7 @@ const experiences = [
     company: "aserto",
     date: "2020 – 2023",
     desc: "Evidence-based business analytics. Rised from intern to junior, delivering insights with R and SPSS.",
-    skills: ["R", "SPSS", "VBA", "Data Analysis", "Visualization"],
+    skills: ["R", "SPSS", "VBA", "Data Science", "Statistics", "Data Visualization"],
   },
   {
     id: "e5",
@@ -40,7 +40,7 @@ const experiences = [
     company: "Ipsos",
     date: "2021",
     desc: "Quantitative market research delivering insights to FMCG and innovation clients.",
-    skills: ["Quantitative Research", "Market Analysis"],
+    skills: ["Quantitative Research", "Market Analysis", "Statistics", "Data Visualization"],
   },
 ];
 
@@ -97,10 +97,10 @@ const projects = [
 ];
 
 const skills = [
-  "Python","Pandas","NumPy","SciPy","Scikit-learn","Keras","PyTorch","Langchain","Langgraph",
+  "Python","Pandas","NumPy","SciPy","Scikit-learn","Keras","PyTorch","Langchain","Langgraph","Google ADK",
   "FastAPI","Flask","Pydantic","Pytest","R","Tidyverse","Shiny","JavaScript","React","Nuxt",
-  "Vue","Express", "Databases","PostgreSQL","SQL Server","MongoDB", "DevOps", "Git","Docker","Kubernetes","Azure",
-  "GCP","Cloudflare", "Data Science", "NLP","Network Analysis","Statistics",
+  "Vue","Express","Databases","PostgreSQL","SQL Server","MongoDB","Knowledge Graphs","DevOps","Terraform","Git","Docker","Kubernetes",
+  "Azure","GCP","Cloudflare","Data Science","NLP","Network Analysis","Statistics",
 ];
 
 const skillCategory = (s: string): string => {
