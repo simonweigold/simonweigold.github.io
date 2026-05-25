@@ -319,7 +319,7 @@ function GenerativeCanvas({ mode }: { mode: string }) {
 
 /* ─── APP ─── */
 function App() {
-  const [activeExp, setActiveExp] = useState<number | null>(0);
+  const [activeExp, setActiveExp] = useState<number | null>(null);
   const [activeProj, setActiveProj] = useState<number | null>(null);
   const [canvasMode, setCanvasMode] = useState("noise");
   const detailRef = useRef<HTMLDivElement>(null);
@@ -347,6 +347,13 @@ function App() {
       ? { type: "project" as const, ...projects[activeProj] }
       : activeExp !== null
       ? { type: "experience" as const, ...experiences[activeExp] }
+      : null;
+
+  const activeSkillSet =
+    activeProj !== null
+      ? new Set(projects[activeProj].tech)
+      : activeExp !== null
+      ? new Set(experiences[activeExp].skills)
       : null;
 
   return (
@@ -492,10 +499,12 @@ function App() {
         .skill-tag {
           font-size: 0.65rem; padding: 2px 5px;
           border: 1px solid #111; color: #111; font-weight: 500; line-height: 1;
+          transition: opacity 0.25s ease;
         }
         .skill-tag.lang { background: #1D3557; border-color: #1D3557; color: #FDFBF7; }
         .skill-tag.lib { background: #FDFBF7; border-color: #111; color: #111; }
         .skill-tag.abs { background: #F4D35E; border-color: #F4D35E; color: #111; }
+        .skill-tag.dimmed { opacity: 0.15; }
 
         /* Education */
         .edu-item { margin-bottom: 0.6rem; }
@@ -731,14 +740,18 @@ function App() {
         </div>
 
         {/* SKILLS */}
-        <div className="panel skills">
+        <div className="panel skills" onClick={() => { setActiveExp(null); setActiveProj(null); }} style={{ cursor: activeSkillSet ? "pointer" : "default" }}>
           <div className="panel-label">Stack</div>
           <div className="skills-cloud">
-            {skills.map((s) => (
-              <span key={s} className={`skill-tag ${skillCategory(s)}`}>
-                {s}
-              </span>
-            ))}
+            {skills.map((s) => {
+              const cat = skillCategory(s);
+              const isDimmed = activeSkillSet !== null && !activeSkillSet.has(s);
+              return (
+                <span key={s} className={`skill-tag ${cat}${isDimmed ? " dimmed" : ""}`}>
+                  {s}
+                </span>
+              );
+            })}
           </div>
         </div>
 
