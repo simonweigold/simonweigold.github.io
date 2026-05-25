@@ -458,6 +458,14 @@ function App() {
         .list-item .meta { font-size: 0.68rem; color: #888; font-weight: 400; display: block; margin-top: 1px; }
         .exp-line { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
         .exp-date { font-size: 0.68rem; color: #888; font-weight: 400; white-space: nowrap; flex-shrink: 0; }
+        .proj-line { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+        .proj-link {
+          font-size: 0.72rem; color: #aaa; text-decoration: none; flex-shrink: 0;
+          opacity: 0; transition: opacity 0.15s ease;
+          line-height: 1;
+        }
+        .list-item:hover .proj-link { opacity: 1; color: #E63946; }
+        .list-item.active .proj-link { opacity: 1; color: #E63946; }
 
         /* Detail */
         .detail-content { display: flex; flex-direction: column; height: 100%; }
@@ -678,7 +686,18 @@ function App() {
                 className={`list-item ${activeProj === idx ? "active" : ""}`}
                 onClick={() => selectProj(idx)}
               >
-                {proj.title}
+                <div className="proj-line">
+                  <span>{proj.title}</span>
+                  <a
+                    href={proj.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="proj-link"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    ↗
+                  </a>
+                </div>
               </li>
             ))}
           </ul>
