@@ -933,40 +933,42 @@ function App() {
           border: 1px solid #141417; cursor: pointer;
           transition: background 160ms ease, color 160ms ease, transform 160ms ease;
         }
-        .admin-open-btn:hover { background: #141417; color: #e0af68; }
+        .admin-open-btn:hover { background: #1D3557; border-color: #1D3557; color: #FDFBF7; }
         .admin-open-btn:active { transform: scale(0.97); }
-        .admin-open-btn:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
+        .admin-open-btn:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
 
         /* Login overlay */
         .overlay-layer {
           position: fixed; inset: 0; z-index: 60;
           display: flex; align-items: center; justify-content: center;
           padding: 1rem;
+          background: #e7e9ed;
           font-family: var(--font-mono);
+          animation: fadeOnly 300ms ease both;
         }
         .login-panel {
           width: min(420px, 100%);
-          background: #141417;
-          border: 1px solid #2b2b33;
+          background: #f4f5f7;
+          border: 1px solid #d2d6dd;
           padding: 1.6rem 1.75rem 1.25rem;
           position: relative;
-          box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+          box-shadow: 0 18px 50px rgba(29, 53, 87, 0.12);
           animation: loginIn 440ms var(--ease-out-strong) both;
         }
         .login-panel.exit-down { animation: loginOutDown 240ms var(--ease-exit) both; }
         .login-panel.exit-up { animation: loginOutUp 260ms var(--ease-exit) both; }
         .login-panel::after {
           content: ''; position: absolute; top: 0; left: 0; right: 0;
-          height: 2px; background: #e0af68;
+          height: 2px; background: #1D3557;
         }
-        .login-panel .panel-label { color: #8b8b96; font-family: var(--font-mono); }
-        .login-panel .panel-label::before { background: #e0af68; }
+        .login-panel .panel-label { color: #6b7280; font-family: var(--font-mono); }
+        .login-panel .panel-label::before { background: #E63946; }
         .login-title {
           font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700;
           text-transform: uppercase; letter-spacing: 0.08em;
-          color: #e8e8ec; margin: 0 0 0.15rem;
+          color: #111; margin: 0 0 0.15rem;
         }
-        .login-sub { font-size: 0.72rem; color: #6b6b76; margin: 0 0 1.2rem; }
+        .login-sub { font-size: 0.72rem; color: #6b7280; margin: 0 0 1.2rem; }
 
         .login-panel .panel-label,
         .login-panel .login-title,
@@ -988,42 +990,42 @@ function App() {
         .field label {
           display: block; font-size: 0.6rem; font-weight: 600;
           text-transform: uppercase; letter-spacing: 0.12em;
-          color: #8b8b96; margin-bottom: 4px;
+          color: #6b7280; margin-bottom: 4px;
         }
         .field input {
           width: 100%; padding: 10px 12px;
-          font-family: var(--font-mono); font-size: 0.82rem; color: #e8e8ec;
-          background: #1b1b21; border: 1px solid #33333d; border-radius: 0;
+          font-family: var(--font-mono); font-size: 0.82rem; color: #111;
+          background: #ffffff; border: 1px solid #ced3da; border-radius: 0;
           transition: border-color 160ms ease, box-shadow 160ms ease;
         }
-        .field input:focus { outline: none; border-color: #e0af68; box-shadow: 0 0 0 1px rgba(224, 175, 104, 0.3); }
-        .field input:disabled { opacity: 0.5; }
-        .login-panel.has-error .field input { border-color: #f38ba8; }
+        .field input:focus { outline: none; border-color: #1D3557; box-shadow: 0 0 0 1px rgba(29, 53, 87, 0.25); }
+        .field input:disabled { opacity: 0.6; }
+        .login-panel.has-error .field input { border-color: #E63946; }
         .login-panel.is-success .field { opacity: 0.35; }
 
         .login-error {
           display: flex; align-items: flex-start; gap: 6px;
-          font-size: 0.7rem; font-weight: 600; color: #f38ba8;
+          font-size: 0.7rem; font-weight: 600; color: #E63946;
           margin: 0 0 0.85rem; line-height: 1.35;
         }
         .login-error::before {
           content: ''; width: 8px; height: 8px; flex-shrink: 0;
-          background: #f38ba8; margin-top: 3px;
+          background: #E63946; margin-top: 3px;
         }
 
         .login-submit {
           width: 100%; padding: 12px;
           font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
           text-transform: uppercase; letter-spacing: 0.12em;
-          background: #e0af68; color: #141417; border: none; cursor: pointer;
+          background: #1D3557; color: #FDFBF7; border: none; cursor: pointer;
           display: flex; align-items: center; justify-content: center;
           transition: background 160ms ease, transform 160ms ease;
         }
-        .login-submit:hover:not(:disabled) { background: #eec27f; }
+        .login-submit:hover:not(:disabled) { background: #2a4d78; }
         .login-submit:active:not(:disabled) { transform: scale(0.98); }
         .login-submit:disabled { cursor: wait; }
-        .login-submit.granted { background: #1D3557; color: #FDFBF7; cursor: default; }
-        .login-submit:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
+        .login-submit.granted { background: #F4D35E; color: #111; cursor: default; }
+        .login-submit:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
         .btn-swap {
           display: inline-flex; align-items: center; gap: 8px;
           animation: btnSwap 180ms var(--ease-out-strong) both;
@@ -1041,26 +1043,26 @@ function App() {
           font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600;
           text-transform: uppercase; letter-spacing: 0.06em;
           background: none; border: none; padding: 0; cursor: pointer;
-          color: #6b6b76; border-bottom: 1px solid transparent;
+          color: #6b7280; border-bottom: 1px solid transparent;
           transition: color 150ms ease, border-color 150ms ease;
         }
-        .back-link:hover:not(:disabled) { color: #e0af68; border-bottom-color: #e0af68; }
+        .back-link:hover:not(:disabled) { color: #1D3557; border-bottom-color: #1D3557; }
         .back-link:disabled { opacity: 0.4; cursor: default; }
-        .back-link:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
-        .demo-hint { font-size: 0.6rem; color: #55555e; }
+        .back-link:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
+        .demo-hint { font-size: 0.6rem; color: #9aa1ab; }
         .shake { animation: shake 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
 
         /* Dashboard overlay */
         .dash-layer {
           position: fixed; inset: 0; z-index: 60;
-          background: #0c0c0e; border: 4px solid #0c0c0e;
+          background: #e7e9ed; border: 4px solid #e7e9ed;
           display: grid; gap: 1px;
           grid-template-columns: repeat(4, 1fr);
           grid-template-rows: auto 1fr 1fr;
           font-family: var(--font-mono);
         }
         .dash-panel {
-          background: #141417; padding: 1.25rem; position: relative;
+          background: #f4f5f7; padding: 1.25rem; position: relative;
           display: flex; flex-direction: column;
           animation: dashIn 440ms var(--ease-out-strong) both;
           animation-delay: var(--d, 0ms);
@@ -1075,33 +1077,33 @@ function App() {
           padding: 0.9rem 1.25rem;
         }
         .dash-title-wrap { display: flex; align-items: center; gap: 8px; }
-        .dash-red-square { width: 8px; height: 8px; background: #e0af68; }
+        .dash-red-square { width: 8px; height: 8px; background: #E63946; }
         .dash-title {
           font-size: 0.8rem; font-weight: 700; text-transform: uppercase;
-          letter-spacing: 0.08em; color: #e8e8ec;
+          letter-spacing: 0.08em; color: #111;
         }
-        .dash-panel .panel-label { color: #8b8b96; font-family: var(--font-mono); }
-        .dash-panel .panel-label::before { background: #e0af68; }
-        .dash-session { margin-left: auto; font-size: 0.7rem; color: #6b6b76; }
+        .dash-panel .panel-label { color: #6b7280; font-family: var(--font-mono); }
+        .dash-panel .panel-label::before { background: #E63946; }
+        .dash-session { margin-left: auto; font-size: 0.7rem; color: #6b7280; }
         .logout-btn {
           font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
           text-transform: uppercase; letter-spacing: 0.08em;
-          padding: 7px 12px; background: transparent; color: #ccc;
-          border: 1px solid #33333d; cursor: pointer;
+          padding: 7px 12px; background: transparent; color: #111;
+          border: 1px solid #ced3da; cursor: pointer;
           transition: background 150ms ease, color 150ms ease,
                       border-color 150ms ease, transform 150ms ease;
         }
-        .logout-btn:hover { background: #e0af68; border-color: #e0af68; color: #141417; }
+        .logout-btn:hover { background: #1D3557; border-color: #1D3557; color: #FDFBF7; }
         .logout-btn:active { transform: scale(0.97); }
-        .logout-btn:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
-        .dash-yellow { width: 14px; height: 14px; background: #e0af68; flex-shrink: 0; }
+        .logout-btn:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
+        .dash-yellow { width: 14px; height: 14px; background: #F4D35E; flex-shrink: 0; }
         .dash-services { grid-column: 1 / -1; }
         .dash-empty {
           flex: 1; display: flex; flex-direction: column;
           align-items: center; justify-content: center; gap: 4px;
         }
-        .dash-dash { font-size: 1.8rem; font-weight: 400; color: #3a3a44; line-height: 1; }
-        .dash-note { font-size: 0.6rem; color: #55555e; text-align: center; }
+        .dash-dash { font-size: 1.8rem; font-weight: 400; color: #c2c8d0; line-height: 1; }
+        .dash-note { font-size: 0.6rem; color: #7b8494; text-align: center; }
 
         /* Keyframes */
         @keyframes loginIn {
