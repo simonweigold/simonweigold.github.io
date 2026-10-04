@@ -879,29 +879,26 @@ function App() {
         .bauhaus-frame.from-void .contact     { transition-delay: 420ms; }
         .bauhaus-frame.from-void .admin       { transition-delay: 480ms; }
 
-        /* Admin grid panel — the inverted "door" */
-        .panel.admin { background: #111; color: #FDFBF7; }
-        .panel.admin .panel-label { color: #777; font-family: var(--font-mono); }
+        /* Admin grid panel — compact console entry */
+        .panel.admin .panel-label {
+          color: #777; font-family: var(--font-mono); margin-bottom: 0.5rem;
+        }
         .panel.admin .panel-label::before { background: #e0af68; }
-        .admin-body {
-          flex: 1; display: flex; flex-direction: column;
-          justify-content: center; gap: 0.85rem;
+        .admin-status { display: flex; align-items: center; gap: 6px; margin-bottom: 0.75rem; }
+        .admin-dot { width: 6px; height: 6px; background: #e0af68; flex-shrink: 0; }
+        .admin-desc {
+          font-family: var(--font-mono); font-size: 0.62rem; color: #8b8b96;
+          margin: 0; text-transform: uppercase; letter-spacing: 0.06em;
         }
-        .admin-motif { position: relative; width: 54px; height: 54px; }
-        .admin-square { position: absolute; display: block; }
-        .admin-square.s1 { inset: 0; border: 2px solid #3a3a42; }
-        .admin-square.s2 { inset: 12px; border: 2px solid #e0af68; }
-        .admin-square.s3 { inset: 24px; background: #e0af68; }
-        .admin-desc { font-size: 0.72rem; color: #777; line-height: 1.4; margin: 0; }
         .admin-open-btn {
-          font-family: var(--font-mono); font-size: 0.65rem; font-weight: 600;
+          margin-top: auto; width: 100%;
+          font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
           text-transform: uppercase; letter-spacing: 0.08em;
-          padding: 10px 12px; background: transparent; color: #ccc;
-          border: 1px solid #3a3a42; cursor: pointer;
-          transition: background 160ms ease, color 160ms ease,
-                      border-color 160ms ease, transform 160ms ease;
+          padding: 8px 10px; background: transparent; color: #141417;
+          border: 1px solid #141417; cursor: pointer;
+          transition: background 160ms ease, color 160ms ease, transform 160ms ease;
         }
-        .admin-open-btn:hover { background: #e0af68; border-color: #e0af68; color: #141417; }
+        .admin-open-btn:hover { background: #141417; color: #e0af68; }
         .admin-open-btn:active { transform: scale(0.97); }
         .admin-open-btn:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
 
@@ -1002,8 +999,8 @@ function App() {
         }
 
         .login-foot {
-          display: flex; justify-content: space-between; align-items: center;
-          margin-top: 1rem; gap: 8px;
+          display: flex; flex-direction: column; align-items: flex-start;
+          margin-top: 1rem; gap: 6px;
         }
         .back-link {
           font-family: var(--font-mono); font-size: 0.64rem; font-weight: 600;
@@ -1015,7 +1012,7 @@ function App() {
         .back-link:hover:not(:disabled) { color: #e0af68; border-bottom-color: #e0af68; }
         .back-link:disabled { opacity: 0.4; cursor: default; }
         .back-link:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
-        .demo-hint { font-size: 0.6rem; color: #55555e; text-align: right; }
+        .demo-hint { font-size: 0.6rem; color: #55555e; }
         .shake { animation: shake 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
 
         /* Dashboard overlay */
@@ -1141,12 +1138,12 @@ function App() {
         .hero { grid-column: 1 / 2; grid-row: 1 / 2; }
         .experience { grid-column: 2 / 3; grid-row: 1 / 2; }
         .canvas-main { grid-column: 3 / 4; grid-row: 1 / 3; }
-        .admin { grid-column: 4 / 5; grid-row: 1 / 3; }
+        .admin { grid-column: 4 / 5; grid-row: 1 / 2; }
         .projects { grid-column: 1 / 2; grid-row: 2 / 3; }
         .detail { grid-column: 2 / 3; grid-row: 2 / 4; }
         .skills { grid-column: 1 / 2; grid-row: 3 / 4; }
         .education { grid-column: 3 / 4; grid-row: 3 / 4; }
-        .contact { grid-column: 4 / 5; grid-row: 3 / 4; }
+        .contact { grid-column: 4 / 5; grid-row: 2 / 4; }
 
         /* ── Mobile ── */
         @media (max-width: 768px) {
@@ -1181,8 +1178,12 @@ function App() {
           .education { grid-column: 1 / 2; grid-row: 5; }
           .contact   { grid-column: 2 / 3; grid-row: 5; }
 
-          /* Admin: full width row */
+          /* Admin: compact horizontal strip */
           .admin { grid-column: 1 / 3; grid-row: 6; }
+          .panel.admin { flex-direction: row; align-items: center; gap: 10px; }
+          .panel.admin .panel-label { margin-bottom: 0; }
+          .admin-status { margin-bottom: 0; }
+          .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; }
 
           /* Skills: full width at the bottom */
           .skills { grid-column: 1 / 3; grid-row: 7; }
@@ -1272,13 +1273,9 @@ function App() {
         {/* ADMIN */}
         <div className="panel admin">
           <div className="panel-label">Admin</div>
-          <div className="admin-body">
-            <div className="admin-motif" aria-hidden="true">
-              <span className="admin-square s1" />
-              <span className="admin-square s2" />
-              <span className="admin-square s3" />
-            </div>
-            <p className="admin-desc">Private monitoring &amp; control room.</p>
+          <div className="admin-status">
+            <span className="admin-dot" aria-hidden="true" />
+            <span className="admin-desc">Control room</span>
           </div>
           <button ref={openBtnRef} className="admin-open-btn" onClick={openLogin}>
             Open Login
