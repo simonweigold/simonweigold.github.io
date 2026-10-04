@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, type CSSProperties, type FormEvent } from 'react';
+import { signIn, AuthError, type Session } from './auth';
 
 /* ─── DATA ─── */
 const experiences = [
@@ -164,13 +165,18 @@ class PerlinNoise {
 }
 
 /* ─── GENERATIVE CANVAS ─── */
-function GenerativeCanvas({ mode }: { mode: string }) {
+function GenerativeCanvas({ mode, active = true }: { mode: string; active?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const noiseRef = useRef(new PerlinNoise());
   const timeRef = useRef(0);
   const rafRef = useRef<number>(0);
+  const activeRef = useRef(active);
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -202,6 +208,10 @@ function GenerativeCanvas({ mode }: { mode: string }) {
     const cellSize = 16;
 
     const draw = () => {
+      if (!activeRef.current) {
+        rafRef.current = requestAnimationFrame(draw);
+        return;
+      }
       const w = container.clientWidth;
       const h = container.clientHeight;
       const cols = Math.ceil(w / cellSize);
@@ -317,12 +327,274 @@ function GenerativeCanvas({ mode }: { mode: string }) {
   );
 }
 
+/* ─── ADMIN FLOW ─── */
+type Phase =
+  | "portfolio"
+  | "grid-exit"
+  | "login"
+  | "login-exit"
+  | "success"
+  | "login-rise"
+  | "dashboard"
+  | "dashboard-exit";
+
+const DASH_WIDGETS = [
+  { label: "CPU", delay: 90 },
+  { label: "Memory", delay: 150 },
+  { label: "Disk", delay: 210 },
+  { label: "Network", delay: 270 },
+];
+
+function LoginOverlay({
+  exitDir,
+  success,
+  onSuccess,
+  onBack,
+}: {
+  exitDir: "none" | "down" | "up";
+  success: boolean;
+  onSuccess: (s: Session) => void;
+  onBack: () => void;
+}) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [shakeTick, setShakeTick] = useState(0);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const shakeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    emailRef.current?.focus();
+  }, []);
+
+  /* Restart the shake animation on each failed attempt */
+  useEffect(() => {
+    if (shakeTick === 0) return;
+    const el = shakeRef.current;
+    if (el) {
+      el.classList.remove("shake");
+      void el.offsetWidth;
+      el.classList.add("shake");
+    }
+    passwordRef.current?.focus();
+  }, [shakeTick]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (submitting || success) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const s = await signIn(email, password);
+      onSuccess(s);
+    } catch (err) {
+      setSubmitting(false);
+      setError(
+        err instanceof AuthError ? err.message : "Something went wrong. Try again."
+      );
+      setShakeTick((t) => t + 1);
+    }
+  };
+
+  const panelClass =
+    "login-panel" +
+    (exitDir === "down" ? " exit-down" : exitDir === "up" ? " exit-up" : "") +
+    (error ? " has-error" : "") +
+    (success ? " is-success" : "");
+
+  const btnState = success ? "granted" : submitting ? "verifying" : "idle";
+  const btnText = success ? "Access granted" : submitting ? "Verifying" : "Sign in";
+
+  return (
+    <div className="overlay-layer" role="dialog" aria-modal="true" aria-label="Admin login">
+      <div className={panelClass}>
+        <div ref={shakeRef}>
+          <div className="panel-label">Admin</div>
+          <h2 className="login-title">Sign in</h2>
+          <p className="login-sub">Restricted area — portfolio control room.</p>
+          <form onSubmit={handleSubmit}>
+            <div className="field f-email">
+              <label htmlFor="admin-email">Email</label>
+              <input
+                id="admin-email"
+                ref={emailRef}
+                type="email"
+                required
+                autoComplete="username"
+                value={email}
+                disabled={submitting || success}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setError(null);
+                }}
+              />
+            </div>
+            <div className="field f-pass">
+              <label htmlFor="admin-password">Password</label>
+              <input
+                id="admin-password"
+                ref={passwordRef}
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                disabled={submitting || success}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError(null);
+                }}
+              />
+            </div>
+            {error && (
+              <div className="login-error" role="alert">
+                {error}
+              </div>
+            )}
+            <button type="submit" className={`login-submit ${btnState}`} disabled={submitting || success}>
+              <span key={btnText} className="btn-swap">
+                {submitting && !success && <span className="btn-spinner" aria-hidden="true" />}
+                {btnText}
+              </span>
+            </button>
+          </form>
+          <div className="login-foot">
+            <button type="button" className="back-link" onClick={onBack} disabled={submitting || success}>
+              ← Back to portfolio
+            </button>
+            <span className="demo-hint">Demo build — any email, password 8+ chars</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DashboardOverlay({
+  session,
+  exiting,
+  onLogout,
+}: {
+  session: Session;
+  exiting: boolean;
+  onLogout: () => void;
+}) {
+  return (
+    <div className={`dash-layer${exiting ? " exiting" : ""}`} role="dialog" aria-modal="true" aria-label="Admin dashboard">
+      <div className="dash-panel dash-header" style={{ "--d": "0ms" } as CSSProperties}>
+        <div className="dash-title-wrap">
+          <span className="dash-red-square" aria-hidden="true" />
+          <span className="dash-title">Admin Dashboard</span>
+        </div>
+        <span className="dash-session">{session.email}</span>
+        <button className="logout-btn" onClick={onLogout}>
+          Log out
+        </button>
+        <span className="dash-yellow" aria-hidden="true" />
+      </div>
+      {DASH_WIDGETS.map((w) => (
+        <div key={w.label} className="dash-panel" style={{ "--d": `${w.delay}ms` } as CSSProperties}>
+          <div className="panel-label">{w.label}</div>
+          <div className="dash-empty">
+            <span className="dash-dash">—</span>
+            <span className="dash-note">No data source yet</span>
+          </div>
+        </div>
+      ))}
+      <div className="dash-panel dash-services" style={{ "--d": "330ms" } as CSSProperties}>
+        <div className="panel-label">Services</div>
+        <div className="dash-empty">
+          <span className="dash-dash">—</span>
+          <span className="dash-note">Connects to the hosted backend — see docs/admin-dashboard.md</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── APP ─── */
 function App() {
   const [activeExp, setActiveExp] = useState<number | null>(null);
   const [activeProj, setActiveProj] = useState<number | null>(null);
   const [canvasMode, setCanvasMode] = useState("noise");
   const detailRef = useRef<HTMLDivElement>(null);
+
+  /* Admin flow: scene state machine */
+  const [phase, setPhase] = useState<Phase>("portfolio");
+  const [session, setSession] = useState<Session | null>(null);
+  const [returning, setReturning] = useState(false);
+  const timersRef = useRef<number[]>([]);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const openBtnRef = useRef<HTMLButtonElement>(null);
+
+  const away = phase !== "portfolio";
+
+  const after = (ms: number, fn: () => void) => {
+    timersRef.current.push(window.setTimeout(fn, ms));
+  };
+
+  useEffect(() => () => timersRef.current.forEach((t) => window.clearTimeout(t)), []);
+
+  const openLogin = () => {
+    if (phase !== "portfolio") return;
+    setPhase("grid-exit");
+    after(960, () => setPhase("login"));
+  };
+
+  const backToPortfolio = () => {
+    if (phase !== "login") return;
+    setPhase("login-exit");
+    after(300, () => {
+      setPhase("portfolio");
+      setReturning(true);
+      after(1200, () => setReturning(false));
+    });
+  };
+
+  const handleLoginSuccess = (s: Session) => {
+    setSession(s);
+    setPhase("success");
+    after(820, () => setPhase("login-rise"));
+    after(1140, () => setPhase("dashboard"));
+  };
+
+  const logout = () => {
+    setPhase("dashboard-exit");
+    after(300, () => {
+      setSession(null);
+      setPhase("login");
+    });
+  };
+
+  /* Lock scrolling while the grid is away */
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.toggle("locked", away);
+    return () => root.classList.remove("locked");
+  }, [away]);
+
+  /* Remove the hidden grid from keyboard/AT navigation */
+  useEffect(() => {
+    frameRef.current?.toggleAttribute("inert", away);
+  }, [away]);
+
+  /* Restore focus to the admin button when the grid returns */
+  const wasAwayRef = useRef(false);
+  useEffect(() => {
+    if (!away && wasAwayRef.current) openBtnRef.current?.focus();
+    wasAwayRef.current = away;
+  }, [away]);
+
+  /* Escape closes the login */
+  useEffect(() => {
+    if (phase !== "login") return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") backToPortfolio();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
 
   const selectExp = (idx: number) => {
     setActiveExp(idx);
@@ -559,10 +831,306 @@ function App() {
           width: 20px; height: 20px; border: 3px solid #1D3557;
         }
 
+        /* ── Admin flow: scene transitions ── */
+        :root {
+          --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+          --ease-exit: cubic-bezier(0.5, 0, 0.75, 0);
+        }
+        html.locked, html.locked body { overflow: hidden !important; }
+
+        .bauhaus-frame { overflow: hidden; }
+        .panel {
+          transition: transform 560ms var(--ease-exit), opacity 420ms ease;
+        }
+        .bauhaus-frame.away { pointer-events: none; }
+        .bauhaus-frame.away .panel { opacity: 0; will-change: transform, opacity; }
+        .bauhaus-frame.away .hero        { transform: translateX(-115%); }
+        .bauhaus-frame.away .experience  { transform: translateY(-115%); }
+        .bauhaus-frame.away .canvas-main { transform: translateX(115%); }
+        .bauhaus-frame.away .projects    { transform: translateX(-115%); }
+        .bauhaus-frame.away .detail      { transform: translateY(115%); }
+        .bauhaus-frame.away .skills      { transform: translateX(-115%); }
+        .bauhaus-frame.away .education   { transform: translateY(115%); }
+        .bauhaus-frame.away .contact     { transform: translateX(115%); }
+
+        /* Exits ripple outward from the admin panel (top-right) */
+        .bauhaus-frame.to-void .admin       { transition-delay: 0ms; }
+        .bauhaus-frame.to-void .contact     { transition-delay: 45ms; }
+        .bauhaus-frame.to-void .canvas-main { transition-delay: 90ms; }
+        .bauhaus-frame.to-void .education   { transition-delay: 135ms; }
+        .bauhaus-frame.to-void .detail      { transition-delay: 180ms; }
+        .bauhaus-frame.to-void .experience  { transition-delay: 225ms; }
+        .bauhaus-frame.to-void .projects    { transition-delay: 270ms; }
+        .bauhaus-frame.to-void .skills      { transition-delay: 315ms; }
+        .bauhaus-frame.to-void .hero        { transition-delay: 360ms; }
+
+        /* Re-entry: hero returns first, the admin door closes last */
+        .bauhaus-frame.from-void .panel {
+          transition: transform 640ms var(--ease-out-strong), opacity 480ms ease;
+        }
+        .bauhaus-frame.from-void .hero        { transition-delay: 0ms; }
+        .bauhaus-frame.from-void .projects    { transition-delay: 60ms; }
+        .bauhaus-frame.from-void .skills      { transition-delay: 120ms; }
+        .bauhaus-frame.from-void .experience  { transition-delay: 180ms; }
+        .bauhaus-frame.from-void .detail      { transition-delay: 240ms; }
+        .bauhaus-frame.from-void .education   { transition-delay: 300ms; }
+        .bauhaus-frame.from-void .canvas-main { transition-delay: 360ms; }
+        .bauhaus-frame.from-void .contact     { transition-delay: 420ms; }
+        .bauhaus-frame.from-void .admin       { transition-delay: 480ms; }
+
+        /* Admin grid panel — the inverted "door" */
+        .panel.admin { background: #111; color: #FDFBF7; }
+        .panel.admin .panel-label { color: #999; }
+        .admin-body {
+          flex: 1; display: flex; flex-direction: column;
+          justify-content: center; gap: 0.85rem;
+        }
+        .admin-motif { position: relative; width: 54px; height: 54px; }
+        .admin-square { position: absolute; display: block; }
+        .admin-square.s1 { inset: 0; border: 2px solid #FDFBF7; }
+        .admin-square.s2 { inset: 12px; border: 2px solid #E63946; }
+        .admin-square.s3 { inset: 24px; background: #F4D35E; }
+        .admin-desc { font-size: 0.72rem; color: #aaa; line-height: 1.4; margin: 0; }
+        .admin-open-btn {
+          font-family: 'Inter', sans-serif; font-size: 0.68rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.08em;
+          padding: 10px 12px; background: transparent; color: #FDFBF7;
+          border: 1px solid #FDFBF7; cursor: pointer;
+          transition: background 160ms ease, color 160ms ease,
+                      border-color 160ms ease, transform 160ms ease;
+        }
+        .admin-open-btn:hover { background: #E63946; border-color: #E63946; color: #fff; }
+        .admin-open-btn:active { transform: scale(0.97); }
+        .admin-open-btn:focus-visible { outline: 2px solid #F4D35E; outline-offset: 2px; }
+
+        /* Login overlay */
+        .overlay-layer {
+          position: fixed; inset: 0; z-index: 60;
+          display: flex; align-items: center; justify-content: center;
+          padding: 1rem;
+        }
+        .login-panel {
+          width: min(400px, 100%);
+          background: #FDFBF7;
+          border: 4px solid #111;
+          padding: 1.6rem 1.75rem 1.25rem;
+          position: relative;
+          animation: loginIn 560ms var(--ease-out-strong) both;
+        }
+        .login-panel.exit-down { animation: loginOutDown 280ms var(--ease-exit) both; }
+        .login-panel.exit-up { animation: loginOutUp 300ms var(--ease-exit) both; }
+        .login-panel::after {
+          content: ''; position: absolute; top: 1.1rem; right: 1.1rem;
+          width: 20px; height: 20px; background: #F4D35E;
+        }
+        .login-title {
+          font-size: 1.5rem; font-weight: 800; text-transform: uppercase;
+          letter-spacing: -0.02em; color: #111; margin: 0 0 0.15rem;
+        }
+        .login-sub { font-size: 0.74rem; color: #555; margin: 0 0 1.2rem; }
+
+        .login-panel .panel-label,
+        .login-panel .login-title,
+        .login-panel .login-sub,
+        .login-panel .field,
+        .login-panel .login-submit,
+        .login-panel .login-foot {
+          animation: riseIn 480ms var(--ease-out-strong) both;
+        }
+        .login-panel .panel-label  { animation-delay: 130ms; }
+        .login-panel .login-title  { animation-delay: 180ms; }
+        .login-panel .login-sub    { animation-delay: 230ms; }
+        .login-panel .f-email      { animation-delay: 290ms; }
+        .login-panel .f-pass       { animation-delay: 340ms; }
+        .login-panel .login-submit { animation-delay: 400ms; }
+        .login-panel .login-foot   { animation-delay: 450ms; }
+
+        .field { margin-bottom: 0.85rem; transition: opacity 300ms ease; }
+        .field label {
+          display: block; font-size: 0.6rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.12em;
+          color: #444; margin-bottom: 4px;
+        }
+        .field input {
+          width: 100%; padding: 10px 12px;
+          font-family: 'Inter', sans-serif; font-size: 0.85rem; color: #111;
+          background: #FDFBF7; border: 1px solid #111; border-radius: 0;
+          transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+        .field input:focus { outline: none; border-color: #E63946; box-shadow: 0 0 0 1px #E63946; }
+        .field input:disabled { opacity: 0.6; }
+        .login-panel.has-error .field input { border-color: #E63946; }
+        .login-panel.is-success .field { opacity: 0.35; }
+
+        .login-error {
+          display: flex; align-items: flex-start; gap: 6px;
+          font-size: 0.72rem; font-weight: 600; color: #E63946;
+          margin: 0 0 0.85rem; line-height: 1.35;
+        }
+        .login-error::before {
+          content: ''; width: 8px; height: 8px; flex-shrink: 0;
+          background: #E63946; margin-top: 3px;
+        }
+
+        .login-submit {
+          width: 100%; padding: 12px;
+          font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.1em;
+          background: #111; color: #FDFBF7; border: none; cursor: pointer;
+          display: flex; align-items: center; justify-content: center;
+          transition: background 180ms ease, transform 160ms ease;
+        }
+        .login-submit:hover:not(:disabled) { background: #E63946; }
+        .login-submit:active:not(:disabled) { transform: scale(0.98); }
+        .login-submit:disabled { cursor: wait; }
+        .login-submit.granted { background: #E63946; cursor: default; }
+        .login-submit:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
+        .btn-swap {
+          display: inline-flex; align-items: center; gap: 8px;
+          animation: btnSwap 200ms var(--ease-out-strong) both;
+        }
+        .btn-spinner {
+          width: 8px; height: 8px; background: currentColor;
+          animation: spinSquare 900ms cubic-bezier(0.77, 0, 0.175, 1) infinite;
+        }
+
+        .login-foot {
+          display: flex; justify-content: space-between; align-items: center;
+          margin-top: 1rem; gap: 8px;
+        }
+        .back-link {
+          font-family: 'Inter', sans-serif; font-size: 0.66rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.06em;
+          background: none; border: none; padding: 0; cursor: pointer;
+          color: #888; border-bottom: 1px solid transparent;
+          transition: color 150ms ease, border-color 150ms ease;
+        }
+        .back-link:hover:not(:disabled) { color: #E63946; border-bottom-color: #E63946; }
+        .back-link:disabled { opacity: 0.4; cursor: default; }
+        .back-link:focus-visible { outline: 2px solid #1D3557; outline-offset: 2px; }
+        .demo-hint { font-size: 0.62rem; color: #aaa; text-align: right; }
+        .shake { animation: shake 380ms cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+        /* Dashboard overlay */
+        .dash-layer {
+          position: fixed; inset: 0; z-index: 60;
+          background: #111; border: 4px solid #111;
+          display: grid; gap: 1px;
+          grid-template-columns: repeat(4, 1fr);
+          grid-template-rows: auto 1fr 1fr;
+        }
+        .dash-panel {
+          background: #FDFBF7; padding: 1.25rem; position: relative;
+          display: flex; flex-direction: column;
+          animation: dashIn 540ms var(--ease-out-strong) both;
+          animation-delay: var(--d, 0ms);
+        }
+        .dash-layer.exiting .dash-panel {
+          animation: dashOut 240ms var(--ease-exit) both;
+          animation-delay: 0ms;
+        }
+        .dash-header {
+          grid-column: 1 / -1;
+          flex-direction: row; align-items: center; gap: 12px;
+          padding: 0.9rem 1.25rem;
+        }
+        .dash-title-wrap { display: flex; align-items: center; gap: 8px; }
+        .dash-red-square { width: 8px; height: 8px; background: #E63946; }
+        .dash-title {
+          font-size: 0.85rem; font-weight: 800; text-transform: uppercase;
+          letter-spacing: 0.03em; color: #111;
+        }
+        .dash-session { margin-left: auto; font-size: 0.72rem; color: #777; }
+        .logout-btn {
+          font-family: 'Inter', sans-serif; font-size: 0.64rem; font-weight: 700;
+          text-transform: uppercase; letter-spacing: 0.08em;
+          padding: 7px 12px; background: transparent; color: #111;
+          border: 1px solid #111; cursor: pointer;
+          transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+        }
+        .logout-btn:hover { background: #111; color: #FDFBF7; }
+        .logout-btn:active { transform: scale(0.97); }
+        .logout-btn:focus-visible { outline: 2px solid #E63946; outline-offset: 2px; }
+        .dash-yellow { width: 14px; height: 14px; background: #F4D35E; flex-shrink: 0; }
+        .dash-services { grid-column: 1 / -1; }
+        .dash-empty {
+          flex: 1; display: flex; flex-direction: column;
+          align-items: center; justify-content: center; gap: 4px;
+        }
+        .dash-dash { font-size: 1.8rem; font-weight: 300; color: #ccc; line-height: 1; }
+        .dash-note { font-size: 0.62rem; color: #999; text-align: center; }
+
+        /* Keyframes */
+        @keyframes loginIn {
+          from { opacity: 0; transform: translateY(26px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes loginOutDown {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(14px); }
+        }
+        @keyframes loginOutUp {
+          from { opacity: 1; transform: translateY(0) scale(1); }
+          to { opacity: 0; transform: translateY(-18px) scale(0.99); }
+        }
+        @keyframes riseIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          20% { transform: translateX(-7px); }
+          40% { transform: translateX(6px); }
+          60% { transform: translateX(-4px); }
+          80% { transform: translateX(2px); }
+        }
+        @keyframes spinSquare {
+          0% { transform: rotate(0deg); }
+          50% { transform: rotate(180deg) scale(0.75); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes btnSwap {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes dashIn {
+          from { opacity: 0; transform: translateY(16px) scale(0.99); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes dashOut {
+          from { opacity: 1; transform: translateY(0); }
+          to { opacity: 0; transform: translateY(8px); }
+        }
+        @keyframes fadeOnly { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOutOnly { from { opacity: 1; } to { opacity: 0; } }
+
+        /* Reduced motion: fades only, no movement */
+        @media (prefers-reduced-motion: reduce) {
+          .panel, .bauhaus-frame.from-void .panel {
+            transition: opacity 160ms ease !important;
+          }
+          .bauhaus-frame.away .panel { transform: none !important; }
+          .login-panel { animation: fadeOnly 160ms ease both !important; }
+          .login-panel.exit-down, .login-panel.exit-up {
+            animation: fadeOutOnly 160ms ease both !important;
+          }
+          .login-panel .panel-label, .login-panel .login-title,
+          .login-panel .login-sub, .login-panel .field,
+          .login-panel .login-submit, .login-panel .login-foot {
+            animation: none !important;
+          }
+          .dash-panel { animation: fadeOnly 160ms ease both !important; }
+          .dash-layer.exiting .dash-panel { animation: fadeOutOnly 160ms ease both !important; }
+          .shake { animation: none !important; }
+          .btn-swap { animation: none !important; }
+          .btn-spinner { animation-duration: 1600ms !important; }
+        }
+
         /* Grid placement */
         .hero { grid-column: 1 / 2; grid-row: 1 / 2; }
         .experience { grid-column: 2 / 3; grid-row: 1 / 2; }
-        .canvas-main { grid-column: 3 / 5; grid-row: 1 / 3; }
+        .canvas-main { grid-column: 3 / 4; grid-row: 1 / 3; }
+        .admin { grid-column: 4 / 5; grid-row: 1 / 3; }
         .projects { grid-column: 1 / 2; grid-row: 2 / 3; }
         .detail { grid-column: 2 / 3; grid-row: 2 / 4; }
         .skills { grid-column: 1 / 2; grid-row: 3 / 4; }
@@ -578,7 +1146,7 @@ function App() {
             width: 100%;
             height: auto;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto 140px auto auto;
+            grid-template-rows: auto auto auto 140px auto auto auto;
             border-width: 3px;
           }
 
@@ -602,18 +1170,32 @@ function App() {
           .education { grid-column: 1 / 2; grid-row: 5; }
           .contact   { grid-column: 2 / 3; grid-row: 5; }
 
+          /* Admin: full width row */
+          .admin { grid-column: 1 / 3; grid-row: 6; }
+
           /* Skills: full width at the bottom */
-          .skills { grid-column: 1 / 3; grid-row: 6; }
+          .skills { grid-column: 1 / 3; grid-row: 7; }
 
           /* Panel adjustments */
           .panel { padding: 1rem; }
           .list-item { padding: 7px 0; }
           .detail-content { height: auto; }
           .detail-desc { flex: none; overflow: visible; }
+
+          /* Dashboard overlay stacks on mobile */
+          .dash-layer {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto minmax(140px, 1fr) minmax(140px, 1fr) minmax(140px, auto);
+            overflow-y: auto;
+          }
+          .dash-session { display: none; }
         }
       `}</style>
 
-      <div className="bauhaus-frame">
+      <div
+        ref={frameRef}
+        className={`bauhaus-frame${away ? " away" : ""}${phase === "grid-exit" ? " to-void" : ""}${returning ? " from-void" : ""}`}
+      >
         {/* HERO */}
         <div className="panel hero">
           <div className="panel-label">Identity</div>
@@ -661,7 +1243,7 @@ function App() {
           <div style={{ position: "absolute", top: 12, left: 12, zIndex: 10, fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "#777", display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ display: "inline-block", width: 8, height: 8, background: "#E63946" }} /> Art Engine
           </div>
-          <GenerativeCanvas mode={canvasMode} />
+          <GenerativeCanvas mode={canvasMode} active={!away} />
           <div className="canvas-controls">
             {/*{["noise", "wave", "mouse"].map((m) => (*/}
             {["noise"].map((m) => (
@@ -674,6 +1256,22 @@ function App() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* ADMIN */}
+        <div className="panel admin">
+          <div className="panel-label">Admin</div>
+          <div className="admin-body">
+            <div className="admin-motif" aria-hidden="true">
+              <span className="admin-square s1" />
+              <span className="admin-square s2" />
+              <span className="admin-square s3" />
+            </div>
+            <p className="admin-desc">Private monitoring &amp; control room.</p>
+          </div>
+          <button ref={openBtnRef} className="admin-open-btn" onClick={openLogin}>
+            Open Login
+          </button>
         </div>
 
         {/* PROJECTS */}
@@ -806,6 +1404,22 @@ function App() {
           </div>
         </div>
       </div>
+
+      {(phase === "login" || phase === "login-exit" || phase === "success" || phase === "login-rise") && (
+        <LoginOverlay
+          exitDir={phase === "login-exit" ? "down" : phase === "login-rise" ? "up" : "none"}
+          success={phase === "success" || phase === "login-rise"}
+          onSuccess={handleLoginSuccess}
+          onBack={backToPortfolio}
+        />
+      )}
+      {(phase === "dashboard" || phase === "dashboard-exit") && session && (
+        <DashboardOverlay
+          session={session}
+          exiting={phase === "dashboard-exit"}
+          onLogout={logout}
+        />
+      )}
     </>
   );
 }

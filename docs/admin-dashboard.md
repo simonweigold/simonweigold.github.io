@@ -121,7 +121,26 @@ Auth: `Authorization: Bearer <access_token>` on all private endpoints.
 
 ## Open questions
 
+- ~~Separate route (`/admin`) or a modal/view toggled from the portfolio?~~
+  **Decided:** in-place view transition, no router. A state machine in `App.tsx`
+  (`portfolio → grid-exit → login → success → login-rise → dashboard`, plus
+  reverse phases) swaps scenes without changing the URL.
+- ~~Router library choice?~~ **Decided:** none — the scene machine above keeps the
+  project dependency-free.
 - Which hosted backend / IdP (Supabase vs. Cloudflare vs. VPS; hosted IdP vs. JWT)?
-- Separate route (`/admin`) or a modal/view toggled from the portfolio?
-- Router library choice, or hand-rolled view switching to stay dependency-light?
 - Which metrics matter first for v1 of the dashboard?
+
+## Implemented in this branch
+
+- New "Admin" grid panel (top-right, inverted black) with an "Open Login" button.
+- Flow choreography: grid panels fly out toward their nearest edge, staggered as
+  a ripple from the admin panel; the login dialog materialises in the empty
+  frame; on success the dialog rises away and the dashboard placeholders stagger
+  in; on failure the dialog shakes and shows a plain-language error.
+- `src/auth.ts`: mock `signIn()` with simulated latency (accepts any email +
+  8+ char password). This is the seam for the real API client.
+- Dashboard is a placeholder only (header with session email + logout, empty
+  CPU/Memory/Disk/Network/Services panels) until the backend exists.
+- Motion is pure CSS (keyframes + transitions, transform/opacity only),
+  `prefers-reduced-motion` reduces everything to fades, the hidden grid is
+  `inert`, Escape closes the login, and focus returns to the entry button.
