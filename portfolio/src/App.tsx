@@ -884,12 +884,6 @@ function App() {
           color: #777; font-family: var(--font-mono); margin-bottom: 0.5rem;
         }
         .panel.admin .panel-label::before { background: #e0af68; }
-        .admin-status { display: flex; align-items: center; gap: 6px; margin-bottom: 0.75rem; }
-        .admin-dot { width: 6px; height: 6px; background: #e0af68; flex-shrink: 0; }
-        .admin-desc {
-          font-family: var(--font-mono); font-size: 0.62rem; color: #8b8b96;
-          margin: 0; text-transform: uppercase; letter-spacing: 0.06em;
-        }
         .admin-open-btn {
           margin-top: auto; width: 100%;
           font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
@@ -1182,7 +1176,6 @@ function App() {
           .admin { grid-column: 1 / 3; grid-row: 6; }
           .panel.admin { flex-direction: row; align-items: center; gap: 10px; }
           .panel.admin .panel-label { margin-bottom: 0; }
-          .admin-status { margin-bottom: 0; }
           .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; }
 
           /* Skills: full width at the bottom */
@@ -1272,11 +1265,7 @@ function App() {
 
         {/* ADMIN */}
         <div className="panel admin">
-          <div className="panel-label">Admin</div>
-          <div className="admin-status">
-            <span className="admin-dot" aria-hidden="true" />
-            <span className="admin-desc">Control room</span>
-          </div>
+          <div className="panel-label">Server Control Room</div>
           <button ref={openBtnRef} className="admin-open-btn" onClick={openLogin}>
             Open Login
           </button>
