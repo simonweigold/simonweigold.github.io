@@ -911,17 +911,19 @@ function App() {
         .cluster-node.offline .cluster-metric { color: #c4c4c4; }
         .cluster-bar { display: none; }
 
-        /* Variant: load bars */
+        /* Variant: load bars (bars disabled until the metric is confirmed) */
         .cluster { gap: 44px; }
         .cluster-node { gap: 7px; }
         .cluster-dot { width: 8px; height: 8px; }
         .cluster-metric { min-width: 32px; text-align: right; }
+        /* CPU bars disabled until the metric is confirmed available.
         .cluster-bar {
           display: block; width: 44px; height: 4px;
           background: #ece9e2; overflow: hidden; flex-shrink: 0;
         }
         .cluster-node.offline .cluster-bar { display: none; }
         .cluster-bar-fill { display: block; height: 100%; width: var(--load, 0%); background: #1D3557; }
+        */
 
         .admin-open-btn {
           margin-top: auto; width: 100%;
@@ -1321,9 +1323,11 @@ function App() {
                 <span className="cluster-dot" aria-hidden="true" />
                 <span className="cluster-name">{m.name}</span>
                 <span className="cluster-metric">{m.online ? `${m.cpu}%` : "offline"}</span>
+                {/* CPU bars disabled until the metric is confirmed available.
                 <span className="cluster-bar" aria-hidden="true">
                   <span className="cluster-bar-fill" />
                 </span>
+                */}
               </li>
             ))}
           </ul>
