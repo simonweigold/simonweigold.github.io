@@ -1318,12 +1318,13 @@ function App() {
               <li
                 key={m.name}
                 className={`cluster-node${m.online ? "" : " offline"}`}
-                style={{ "--load": `${m.cpu}%` } as CSSProperties}
+                aria-label={`${m.name} ${m.online ? "online" : "offline"}`}
               >
                 <span className="cluster-dot" aria-hidden="true" />
                 <span className="cluster-name">{m.name}</span>
+                {/* CPU metric + load bar hidden until the backend provides data */}
+                {/*
                 <span className="cluster-metric">{m.online ? `${m.cpu}%` : "offline"}</span>
-                {/* CPU bars disabled until the metric is confirmed available.
                 <span className="cluster-bar" aria-hidden="true">
                   <span className="cluster-bar-fill" />
                 </span>
