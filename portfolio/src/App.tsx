@@ -548,7 +548,7 @@ function App() {
   const openLogin = () => {
     if (phase !== "portfolio") return;
     setPhase("grid-exit");
-    after(960, () => setPhase("login"));
+    after(820, () => setPhase("login"));
   };
 
   const backToPortfolio = () => {
@@ -848,12 +848,20 @@ function App() {
         }
         html.locked, html.locked body { overflow: hidden !important; }
 
-        .bauhaus-frame { overflow: hidden; }
+        .bauhaus-frame {
+          overflow: hidden;
+          transition: background-color 600ms ease, border-color 600ms ease;
+        }
         .panel {
           transition: transform 480ms var(--ease-exit), opacity 340ms ease;
         }
-        .bauhaus-frame.away { pointer-events: none; }
+        .bauhaus-frame.away {
+          pointer-events: none;
+          background: #e7e9ed;
+          border-color: #e7e9ed;
+        }
         .bauhaus-frame.away .panel { opacity: 0; will-change: transform, opacity; }
+        .bauhaus-frame.away .admin       { transform: translateY(-115%); }
         .bauhaus-frame.away .hero        { transform: translateX(-115%); }
         .bauhaus-frame.away .experience  { transform: translateY(-115%); }
         .bauhaus-frame.away .canvas-main { transform: translateX(115%); }
@@ -863,30 +871,30 @@ function App() {
         .bauhaus-frame.away .education   { transform: translateY(115%); }
         .bauhaus-frame.away .contact     { transform: translateX(115%); }
 
-        /* Exits ripple outward from the admin panel (top-right) */
+        /* Exit: the top bar lifts first, then a wave cascades downward */
         .bauhaus-frame.to-void .admin       { transition-delay: 0ms; }
-        .bauhaus-frame.to-void .contact     { transition-delay: 45ms; }
-        .bauhaus-frame.to-void .canvas-main { transition-delay: 90ms; }
-        .bauhaus-frame.to-void .education   { transition-delay: 135ms; }
-        .bauhaus-frame.to-void .detail      { transition-delay: 180ms; }
-        .bauhaus-frame.to-void .experience  { transition-delay: 225ms; }
-        .bauhaus-frame.to-void .projects    { transition-delay: 270ms; }
-        .bauhaus-frame.to-void .skills      { transition-delay: 315ms; }
-        .bauhaus-frame.to-void .hero        { transition-delay: 360ms; }
+        .bauhaus-frame.to-void .hero        { transition-delay: 70ms; }
+        .bauhaus-frame.to-void .experience  { transition-delay: 100ms; }
+        .bauhaus-frame.to-void .canvas-main { transition-delay: 130ms; }
+        .bauhaus-frame.to-void .projects    { transition-delay: 180ms; }
+        .bauhaus-frame.to-void .detail      { transition-delay: 210ms; }
+        .bauhaus-frame.to-void .skills      { transition-delay: 260ms; }
+        .bauhaus-frame.to-void .education   { transition-delay: 290ms; }
+        .bauhaus-frame.to-void .contact     { transition-delay: 320ms; }
 
-        /* Re-entry: hero returns first, the admin door closes last */
+        /* Return: the wave unpeels upward, the top bar drops in last */
         .bauhaus-frame.from-void .panel {
           transition: transform 640ms var(--ease-out-strong), opacity 480ms ease;
         }
-        .bauhaus-frame.from-void .hero        { transition-delay: 0ms; }
-        .bauhaus-frame.from-void .projects    { transition-delay: 60ms; }
-        .bauhaus-frame.from-void .skills      { transition-delay: 120ms; }
-        .bauhaus-frame.from-void .experience  { transition-delay: 180ms; }
-        .bauhaus-frame.from-void .detail      { transition-delay: 240ms; }
-        .bauhaus-frame.from-void .education   { transition-delay: 300ms; }
-        .bauhaus-frame.from-void .canvas-main { transition-delay: 360ms; }
-        .bauhaus-frame.from-void .contact     { transition-delay: 420ms; }
-        .bauhaus-frame.from-void .admin       { transition-delay: 480ms; }
+        .bauhaus-frame.from-void .contact     { transition-delay: 0ms; }
+        .bauhaus-frame.from-void .education   { transition-delay: 30ms; }
+        .bauhaus-frame.from-void .skills      { transition-delay: 60ms; }
+        .bauhaus-frame.from-void .detail      { transition-delay: 110ms; }
+        .bauhaus-frame.from-void .projects    { transition-delay: 140ms; }
+        .bauhaus-frame.from-void .canvas-main { transition-delay: 180ms; }
+        .bauhaus-frame.from-void .experience  { transition-delay: 210ms; }
+        .bauhaus-frame.from-void .hero        { transition-delay: 240ms; }
+        .bauhaus-frame.from-void .admin       { transition-delay: 320ms; }
 
         /* Admin grid panel — compact console entry */
         .panel.admin .panel-label {
@@ -978,13 +986,13 @@ function App() {
         .login-panel .login-foot {
           animation: riseIn 380ms var(--ease-out-strong) both;
         }
-        .login-panel .panel-label  { animation-delay: 110ms; }
-        .login-panel .login-title  { animation-delay: 150ms; }
-        .login-panel .login-sub    { animation-delay: 190ms; }
-        .login-panel .f-email      { animation-delay: 240ms; }
-        .login-panel .f-pass       { animation-delay: 285ms; }
-        .login-panel .login-submit { animation-delay: 335ms; }
-        .login-panel .login-foot   { animation-delay: 375ms; }
+        .login-panel .panel-label  { animation-delay: 80ms; }
+        .login-panel .login-title  { animation-delay: 120ms; }
+        .login-panel .login-sub    { animation-delay: 155ms; }
+        .login-panel .f-email      { animation-delay: 195ms; }
+        .login-panel .f-pass       { animation-delay: 235ms; }
+        .login-panel .login-submit { animation-delay: 275ms; }
+        .login-panel .login-foot   { animation-delay: 315ms; }
 
         .field { margin-bottom: 0.85rem; transition: opacity 300ms ease; }
         .field label {
