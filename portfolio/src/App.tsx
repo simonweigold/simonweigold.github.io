@@ -911,6 +911,18 @@ function App() {
         .cluster-node.offline .cluster-metric { color: #c4c4c4; }
         .cluster-bar { display: none; }
 
+        /* Variant: load bars */
+        .cluster { gap: 22px; }
+        .cluster-node { gap: 7px; }
+        .cluster-dot { width: 8px; height: 8px; }
+        .cluster-metric { min-width: 32px; text-align: right; }
+        .cluster-bar {
+          display: block; width: 44px; height: 4px;
+          background: #ece9e2; overflow: hidden; flex-shrink: 0;
+        }
+        .cluster-node.offline .cluster-bar { display: none; }
+        .cluster-bar-fill { display: block; height: 100%; width: var(--load, 0%); background: #2f9e44; }
+
         .admin-open-btn {
           margin-top: auto; width: 100%;
           font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
