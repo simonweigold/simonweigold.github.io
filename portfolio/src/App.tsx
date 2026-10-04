@@ -545,11 +545,14 @@ function App() {
 
   useEffect(() => () => timersRef.current.forEach((t) => window.clearTimeout(t)), []);
 
+  /* Login entry disabled for now — restore together with the button
+     in the Server Control panel.
   const openLogin = () => {
     if (phase !== "portfolio") return;
     setPhase("grid-exit");
     after(820, () => setPhase("login"));
   };
+  */
 
   const backToPortfolio = () => {
     if (phase !== "login") return;
@@ -1342,9 +1345,11 @@ function App() {
               </li>
             ))}
           </ul>
+          {/* Login entry — commented out for now
           <button ref={openBtnRef} className="admin-open-btn" onClick={openLogin}>
-            Open Login
+            Admin Login
           </button>
+          */}
         </div>
 
         {/* PROJECTS */}
