@@ -345,6 +345,15 @@ const DASH_WIDGETS = [
   { label: "Network", delay: 270 },
 ];
 
+/* Dummy cluster data — will come from the hosted backend later. */
+const clusterMachines = [
+  { name: "Rechner", online: true, cpu: 18 },
+  { name: "Lakai", online: true, cpu: 42 },
+  { name: "Entbehrlich", online: false, cpu: 0 },
+  { name: "Pixel 10", online: true, cpu: 7 },
+  { name: "Mac", online: false, cpu: 0 },
+];
+
 function LoginOverlay({
   exitDir,
   success,
@@ -883,7 +892,25 @@ function App() {
         .panel.admin .panel-label {
           color: #777; font-family: var(--font-mono); margin-bottom: 0.5rem;
         }
-        .panel.admin .panel-label::before { background: #e0af68; }
+
+        /* Cluster status */
+        .cluster {
+          list-style: none; flex: 1; display: flex; align-items: center;
+          justify-content: center; gap: 10px; margin: 0; padding: 0;
+        }
+        .cluster-node {
+          display: flex; align-items: center; gap: 6px;
+          font-family: var(--font-mono); font-size: 0.62rem;
+          text-transform: uppercase; letter-spacing: 0.04em; color: #333;
+          white-space: nowrap;
+        }
+        .cluster-dot { width: 6px; height: 6px; background: #2f9e44; flex-shrink: 0; }
+        .cluster-metric { color: #999; }
+        .cluster-node.offline { color: #b0ada6; }
+        .cluster-node.offline .cluster-dot { background: transparent; border: 1px solid #bbb; }
+        .cluster-node.offline .cluster-metric { color: #c4c4c4; }
+        .cluster-bar { display: none; }
+
         .admin-open-btn {
           margin-top: auto; width: 100%;
           font-family: var(--font-mono); font-size: 0.62rem; font-weight: 600;
@@ -1179,9 +1206,10 @@ function App() {
 
           /* Admin: compact horizontal strip */
           .admin { grid-column: 1 / 3; grid-row: 6; }
-          .panel.admin { flex-direction: row; align-items: center; gap: 10px; }
+          .panel.admin { flex-direction: row; align-items: center; gap: 10px; flex-wrap: wrap; row-gap: 8px; }
           .panel.admin .panel-label { margin-bottom: 0; }
           .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; }
+          .cluster { flex-basis: 100%; order: 3; justify-content: flex-start; overflow-x: auto; }
 
           /* Skills: full width at the bottom */
           .skills { grid-column: 1 / 3; grid-row: 7; }
@@ -1270,7 +1298,23 @@ function App() {
 
         {/* ADMIN */}
         <div className="panel admin">
-          <div className="panel-label">Server Control Room</div>
+          <div className="panel-label">Server Control</div>
+          <ul className="cluster" aria-label="Cluster status">
+            {clusterMachines.map((m) => (
+              <li
+                key={m.name}
+                className={`cluster-node${m.online ? "" : " offline"}`}
+                style={{ "--load": `${m.cpu}%` } as CSSProperties}
+              >
+                <span className="cluster-dot" aria-hidden="true" />
+                <span className="cluster-name">{m.name}</span>
+                <span className="cluster-metric">{m.online ? `${m.cpu}%` : "offline"}</span>
+                <span className="cluster-bar" aria-hidden="true">
+                  <span className="cluster-bar-fill" />
+                </span>
+              </li>
+            ))}
+          </ul>
           <button ref={openBtnRef} className="admin-open-btn" onClick={openLogin}>
             Open Login
           </button>
