@@ -904,15 +904,15 @@ function App() {
           text-transform: uppercase; letter-spacing: 0.04em; color: #333;
           white-space: nowrap;
         }
-        .cluster-dot { width: 6px; height: 6px; background: #2f9e44; flex-shrink: 0; }
+        .cluster-dot { width: 6px; height: 6px; background: #1D3557; flex-shrink: 0; }
         .cluster-metric { color: #999; }
         .cluster-node.offline { color: #b0ada6; }
-        .cluster-node.offline .cluster-dot { background: transparent; border: 1px solid #bbb; }
+        .cluster-node.offline .cluster-dot { background: transparent; border: 1px solid #1D3557; opacity: 0.4; }
         .cluster-node.offline .cluster-metric { color: #c4c4c4; }
         .cluster-bar { display: none; }
 
         /* Variant: load bars */
-        .cluster { gap: 22px; }
+        .cluster { gap: 44px; }
         .cluster-node { gap: 7px; }
         .cluster-dot { width: 8px; height: 8px; }
         .cluster-metric { min-width: 32px; text-align: right; }
@@ -921,7 +921,7 @@ function App() {
           background: #ece9e2; overflow: hidden; flex-shrink: 0;
         }
         .cluster-node.offline .cluster-bar { display: none; }
-        .cluster-bar-fill { display: block; height: 100%; width: var(--load, 0%); background: #2f9e44; }
+        .cluster-bar-fill { display: block; height: 100%; width: var(--load, 0%); background: #1D3557; }
 
         .admin-open-btn {
           margin-top: auto; width: 100%;
@@ -1020,7 +1020,7 @@ function App() {
         .login-submit:hover:not(:disabled) { background: #eec27f; }
         .login-submit:active:not(:disabled) { transform: scale(0.98); }
         .login-submit:disabled { cursor: wait; }
-        .login-submit.granted { background: #9ece6a; color: #141417; cursor: default; }
+        .login-submit.granted { background: #1D3557; color: #FDFBF7; cursor: default; }
         .login-submit:focus-visible { outline: 2px solid #e0af68; outline-offset: 2px; }
         .btn-swap {
           display: inline-flex; align-items: center; gap: 8px;
