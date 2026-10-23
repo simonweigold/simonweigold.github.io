@@ -659,7 +659,7 @@ function App() {
           width: 100vw; height: 100vh;
           display: grid;
           grid-template-columns: 1.6fr 1.2fr 1fr 1fr;
-          grid-template-rows: auto 1.4fr 1fr 1fr;
+          grid-template-rows: 1.4fr 1fr 1fr auto;
           gap: 1px;
           background: #111;
           border: 4px solid #111;
@@ -672,6 +672,7 @@ function App() {
           display: flex;
           flex-direction: column;
           padding: 1.25rem;
+          min-width: 0; min-height: 0;
         }
 
         .panel-label {
@@ -691,6 +692,14 @@ function App() {
           display: inline-block;
           width: 8px; height: 8px;
           background: #E63946;
+        }
+
+        /* Scrollable panel body — keeps content reachable when it exceeds the panel */
+        .panel-scroll {
+          flex: 1; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
         }
 
         /* Hero */
@@ -726,7 +735,13 @@ function App() {
         .hero a:hover { color: #E63946; border-bottom-color: #E63946; }
 
         /* Lists */
-        .list { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+        .list {
+          list-style: none; margin: 0; padding: 0;
+          flex: 1; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
+        }
         .list-item {
           padding: 4px 0;
           border-bottom: 1px solid rgba(17,17,17,0.07);
@@ -766,7 +781,10 @@ function App() {
         }
         .detail-desc {
           font-size: 0.78rem; color: #333; line-height: 1.45;
-          margin-bottom: 0.75rem; flex: 1; overflow: hidden;
+          margin-bottom: 0.75rem; flex: 1; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
         }
         .detail-tags { display: flex; flex-wrap: wrap; gap: 3px; margin-bottom: 0.6rem; }
         .detail-tag {
@@ -787,7 +805,13 @@ function App() {
         .detail-animate { animation: fadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
 
         /* Skills */
-        .skills-cloud { display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start; }
+        .skills-cloud {
+          display: flex; flex-wrap: wrap; gap: 4px;
+          flex: 1; min-height: 0; align-content: flex-start;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
+        }
         .skill-tag {
           font-size: 0.65rem; padding: 2px 5px;
           border: 1px solid #111; color: #111; font-weight: 500; line-height: 1;
@@ -803,9 +827,21 @@ function App() {
         .edu-degree { font-size: 0.76rem; font-weight: 700; color: #111; line-height: 1.2; margin-bottom: 1px; }
         .edu-school { font-size: 0.7rem; color: #444; }
         .edu-date { font-size: 0.68rem; color: #888; margin-top: 1px; }
+        .edu-list {
+          flex: 1; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
+        }
 
         /* Contact */
-        .contact-links { display: flex; flex-direction: column; gap: 5px; }
+        .contact-links {
+          display: flex; flex-direction: column; gap: 5px;
+          flex: 1; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
+        }
         .contact-links a {
           font-size: 0.78rem; color: #222; text-decoration: none; font-weight: 600;
           transition: color 0.2s; border-bottom: 1px solid transparent;
@@ -864,7 +900,7 @@ function App() {
           border-color: #e7e9ed;
         }
         .bauhaus-frame.away .panel { opacity: 0; will-change: transform, opacity; }
-        .bauhaus-frame.away .admin       { transform: translateY(-115%); }
+        .bauhaus-frame.away .admin       { transform: translateY(115%); }
         .bauhaus-frame.away .hero        { transform: translateX(-115%); }
         .bauhaus-frame.away .experience  { transform: translateY(-115%); }
         .bauhaus-frame.away .canvas-main { transform: translateX(115%); }
@@ -874,29 +910,29 @@ function App() {
         .bauhaus-frame.away .education   { transform: translateY(115%); }
         .bauhaus-frame.away .contact     { transform: translateX(115%); }
 
-        /* Exit: the top bar lifts first, then a wave cascades downward */
+        /* Exit: the bottom bar drops first, then a wave cascades upward */
         .bauhaus-frame.to-void .admin       { transition-delay: 0ms; }
-        .bauhaus-frame.to-void .hero        { transition-delay: 70ms; }
-        .bauhaus-frame.to-void .experience  { transition-delay: 100ms; }
-        .bauhaus-frame.to-void .canvas-main { transition-delay: 130ms; }
-        .bauhaus-frame.to-void .projects    { transition-delay: 180ms; }
-        .bauhaus-frame.to-void .detail      { transition-delay: 210ms; }
-        .bauhaus-frame.to-void .skills      { transition-delay: 260ms; }
-        .bauhaus-frame.to-void .education   { transition-delay: 290ms; }
-        .bauhaus-frame.to-void .contact     { transition-delay: 320ms; }
+        .bauhaus-frame.to-void .skills      { transition-delay: 70ms; }
+        .bauhaus-frame.to-void .education   { transition-delay: 100ms; }
+        .bauhaus-frame.to-void .contact     { transition-delay: 130ms; }
+        .bauhaus-frame.to-void .detail      { transition-delay: 180ms; }
+        .bauhaus-frame.to-void .projects    { transition-delay: 210ms; }
+        .bauhaus-frame.to-void .canvas-main { transition-delay: 240ms; }
+        .bauhaus-frame.to-void .experience  { transition-delay: 270ms; }
+        .bauhaus-frame.to-void .hero        { transition-delay: 320ms; }
 
-        /* Return: the wave unpeels upward, the top bar drops in last */
+        /* Return: the wave unpeels downward, the bottom bar drops in last */
         .bauhaus-frame.from-void .panel {
           transition: transform 640ms var(--ease-out-strong), opacity 480ms ease;
         }
-        .bauhaus-frame.from-void .contact     { transition-delay: 0ms; }
-        .bauhaus-frame.from-void .education   { transition-delay: 30ms; }
-        .bauhaus-frame.from-void .skills      { transition-delay: 60ms; }
-        .bauhaus-frame.from-void .detail      { transition-delay: 110ms; }
-        .bauhaus-frame.from-void .projects    { transition-delay: 140ms; }
-        .bauhaus-frame.from-void .canvas-main { transition-delay: 180ms; }
-        .bauhaus-frame.from-void .experience  { transition-delay: 210ms; }
-        .bauhaus-frame.from-void .hero        { transition-delay: 240ms; }
+        .bauhaus-frame.from-void .hero        { transition-delay: 0ms; }
+        .bauhaus-frame.from-void .experience  { transition-delay: 30ms; }
+        .bauhaus-frame.from-void .canvas-main { transition-delay: 60ms; }
+        .bauhaus-frame.from-void .projects    { transition-delay: 110ms; }
+        .bauhaus-frame.from-void .detail      { transition-delay: 140ms; }
+        .bauhaus-frame.from-void .contact     { transition-delay: 180ms; }
+        .bauhaus-frame.from-void .education   { transition-delay: 210ms; }
+        .bauhaus-frame.from-void .skills      { transition-delay: 240ms; }
         .bauhaus-frame.from-void .admin       { transition-delay: 320ms; }
 
         /* Admin grid panel — compact console entry */
@@ -908,12 +944,16 @@ function App() {
         .cluster {
           list-style: none; flex: 1; display: flex; align-items: center;
           justify-content: center; gap: 10px; margin: 0; padding: 0;
+          min-width: 0; max-width: 100%;
+          overflow-x: auto; overflow-y: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior-x: contain;
         }
         .cluster-node {
           display: flex; align-items: center; gap: 6px;
           font-family: var(--font-mono); font-size: 0.62rem;
           text-transform: uppercase; letter-spacing: 0.04em; color: #333;
-          white-space: nowrap;
+          white-space: nowrap; flex-shrink: 0;
         }
         .cluster-dot { width: 6px; height: 6px; background: #1D3557; flex-shrink: 0; }
         .cluster-metric { color: #999; }
@@ -1075,6 +1115,10 @@ function App() {
         .dash-panel {
           background: #f4f5f7; padding: 1.25rem; position: relative;
           display: flex; flex-direction: column;
+          min-width: 0; min-height: 0;
+          overflow-y: auto; overflow-x: hidden;
+          scrollbar-width: thin;
+          overscroll-behavior: contain;
           animation: dashIn 440ms var(--ease-out-strong) both;
           animation-delay: var(--d, 0ms);
         }
@@ -1182,21 +1226,25 @@ function App() {
           .btn-spinner { animation-duration: 1600ms !important; }
         }
 
-        /* Grid placement — top control band */
-        .admin { grid-column: 1 / 5; grid-row: 1 / 2; }
-        .hero { grid-column: 1 / 2; grid-row: 2 / 3; }
-        .experience { grid-column: 2 / 3; grid-row: 2 / 3; }
-        .canvas-main { grid-column: 3 / 5; grid-row: 2 / 4; }
-        .projects { grid-column: 1 / 2; grid-row: 3 / 4; }
-        .detail { grid-column: 2 / 3; grid-row: 3 / 5; }
-        .skills { grid-column: 1 / 2; grid-row: 4 / 5; }
-        .education { grid-column: 3 / 4; grid-row: 4 / 5; }
-        .contact { grid-column: 4 / 5; grid-row: 4 / 5; }
+        /* Grid placement — bottom control band */
+        .hero { grid-column: 1 / 2; grid-row: 1 / 2; }
+        .experience { grid-column: 2 / 3; grid-row: 1 / 2; }
+        .canvas-main { grid-column: 3 / 5; grid-row: 1 / 3; }
+        .projects { grid-column: 1 / 2; grid-row: 2 / 3; }
+        .detail { grid-column: 2 / 3; grid-row: 2 / 4; }
+        .skills { grid-column: 1 / 2; grid-row: 3 / 4; }
+        .education { grid-column: 3 / 4; grid-row: 3 / 4; }
+        .contact { grid-column: 4 / 5; grid-row: 3 / 4; }
+        .admin { grid-column: 1 / 5; grid-row: 4 / 5; }
 
         /* Admin control bar */
-        .panel.admin { flex-direction: row; align-items: center; gap: 1.25rem; padding: 0.8rem 1.25rem; }
-        .panel.admin .panel-label { margin-bottom: 0; }
-        .panel.admin .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; }
+        .panel.admin {
+          flex-direction: row; align-items: center; gap: 1.25rem;
+          padding: 0.8rem 1.25rem;
+          min-width: 0; overflow: hidden;
+        }
+        .panel.admin .panel-label { margin-bottom: 0; flex-shrink: 0; }
+        .panel.admin .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; flex-shrink: 0; }
 
         /* ── Mobile ── */
         @media (max-width: 768px) {
@@ -1207,7 +1255,7 @@ function App() {
             width: 100%;
             height: auto;
             grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto 140px auto auto auto;
+            grid-template-rows: auto auto auto 140px auto auto auto auto;
             border-width: 3px;
           }
 
@@ -1231,21 +1279,23 @@ function App() {
           .education { grid-column: 1 / 2; grid-row: 5; }
           .contact   { grid-column: 2 / 3; grid-row: 5; }
 
-          /* Admin: compact horizontal strip */
-          .admin { grid-column: 1 / 3; grid-row: 6; }
+          /* Skills: full width above the control band */
+          .skills { grid-column: 1 / 3; grid-row: 6; }
+
+          /* Admin: compact horizontal strip at the bottom */
+          .admin { grid-column: 1 / 3; grid-row: 7; }
           .panel.admin { flex-direction: row; align-items: center; gap: 10px; flex-wrap: wrap; row-gap: 8px; }
           .panel.admin .panel-label { margin-bottom: 0; }
           .admin-open-btn { margin-top: 0; margin-left: auto; width: auto; }
           .cluster { flex-basis: 100%; order: 3; justify-content: flex-start; overflow-x: auto; }
-
-          /* Skills: full width at the bottom */
-          .skills { grid-column: 1 / 3; grid-row: 7; }
 
           /* Panel adjustments */
           .panel { padding: 1rem; }
           .list-item { padding: 7px 0; }
           .detail-content { height: auto; }
           .detail-desc { flex: none; overflow: visible; }
+          .panel-scroll { overflow: visible; }
+          .edu-list, .contact-links, .skills-cloud { overflow: visible; }
 
           /* Dashboard overlay stacks on mobile */
           .dash-layer {
@@ -1264,23 +1314,25 @@ function App() {
         {/* HERO */}
         <div className="panel hero">
           <div className="panel-label">Identity</div>
-          <h1>
-            Simon
-            <br />
-            Weigold
-          </h1>
-          <h2>
-            Software Engineer &amp;
-            <br />
-            Computational Social Scientist
-          </h2>
-          <p>Building tools at the intersection of law, language, and machine learning.</p>
-          <p>
-            Away from the screen:{" "}
-            <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer">
-              Trailventure →
-            </a>
-          </p>
+          <div className="panel-scroll">
+            <h1>
+              Simon
+              <br />
+              Weigold
+            </h1>
+            <h2>
+              Software Engineer &amp;
+              <br />
+              Computational Social Scientist
+            </h2>
+            <p>Building tools at the intersection of law, language, and machine learning.</p>
+            <p>
+              Away from the screen:{" "}
+              <a href="https://trailventure.net" target="_blank" rel="noopener noreferrer">
+                Trailventure →
+              </a>
+            </p>
+          </div>
         </div>
 
         {/* EXPERIENCE */}
@@ -1453,15 +1505,17 @@ function App() {
         {/* EDUCATION */}
         <div className="panel education">
           <div className="panel-label">Education</div>
-          <div className="edu-item">
-            <div className="edu-degree">MA Computational Social Sciences</div>
-            <div className="edu-school">University of Lucerne</div>
-            <div className="edu-date">2022 – 2024</div>
-          </div>
-          <div className="edu-item">
-            <div className="edu-degree">BA Media Management</div>
-            <div className="edu-school">HMTM Hannover</div>
-            <div className="edu-date">2019 – 2022</div>
+          <div className="edu-list">
+            <div className="edu-item">
+              <div className="edu-degree">MA Computational Social Sciences</div>
+              <div className="edu-school">University of Lucerne</div>
+              <div className="edu-date">2022 – 2024</div>
+            </div>
+            <div className="edu-item">
+              <div className="edu-degree">BA Media Management</div>
+              <div className="edu-school">HMTM Hannover</div>
+              <div className="edu-date">2019 – 2022</div>
+            </div>
           </div>
         </div>
 
